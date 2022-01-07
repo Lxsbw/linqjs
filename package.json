@@ -1,11 +1,11 @@
 {
-  "name": "@lxsbw/linqjs",
+  "name": "linq-to-javascript",
   "version": "1.0.0",
   "description": "Linq + JavaScript",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "files": [
-    "dist/*"
+    "src/*"
   ],
   "scripts": {},
   "repository": {

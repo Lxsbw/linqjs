@@ -1,6 +1,6 @@
-# Linq for TypeScript
+# Linq for JavaScript
 
-[![linqts](https://raw.githubusercontent.com/Lxsbw/linqjs/main/linqts.png)](http://www.typescriptlang.org)
+<!-- [![linqts](https://raw.githubusercontent.com/Lxsbw/linqjs/main/linqts.png)](http://www.typescriptlang.org) -->
 
 ## From
 
@@ -11,54 +11,54 @@ Thank you
 ## Install
 
 ```sh
-npm install @lxsbw/linqjs --save
+npm install linq-to-javascript --save
 ```
 
 ## Usage
 
 ### import
 
-```typescript
-import { Linq } from '@lxsbw/linqjs';
+```javascript
+const Linq = require('linq-to-javascript');
 ```
 
 ### 1. All
 
-```typescript
+```javascript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq<number>(numbers).All(x => x < 5); // => false
+const rst = new Linq(numbers).All(x => x < 5); // => false
 ```
 
 ### 2. Any
 
-```typescript
+```javascript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq<number>(numbers).Any(x => x < 5); // => true
+const rst = new Linq(numbers).Any(x => x < 5); // => true
 ```
 
 ### 3. Count
 
-```typescript
+```javascript
 const strArr = ['正一郎', '清次郎', '誠三郎', '征史郎'];
 const intArr = [1, 5, 8, 12, 15, 16];
 
 const rstStr = new Linq(strArr).Count(); // => 4
-const rstInt = new Linq<number>(intArr).Count(x => x % 2 === 0); // => 3
+const rstInt = new Linq(intArr).Count(x => x % 2 === 0); // => 3
 ```
 
 ### 4. Where & ToArray
 
-```typescript
+```javascript
 const intArr = [0, 1, 2, 3, 4];
 // even number
-const rst = new Linq<number>(dataA).Where(x => x % 2 === 0).ToArray(); // => [ 0, 2, 4 ]
+const rst = new Linq(dataA).Where(x => x % 2 === 0).ToArray(); // => [ 0, 2, 4 ]
 ```
 
 ### 5. Select & ToArray
 
-```typescript
+```javascript
 const parameters = [
   { ID: 5, Rate: 0.0, Name: '正一郎' },
   { ID: 13, Rate: 0.1, Name: '清次郎' },
@@ -82,7 +82,7 @@ const rst = new Linq(parameters)
 
 ### 6. SelectMany
 
-```typescript
+```javascript
 const parameters = [
   { Name: '正一郎', Numbers: [1, 2, 3] },
   { Name: '清次郎', Numbers: [1, 3, 5] },
@@ -95,7 +95,7 @@ const rst = new Linq(parameters).SelectMany(x => new Linq(x.Numbers)).ToArray();
 
 ### 7. Distinct
 
-```typescript
+```javascript
 const intArr = [0, 1, 3, 3, 2];
 const parameters = [
   { ID: 5, Rate: 0.0, Name: '正一郎' },
@@ -113,7 +113,7 @@ const rstObj = new Linq(parameters)
 
 ### 8. First & FirstOrDefault
 
-```typescript
+```javascript
 const numbers = [1, 2, 3, 5, 7, 11];
 const parameters = [
   { ID: 5, Name: '正一郎' },
@@ -123,13 +123,13 @@ const parameters = [
 ];
 
 const rstInt = new Linq(numbers).First(); // => 1
-const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 30); // => undefined
-const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 42); // => { ID: 42, Name: '征史郎' }
+const rstObj = new Linq(parameters).FirstOrDefault(x => x.ID === 30); // => undefined
+const rstObj = new Linq(parameters).FirstOrDefault(x => x.ID === 42); // => { ID: 42, Name: '征史郎' }
 ```
 
 ### 9. Remove
 
-```typescript
+```javascript
 let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 console.log(numbers.length); // => 10
@@ -139,11 +139,7 @@ console.log(numbers.length); // => 9
 
 ### 10. OrderBy & OrderByDescending
 
-```typescript
-interface Person {
-  ID: number;
-  Name: string;
-}
+```javascript
 const parameters = [
   { ID: 0, Name: '正一郎' },
   { ID: 3, Name: '清次郎' },
@@ -151,8 +147,8 @@ const parameters = [
   { ID: 5, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).OrderBy(x => x.ID).ToArray();
-const rstDesc = new Linq<Person>(parameters).OrderByDescending(x => x.ID).ToArray();
+const rst = new Linq(parameters).OrderBy(x => x.ID).ToArray();
+const rstDesc = new Linq(parameters).OrderByDescending(x => x.ID).ToArray();
 // rst =>
 // [
 //   { ID: 0, Name: "正一郎" },
@@ -171,12 +167,7 @@ const rstDesc = new Linq<Person>(parameters).OrderByDescending(x => x.ID).ToArra
 
 ### 11. ThenBy & ThenByDescending
 
-```typescript
-interface Person {
-  ID: number;
-  Age: number;
-  Name: string;
-}
+```javascript
 const persons = [
   { ID: 0, Age: 30, Name: 'A' },
   { ID: 1, Age: 25, Name: 'B' },
@@ -187,7 +178,7 @@ const persons = [
   { ID: 2, Age: 15, Name: 'F' }
 ];
 
-const rst = new Linq<Person>(persons)
+const rst = new Linq(persons)
   .OrderByDescending(x => x.ID)
   .ThenBy(x => x.Age)
   .ThenByDescending(x => x.Name)
@@ -226,21 +217,15 @@ const rst = new Linq<Person>(persons)
 
 ### 12. GroupBy
 
-```typescript
-interface GroupObj {
-  id: number;
-  name: string;
-  category: string;
-  countries: string[];
-}
+```javascript
 const data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
   { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
   { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }
 ];
 
-const rstKey = new Linq<GroupObj>(data).GroupBy(el => el.category);
-const rstKeys = new Linq<GroupObj>(data).GroupBy(el => {
+const rstKey = new Linq(data).GroupBy(el => el.category);
+const rstKeys = new Linq(data).GroupBy(el => {
   return { id: el.id, category: el.category };
 });
 // rstKey =>
@@ -275,7 +260,7 @@ const rstKeys = new Linq<GroupObj>(data).GroupBy(el => {
 
 ### 13. DistinctBy
 
-```typescript
+```javascript
 const data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
   { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
@@ -302,7 +287,7 @@ const rstKeys = new Linq(data)
 
 ### 14. Join
 
-```typescript
+```javascript
 const persons = [
   { CityID: 1, Name: 'ABC' },
   { CityID: 1, Name: 'EFG' },
@@ -342,7 +327,7 @@ const rst = new Linq(persons)
 
 ### 15. ToDictionary
 
-```typescript
+```javascript
 const parameters = [
   { ID: 0, Age: 52, Name: '正一郎' },
   { ID: 8, Age: 28, Name: '清次郎' },
@@ -374,11 +359,7 @@ const dictionaryObj = new Linq(parameters)
 
 ### 16. Sum
 
-```typescript
-interface Person {
-  Age: number;
-  Name: string;
-}
+```javascript
 const parameters = [
   { Age: 52, Name: '正一郎' },
   { Age: 28, Name: '清次郎' },
@@ -386,16 +367,12 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Sum(x => x.Age); // => 118
+const rst = new Linq(parameters).Sum(x => x.Age); // => 118
 ```
 
 ### 17. Max
 
-```typescript
-interface Person {
-  Age: number;
-  Name: string;
-}
+```javascript
 const parameters = [
   { Age: 52, Name: '正一郎' },
   { Age: 28, Name: '清次郎' },
@@ -403,16 +380,12 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Max(x => x.Age); // => 52
+const rst = new Linq(parameters).Max(x => x.Age); // => 52
 ```
 
 ### 18. Min
 
-```typescript
-interface Person {
-  Age: number;
-  Name: string;
-}
+```javascript
 const parameters = [
   { Age: 52, Name: '正一郎' },
   { Age: 28, Name: '清次郎' },
@@ -420,12 +393,12 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Min(x => x.Age); // => 18
+const rst = new Linq(parameters).Min(x => x.Age); // => 18
 ```
 
 ### 19. Take
 
-```typescript
+```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const rst = new Linq(texts).Take(4).ToArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
@@ -433,7 +406,7 @@ const rst = new Linq(texts).Take(4).ToArray(); // => [ "Sun", "Mon", "Tue", "Wed
 
 ### 20. Skip
 
-```typescript
+```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const rst = new Linq(texts).Skip(4).ToArray(); // => [ "Thu", "Fri", "Sat" ]
