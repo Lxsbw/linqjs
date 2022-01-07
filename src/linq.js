@@ -798,4 +798,4 @@ const tools = {
   }
 };
 
-module.exports = elements => new Linq(elements);
+module.exports = Linq;
