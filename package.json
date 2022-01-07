@@ -1,24 +1,22 @@
 {
-  "name": "@lxsbw/linqts",
-  "version": "1.0.3",
-  "description": "Linq + TypeScript",
-  "es2015": "index.ts",
-  "source": "index.ts",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "name": "@lxsbw/linqjs",
+  "version": "1.0.0",
+  "description": "Linq + JavaScript",
+  "es2015": "index.js",
+  "source": "index.js",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "files": [
     "dist/*"
   ],
-  "scripts": {
-    "build": "tsc"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/Lxsbw/linqts.git"
+    "url": "https://github.com/Lxsbw/linqjs.git"
   },
   "keywords": [
     "linq",
-    "typescript"
+    "javascript"
   ],
   "author": {
     "name": "lxsbw",
@@ -26,7 +24,7 @@
     "url": "https://github.com/Lxsbw"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Lxsbw/linqts#README",
+  "homepage": "https://github.com/Lxsbw/linqjs#README",
   "dependencies": {},
   "devDependencies": {}
 }

@@ -1,6 +1,6 @@
 # Linq for TypeScript
 
-[![linqts](https://raw.githubusercontent.com/Lxsbw/linqts/main/linqts.png)](http://www.typescriptlang.org)
+[![linqts](https://raw.githubusercontent.com/Lxsbw/linqjs/main/linqts.png)](http://www.typescriptlang.org)
 
 ## From
 
@@ -11,14 +11,15 @@ Thank you
 ## Install
 
 ```sh
-npm install @lxsbw/linqts --save
+npm install @lxsbw/linqjs --save
 ```
 
 ## Usage
 
 ### import
+
 ```typescript
-import { Linq } from '@lxsbw/linqts';
+import { Linq } from '@lxsbw/linqjs';
 ```
 
 ### 1. All
@@ -26,7 +27,7 @@ import { Linq } from '@lxsbw/linqts';
 ```typescript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq<number>(numbers).All(x => x < 5);             // => false
+const rst = new Linq<number>(numbers).All(x => x < 5); // => false
 ```
 
 ### 2. Any
@@ -34,7 +35,7 @@ const rst = new Linq<number>(numbers).All(x => x < 5);             // => false
 ```typescript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq<number>(numbers).Any(x => x < 5);             // => true
+const rst = new Linq<number>(numbers).Any(x => x < 5); // => true
 ```
 
 ### 3. Count
@@ -43,8 +44,8 @@ const rst = new Linq<number>(numbers).Any(x => x < 5);             // => true
 const strArr = ['正一郎', '清次郎', '誠三郎', '征史郎'];
 const intArr = [1, 5, 8, 12, 15, 16];
 
-const rstStr = new Linq(strArr).Count();                           // => 4
-const rstInt = new Linq<number>(intArr).Count(x => x % 2 === 0);   // => 3
+const rstStr = new Linq(strArr).Count(); // => 4
+const rstInt = new Linq<number>(intArr).Count(x => x % 2 === 0); // => 3
 ```
 
 ### 4. Where & ToArray
@@ -52,7 +53,7 @@ const rstInt = new Linq<number>(intArr).Count(x => x % 2 === 0);   // => 3
 ```typescript
 const intArr = [0, 1, 2, 3, 4];
 // even number
-const rst = new Linq<number>(dataA).Where(x => x % 2 === 0).ToArray();  // => [ 0, 2, 4 ]
+const rst = new Linq<number>(dataA).Where(x => x % 2 === 0).ToArray(); // => [ 0, 2, 4 ]
 ```
 
 ### 5. Select & ToArray
@@ -66,7 +67,10 @@ const parameters = [
 ];
 
 const rst = new Linq(parameters)
-  .Select(x => { return { ID: x.ID, Name: x.Name }; }).ToArray();
+  .Select(x => {
+    return { ID: x.ID, Name: x.Name };
+  })
+  .ToArray();
 // =>
 // [
 //   { ID: 5, Name: "正一郎" },
@@ -86,8 +90,7 @@ const parameters = [
   { Name: '征史郎', Numbers: [9, 8, 7] }
 ];
 
-const rst = new Linq(parameters).SelectMany(x => new Linq(x.Numbers)).ToArray();  // => [1, 2, 3, 1, 3, 5, 2, 4, 6, 9, 8, 7]
-
+const rst = new Linq(parameters).SelectMany(x => new Linq(x.Numbers)).ToArray(); // => [1, 2, 3, 1, 3, 5, 2, 4, 6, 9, 8, 7]
 ```
 
 ### 7. Distinct
@@ -101,8 +104,11 @@ const parameters = [
   { ID: 42, Rate: 0.3, Name: '征史郎' }
 ];
 
-const rstInt = new Linq(intArr).Distinct().ToArray();              // => [ 0, 1, 3, 2 ]
-const rstObj = new Linq(parameters).Select(x => x.Name).Distinct().ToArray(); // => [ "正一郎", "清次郎", "征史郎" ]
+const rstInt = new Linq(intArr).Distinct().ToArray(); // => [ 0, 1, 3, 2 ]
+const rstObj = new Linq(parameters)
+  .Select(x => x.Name)
+  .Distinct()
+  .ToArray(); // => [ "正一郎", "清次郎", "征史郎" ]
 ```
 
 ### 8. First & FirstOrDefault
@@ -116,9 +122,9 @@ const parameters = [
   { ID: 42, Name: '征史郎' }
 ];
 
-const rstInt = new Linq(numbers).First();                                      // => 1
-const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 30);  // => undefined
-const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 42);  // => { ID: 42, Name: '征史郎' }
+const rstInt = new Linq(numbers).First(); // => 1
+const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 30); // => undefined
+const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 42); // => { ID: 42, Name: '征史郎' }
 ```
 
 ### 9. Remove
@@ -126,9 +132,9 @@ const rstObj = new Linq<Person>(parameters).FirstOrDefault(x => x.ID === 42);  /
 ```typescript
 let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-console.log(numbers.length);                                    // => 10
+console.log(numbers.length); // => 10
 new Linq(numbers).Remove(6);
-console.log(numbers.length);                                    // => 9
+console.log(numbers.length); // => 9
 ```
 
 ### 10. OrderBy & OrderByDescending
@@ -161,7 +167,6 @@ const rstDesc = new Linq<Person>(parameters).OrderByDescending(x => x.ID).ToArra
 //   { ID: 2, Name: "誠三郎" },
 //   { ID: 0, Name: "正一郎" }
 // ]
-
 ```
 
 ### 11. ThenBy & ThenByDescending
@@ -185,7 +190,8 @@ const persons = [
 const rst = new Linq<Person>(persons)
   .OrderByDescending(x => x.ID)
   .ThenBy(x => x.Age)
-  .ThenByDescending(x => x.Name).ToArray();
+  .ThenByDescending(x => x.Name)
+  .ToArray();
 // 1 OrderByDescending =>
 // [
 //   { ID: 2, Age: 2, Name: "G" },
@@ -346,7 +352,9 @@ const parameters = [
 
 const dictionary = new Linq(parameters).ToDictionary(x => x.ID).ToArray();
 const dictionaryObj = new Linq(parameters)
-  .ToDictionary(x => { return { ID: x.ID, Name: x.Name }; })
+  .ToDictionary(x => {
+    return { ID: x.ID, Name: x.Name };
+  })
   .ToArray();
 // dictionary =>
 // [
@@ -378,7 +386,7 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Sum(x => x.Age);       // => 118
+const rst = new Linq<Person>(parameters).Sum(x => x.Age); // => 118
 ```
 
 ### 17. Max
@@ -395,7 +403,7 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Max(x => x.Age);       // => 52
+const rst = new Linq<Person>(parameters).Max(x => x.Age); // => 52
 ```
 
 ### 18. Min
@@ -412,7 +420,7 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq<Person>(parameters).Min(x => x.Age);       // => 18
+const rst = new Linq<Person>(parameters).Min(x => x.Age); // => 18
 ```
 
 ### 19. Take
@@ -420,7 +428,7 @@ const rst = new Linq<Person>(parameters).Min(x => x.Age);       // => 18
 ```typescript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const rst = new Linq(texts).Take(4).ToArray();                     // => [ "Sun", "Mon", "Tue", "Wed" ]
+const rst = new Linq(texts).Take(4).ToArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
 ```
 
 ### 20. Skip
@@ -428,7 +436,7 @@ const rst = new Linq(texts).Take(4).ToArray();                     // => [ "Sun"
 ```typescript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const rst = new Linq(texts).Skip(4).ToArray();                     // => [ "Thu", "Fri", "Sat" ]
+const rst = new Linq(texts).Skip(4).ToArray(); // => [ "Thu", "Fri", "Sat" ]
 ```
 
 ## Documentation
