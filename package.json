@@ -1,5 +1,5 @@
 {
-  "name": "linq-to-javascript",
+  "name": "linq-to-js",
   "version": "1.0.0",
   "description": "Linq + JavaScript",
   "main": "src/index.js",

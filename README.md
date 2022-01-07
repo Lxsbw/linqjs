@@ -11,7 +11,7 @@ Thank you
 ## Install
 
 ```sh
-npm install linq-to-javascript --save
+npm install linq-to-js --save
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ npm install linq-to-javascript --save
 ### import
 
 ```javascript
-const Linq = require('linq-to-javascript');
+const Linq = require('linq-to-js');
 ```
 
 ### 1. All
