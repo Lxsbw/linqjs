@@ -17,4 +17,8 @@ console.log 'orderByID:', orderByID
 console.log 'thenByAge:', thenByAge
 console.log 'thenByName:', thenByName
 
-# console.log 'persons:', persons
+console.log 'persons:', persons
+
+intArray = [ 1, 5, 8, 12, 15, 16 ]
+console.log 'number:', new Linq(intArray).OrderByDescending((x) -> x).ToArray()
+console.log 'number:', intArray
