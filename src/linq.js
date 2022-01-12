@@ -759,42 +759,41 @@ const tools = {
 
   // clone data
   cloneDeep(obj) {
-    var copy, k, o, v;
+    let result;
+    // Handle the 3 simple types, and null or undefined
     if (null === obj || 'object' !== typeof obj) {
-      // Handle the 3 simple types, and null or undefined
       return obj;
     }
     // Handle Date
     if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
+      result = new Date();
+      result.setTime(obj.getTime());
+      return result;
+    }
+    // Handle RegExp
+    if (obj instanceof RegExp) {
+      result = obj;
+      return result;
     }
     // Handle Array
     if (obj instanceof Array) {
-      copy = function () {
-        var j, len, results;
-        results = [];
-        for (j = 0, len = obj.length; j < len; j++) {
-          o = obj[j];
-          results.push(this.cloneDeep(o));
-        }
-        return results;
-      }.call(this);
-      return copy;
+      result = [];
+      for (let i in obj) {
+        result.push(this.cloneDeep(obj[i]));
+      }
+      return result;
     }
     // Handle Object
     if (obj instanceof Object) {
-      copy = {};
-      for (k in obj) {
-        v = obj[k];
-        if (obj.hasOwnProperty(k)) {
-          copy[k] = this.cloneDeep(v);
+      result = {};
+      for (let i in obj) {
+        if (obj.hasOwnProperty(i)) {
+          result[i] = this.cloneDeep(obj[i]);
         }
       }
-      return copy;
+      return result;
     }
-    throw new Error("Unable to copy obj! Its type isn't supported.");
+    throw new Error("Unable to copy param! Its type isn't supported.");
   }
 };
 
