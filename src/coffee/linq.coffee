@@ -1,15 +1,15 @@
 ###
- * 语言集成查询库 LINQ to CoffeeScript
+  LINQ to CoffeeScript (Language Integrated Query)
 ###
 class Linq
   ###
-   * Defaults the elements of the list
+    Defaults the elements of the list
   ###
   constructor: (elements) ->
     elements = [] if not elements
     this._elements = elements
 
-    #region 方法别名
+    #region Method alias
 
     this.add = this.Add
     this.append = this.Append
@@ -74,38 +74,38 @@ class Linq
     #endregion
 
   ###
-   * Adds an object to the end of the List<T>.
+    Adds an object to the end of the List<T>.
   ###
   Add: (element) ->
     this._elements.push(element)
 
   ###
-    * Appends an object to the end of the List<T>.
+    Appends an object to the end of the List<T>.
   ###
   Append: (element) ->
     this.Add(element)
 
   ###
-    * Add an object to the start of the List<T>.
+    Add an object to the start of the List<T>.
   ###
   Prepend: (element) ->
     this._elements.unshift(element)
 
   ###
-    * Adds the elements of the specified collection to the end of the List<T>.
+    Adds the elements of the specified collection to the end of the List<T>.
   ###
   AddRange: (elements) ->
     _a
     (_a = this._elements).push.apply(_a, elements)
 
   ###
-    * Applies an accumulator function over a sequence.
+    Applies an accumulator function over a sequence.
   ###
   Aggregate: (accumulator, initialValue) ->
     return this._elements.reduce(accumulator, initialValue)
 
   ###
-    * Determines whether all elements of a sequence satisfy a condition.
+    Determines whether all elements of a sequence satisfy a condition.
   ###
   All: (predicate) ->
     return this._elements.every(predicate)
@@ -117,32 +117,32 @@ class Linq
     return if predicate then this._elements.some(predicate) else this._elements.length > 0
 
   ###
-   * Computes the average of a sequence of number values that are obtained by invoking
-   * a transform function on each element of the input sequence.
+    Computes the average of a sequence of number values that are obtained by invoking
+    a transform function on each element of the input sequence.
   ###
   Average: (transform) ->
     return this.Sum(transform) / this.Count(transform)
 
   ###
-    * Casts the elements of a sequence to the specified type.
+    Casts the elements of a sequence to the specified type.
   ###
   Cast: () ->
     return new Linq(this._elements)
 
   ###
-    * Removes all elements from the List<T>.
+    Removes all elements from the List<T>.
   ###
   Clear: () ->
     this._elements.length = 0
 
   ###
-    * Concatenates two sequences.
+    Concatenates two sequences.
   ###
   Concat: (list) ->
     return new Linq(this._elements.concat(list.ToArray()))
 
   ###
-    * Determines whether an element is in the List<T>.
+    Determines whether an element is in the List<T>.
   ###
   Contains: (element) ->
     return this.Any((x) -> x is element)
@@ -154,14 +154,14 @@ class Linq
     return if predicate then this.Where(predicate).Count() else this._elements.length
 
   ###
-    * Returns the elements of the specified sequence or the type parameter's default value
-    * in a singleton collection if the sequence is empty.
+    Returns the elements of the specified sequence or the type parameter's default value
+    in a singleton collection if the sequence is empty.
   ###
   DefaultIfEmpty: (defaultValue) ->
     return if this.Count() then this else new Linq([defaultValue])
 
   ###
-    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
+    Returns distinct elements from a sequence by using the default equality comparer to compare values.
   ###
   Distinct: () ->
     return this.Where((value, index, iter) ->
@@ -171,7 +171,7 @@ class Linq
     )
 
   ###
-    * Returns distinct elements from a sequence according to specified key selector.
+    Returns distinct elements from a sequence according to specified key selector.
   ###
   DistinctBy: (keySelector) ->
     groups = this.GroupBy(keySelector)
@@ -184,7 +184,7 @@ class Linq
     return new Linq(groups).Select((x) -> x.key).ToArray().reduce(func, new Linq())
 
   ###
-   * Returns the element at a specified index in a sequence.
+    Returns the element at a specified index in a sequence.
   ###
   ElementAt: (index) ->
     if (index < this.Count() && index >= 0)
@@ -193,19 +193,19 @@ class Linq
       throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.')
 
   ###
-   * Returns the element at a specified index in a sequence or a default value if the index is out of range.
+    Returns the element at a specified index in a sequence or a default value if the index is out of range.
   ###
   ElementAtOrDefault: (index) ->
     return if index < this.Count() && index >= 0 then this._elements[index] else undefined
 
   ###
-   * Produces the set difference of two sequences by using the default equality comparer to compare values.
+    Produces the set difference of two sequences by using the default equality comparer to compare values.
   ###
   Except: (source) ->
     return this.Where((x) -> !source.Contains(x))
 
   ###
-   Returns the first element of a sequence.
+    Returns the first element of a sequence.
   ###
   First: (predicate) ->
     if this.Count()
@@ -215,19 +215,19 @@ class Linq
         'InvalidOperationException: The source sequence is empty.')
 
   ###
-   Returns the first element of a sequence, or a default value if the sequence contains no elements.
+    Returns the first element of a sequence, or a default value if the sequence contains no elements.
   ###
   FirstOrDefault: (predicate) ->
     return if this.Count(predicate) then this.First(predicate) else undefined
 
   ###
-   * Performs the specified action on each element of the List<T>.
+    Performs the specified action on each element of the List<T>.
   ###
   ForEach: (action) ->
     return this._elements.forEach(action)
 
   ###
-   * Groups the elements of a sequence according to a specified key selector function.
+    Groups the elements of a sequence according to a specified key selector function.
   ###
   GroupBy: (grouper, mapper) ->
     if (mapper is undefined)
@@ -255,8 +255,8 @@ class Linq
     return this.Aggregate(func, initialValue)
 
   ###
-   * Correlates the elements of two sequences based on equality of keys and groups the results.
-   * The default equality comparer is used to compare keys.
+    Correlates the elements of two sequences based on equality of keys and groups the results.
+    The default equality comparer is used to compare keys.
   ###
   GroupJoin: (list, key1, key2, result) ->
     return this.Select((x) ->
@@ -264,13 +264,13 @@ class Linq
     )
 
   ###
-   * Returns the index of the first occurence of an element in the List.
+    Returns the index of the first occurence of an element in the List.
   ###
   IndexOf: (element) ->
     return this._elements.indexOf(element)
 
   ###
-   * Inserts an element into the List<T> at the specified index.
+    Inserts an element into the List<T> at the specified index.
   ###
   Insert: (index, element) ->
     if (index < 0 || index > this._elements.length)
@@ -278,13 +278,13 @@ class Linq
     this._elements.splice(index, 0, element)
 
   ###
-   * Produces the set intersection of two sequences by using the default equality comparer to compare values.
+    Produces the set intersection of two sequences by using the default equality comparer to compare values.
   ###
   Intersect: (source) ->
     return this.Where((x) -> source.Contains(x))
 
   ###
-   * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
+    Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
   ###
   Join: (list, key1, key2, result) ->
     selectmany = (selector) =>
@@ -300,7 +300,7 @@ class Linq
     )
 
   ###
-   Returns the last element of a sequence.
+    Returns the last element of a sequence.
   ###
   Last: (predicate) ->
     if this.Count()
@@ -309,27 +309,27 @@ class Linq
       throw Error('InvalidOperationException: The source sequence is empty.')
 
   ###
-   Returns the last element of a sequence, or a default value if the sequence contains no elements.
+    Returns the last element of a sequence, or a default value if the sequence contains no elements.
   ###
   LastOrDefault: (predicate) ->
     return if this.Count(predicate) then this.Last(predicate) else undefined
 
   ###
-   Returns the maximum value in a generic sequence.
+    Returns the maximum value in a generic sequence.
   ###
   Max: (selector) ->
     id = (x) -> x
     return Math.max.apply(Math, this._elements.map(selector || id))
 
   ###
-   Returns the minimum value in a generic sequence.
+    Returns the minimum value in a generic sequence.
   ###
   Min: (selector) ->
     id = (x) -> x
     return Math.min.apply(Math, this._elements.map(selector || id))
 
   ###
-   * Filters the elements of a sequence based on a specified type.
+    Filters the elements of a sequence based on a specified type.
   ###
   OfType: (type) ->
     typeName
@@ -352,7 +352,7 @@ class Linq
     return if typeName is null then this.Where((x) -> x instanceof type).Cast() else this.Where((x) -> typeof x is typeName).Cast()
 
   ###
-  * Sorts the elements of a sequence in ascending order according to a key.
+    Sorts the elements of a sequence in ascending order according to a key.
   ###
   OrderBy: (keySelector, comparer) ->
     if (comparer is undefined)
@@ -361,7 +361,7 @@ class Linq
     return new OrderedList(tools.cloneDeep(this._elements), comparer)
 
   ###
-  * Sorts the elements of a sequence in descending order according to a key.
+    Sorts the elements of a sequence in descending order according to a key.
   ###
   OrderByDescending: (keySelector, comparer) ->
     if (comparer is undefined)
@@ -370,50 +370,50 @@ class Linq
     return new OrderedList(tools.cloneDeep(this._elements), comparer)
 
   ###
-  * Performs a subsequent ordering of the elements in a sequence in
-  * ascending order according to a key.
+    Performs a subsequent ordering of the elements in a sequence in
+    ascending order according to a key.
   ###
   ThenBy: (keySelector) ->
     return this.OrderBy(keySelector)
   ###
-  * Performs a subsequent ordering of the elements in a sequence in
-  * descending order, according to a key.
+    Performs a subsequent ordering of the elements in a sequence in
+    descending order, according to a key.
   ###
   ThenByDescending: (keySelector) ->
     return this.OrderByDescending(keySelector)
 
   ###
-   * Removes the first occurrence of a specific object from the List<T>.
+    Removes the first occurrence of a specific object from the List<T>.
   ###
   Remove: (element) ->
     return if this.IndexOf(element) isnt -1 then (this.RemoveAt(this.IndexOf(element)); true) else false
 
   ###
-   * Removes all the elements that match the conditions defined by the specified predicate.
+    Removes all the elements that match the conditions defined by the specified predicate.
   ###
   RemoveAll: (predicate) ->
     return this.Where(tools.negate(predicate))
 
   ###
-   * Removes the element at the specified index of the List<T>.
+    Removes the element at the specified index of the List<T>.
   ###
   RemoveAt: (index) ->
     this._elements.splice(index, 1)
 
   ###
-   * Reverses the order of the elements in the entire List<T>.
+    Reverses the order of the elements in the entire List<T>.
   ###
   Reverse: () ->
     return new Linq(this._elements.reverse())
 
   ###
-   * Projects each element of a sequence into a new form.
+    Projects each element of a sequence into a new form.
   ###
   Select: (selector) ->
     return new Linq(this._elements.map(selector))
 
   ###
-   * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+    Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
   ###
   SelectMany: (selector) ->
     _this = this
@@ -423,13 +423,13 @@ class Linq
     ), new Linq())
 
   ###
-   * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
+    Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
   ###
   SequenceEqual: (list) ->
     return this.All((e) -> list.Contains(e))
 
   ###
-   * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+    Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
   ###
   Single: (predicate) ->
     if (this.Count(predicate) isnt 1)
@@ -438,26 +438,26 @@ class Linq
       return this.First(predicate)
 
   ###
-   * Returns the only element of a sequence, or a default value if the sequence is empty;
-   * this method throws an exception if there is more than one element in the sequence.
+    Returns the only element of a sequence, or a default value if the sequence is empty;
+    this method throws an exception if there is more than one element in the sequence.
   ###
   SingleOrDefault: (predicate) ->
     return if this.Count(predicate) then this.Single(predicate) else undefined
 
   ###
-   * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+    Bypasses a specified number of elements in a sequence and then returns the remaining elements.
   ###
   Skip: (amount) ->
     return new Linq(this._elements.slice(Math.max(0, amount)))
 
   ###
-   * Omit the last specified number of elements in a sequence and then returns the remaining elements.
+    Omit the last specified number of elements in a sequence and then returns the remaining elements.
   ###
   SkipLast: (amount) ->
     return new Linq(this._elements.slice(0, -Math.max(0, amount)))
 
   ###
-   * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+    Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
   ###
   SkipWhile: (predicate) ->
     _this = this
@@ -468,26 +468,26 @@ class Linq
     )
 
   ###
-   * Computes the sum of the sequence of number values that are obtained by invoking
-   * a transform function on each element of the input sequence.
+    Computes the sum of the sequence of number values that are obtained by invoking
+    a transform function on each element of the input sequence.
   ###
   Sum: (transform) ->
     return if transform then this.Select(transform).Sum() else this.Aggregate(((ac, v) -> return (ac += +v)), 0)
 
   ###
-   * Returns a specified number of contiguous elements from the start of a sequence.
+    Returns a specified number of contiguous elements from the start of a sequence.
   ###
   Take: (amount) ->
     return new Linq(this._elements.slice(0, Math.max(0, amount)))
 
   ###
-   * Returns a specified number of contiguous elements from the end of a sequence.
+    Returns a specified number of contiguous elements from the end of a sequence.
   ###
   TakeLast: (amount) ->
     return new Linq(this._elements.slice(-Math.max(0, amount)))
 
   ###
-   * Returns elements from a sequence as long as a specified condition is true.
+    Returns elements from a sequence as long as a specified condition is true.
   ###
   TakeWhile: (predicate) ->
     _this = this
@@ -498,13 +498,13 @@ class Linq
     )
 
   ###
-   * Copies the elements of the List<T> to a new array.
+    Copies the elements of the List<T> to a new array.
   ###
   ToArray: () ->
     return this._elements
 
   ###
-   * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+    Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
   ###
   ToDictionary: (key, value) ->
     _this = this
@@ -519,41 +519,41 @@ class Linq
     , new Linq())
 
   ###
-   * Creates a List<T> from an Enumerable.List<T>.
+    Creates a List<T> from an Enumerable.List<T>.
   ###
   ToList: () ->
     return this
 
   ###
-   * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
+    Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
   ###
   ToLookup: (keySelector, elementSelector) ->
     return this.GroupBy(keySelector, elementSelector)
 
   ###
-   * Produces the set union of two sequences by using the default equality comparer.
+    Produces the set union of two sequences by using the default equality comparer.
   ###
   Union: (list) ->
     return this.Concat(list).Distinct()
 
   ###
-   * Filters a sequence of values based on a predicate.
+    Filters a sequence of values based on a predicate.
   ###
   Where: (predicate) ->
     return new Linq(this._elements.filter(predicate))
 
   ###
-   * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+    Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
   ###
   Zip: (list, result) ->
     _this = this
     return if list.Count() < this.Count() then list.Select((x, y) -> result(_this.ElementAt(y), x)) else this.Select((x, y) -> result(x, list.ElementAt(y)))
 
 ###
- * Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
- * The immediate return value is an object that stores all the information that is required to perform the action.
- * The query represented by this method is not executed until the object is enumerated either by
- * calling its ToDictionary, ToLookup, ToList or ToArray methods
+  Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
+  The immediate return value is an object that stores all the information that is required to perform the action.
+  The query represented by this method is not executed until the object is enumerated either by
+  calling its ToDictionary, ToLookup, ToList or ToArray methods
 ###
 class OrderedList extends Linq
   constructor: (elements, @_comparer) ->
@@ -561,8 +561,8 @@ class OrderedList extends Linq
     this._elements.sort(@_comparer)
 
   ###
-   * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
-   * @override
+    Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
+    @override
   ###
   ThenBy: (keySelector) ->
     return new OrderedList(
@@ -570,20 +570,27 @@ class OrderedList extends Linq
       tools.composeComparers @_comparer, tools.keyComparer(keySelector, false))
 
   ###
-   * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
-   * @override
+    Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
+    @override
   ###
   ThenByDescending: (keySelector) ->
     return new OrderedList(
       this._elements,
       tools.composeComparers @_comparer, tools.keyComparer(keySelector, true))
 
+###
+  Tool method
+###
 tools = {
-  # Checks if the argument passed is an object
+  ###
+    Checks if the argument passed is an object
+  ###
   isObj: (x) ->
     return !!x && typeof x is 'object'
 
-  # Determine if two objects are equal
+  ###
+    Determine if two objects are equal
+  ###
   equal: (a, b) ->
     if (a is b) then return true
     if (typeof a isnt typeof b) then return false
@@ -594,17 +601,24 @@ tools = {
       val = _a[1]
       return if @isObj(val) then @equal(b[key], val) else b[key] is val)
 
-  # Creates a function that negates the result of the predicate
+  ###
+    Creates a function that negates the result of the predicate
+  ###
   negate: (pred) -> return () ->
     args = []
     for _i of arguments
       args[_i] = arguments[_i]
     return !pred.apply(undefined, args)
 
-  # Comparer helpers
+  ###
+    Comparer helpers
+  ###
   composeComparers: (previousComparer, currentComparer) -> return (a, b) ->
     return previousComparer(a, b) || currentComparer(a, b)
 
+  ###
+    Key comparer
+  ###
   keyComparer: (_keySelector, descending) -> return (a, b) ->
     sortKeyA = _keySelector(a)
     sortKeyB = _keySelector(b)
@@ -615,7 +629,9 @@ tools = {
     else
       return 0
 
-  # clone data
+  ###
+    Clone data
+  ###
   cloneDeep: (obj) ->
     # Handle the 3 simple types, and null or undefined
     return obj if null is obj || "object" isnt typeof obj
