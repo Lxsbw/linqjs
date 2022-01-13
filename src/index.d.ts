@@ -1,10 +1,7 @@
 /**
- * Linq to JavaScript
- *
+ * Linq to JavaScript (Language Integrated Query)
  * Documentation from Linq .NET specification (https://msdn.microsoft.com/en-us/library/system.linq.enumerable.aspx)
- *
  */
-
 declare type PredicateType<T> = (value?: T, index?: number, list?: T[]) => boolean;
 declare class Linq<T> {
   protected _elements: T[];
