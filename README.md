@@ -1,6 +1,6 @@
 # Linq for JavaScript
 
-<!-- [![linqts](https://raw.githubusercontent.com/Lxsbw/linqjs/main/linqts.png)](http://www.typescriptlang.org) -->
+[![linqts](https://raw.githubusercontent.com/Lxsbw/linqjs/main/linqjs.png)]
 
 ## From
 
