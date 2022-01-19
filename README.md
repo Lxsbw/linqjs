@@ -53,7 +53,7 @@ const rstInt = new Linq(intArr).Count(x => x % 2 === 0); // => 3
 ```javascript
 const intArr = [0, 1, 2, 3, 4];
 // even number
-const rst = new Linq(dataA).Where(x => x % 2 === 0).ToArray(); // => [ 0, 2, 4 ]
+const rst = new Linq(intArr).Where(x => x % 2 === 0).ToArray(); // => [ 0, 2, 4 ]
 ```
 
 ### 5. Select & ToArray
