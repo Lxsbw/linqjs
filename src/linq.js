@@ -573,7 +573,7 @@ class Linq {
     return transform
       ? this.Select(transform).Sum()
       : this.Aggregate(function (ac, v) {
-          return (ac += +v);
+          return (ac = tools.calcNum(ac, +v));
         }, 0);
   }
 
@@ -761,6 +761,13 @@ const tools = {
         return 0;
       }
     };
+  },
+
+  /**
+   * Number calculate
+   */
+  calcNum(num, val) {
+    return (num + val).toFixed(8) - 0;
   },
 
   /**
