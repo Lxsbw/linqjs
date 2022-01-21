@@ -472,7 +472,7 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   Sum: (transform) ->
-    return if transform then this.Select(transform).Sum() else this.Aggregate(((ac, v) -> return (ac += +v)), 0)
+    return if transform then this.Select(transform).Sum() else this.Aggregate(((ac, v) -> return (ac = tools.calcNum(ac, +v))), 0)
 
   ###
     Returns a specified number of contiguous elements from the start of a sequence.
@@ -628,6 +628,12 @@ tools = {
       return if !descending then -1 else 1
     else
       return 0
+
+  ###
+    Number calculate
+  ###
+  calcNum: (num, val) ->
+    return (num + val).toFixed(8) - 0
 
   ###
     Clone data
