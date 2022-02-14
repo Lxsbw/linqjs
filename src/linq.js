@@ -770,19 +770,13 @@ const tools = {
     if (!this.isNum(num1) || !this.isNum(num2)) return 0;
     const { mult, place } = this.calcMultiple(num1, num2);
     return Number(((num1 * mult + num2 * mult) / mult).toFixed(place));
-    // return Number((num1 + num2).toFixed(8));
   },
 
   /**
    * Number calculate division
    */
   calcNumDiv(num1, num2) {
-    if (!this.isNum(num1) || !this.isNum(num2)) return 0;
-    const { sq1, sq2 } = this.calcMultiple(num1, num2);
-    const pow1 = Math.pow(10, sq1);
-    const pow2 = Math.pow(10, sq2);
-    return (num1 * pow1) / (num2 * pow2) / pow1 / pow2;
-    // return Number((num1 / num2).toFixed(8));
+    return num1 / num2;
   },
 
   /**
@@ -802,7 +796,7 @@ const tools = {
     const sq2 = arrNum2.length > 1 ? arrNum2[1].length : 0;
     const mult = Math.pow(10, Math.max(sq1, sq2));
     const place = sq1 >= sq2 ? sq1 : sq2;
-    return { mult, place, sq1, sq2 };
+    return { mult, place };
   },
 
   /**
