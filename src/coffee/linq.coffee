@@ -121,7 +121,7 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   Average: (transform) ->
-    return this.Sum(transform) / this.Count(transform)
+    return tools.calcNumDiv(this.Sum(transform), this.Count(transform))
 
   ###
     Casts the elements of a sequence to the specified type.
@@ -630,10 +630,38 @@ tools = {
       return 0
 
   ###
-    Number calculate
+    Number calculate addition
   ###
-  calcNum: (num, val) ->
-    return (num + val).toFixed(8) - 0
+  calcNum: (num1, num2) ->
+    if (not @isNum num1) or (not @isNum num2)
+      return 0
+    { mult, place } = @calcMultiple(num1, num2)
+    return Number(((num1 * mult + num2 * mult) / mult).toFixed(place))
+  
+  ###
+    Number calculate division
+    To be improved
+  ###
+  calcNumDiv: (num1, num2) ->
+    return num1 / num2
+
+  ###
+    Check number
+  ###
+  isNum: (args) ->
+    return (typeof args is 'number') and (not isNaN(args))
+
+  ###
+    Calculation multiple
+  ###
+  calcMultiple: (num1, num2) ->
+    arrNum1 = num1.toString().split('.')
+    arrNum2 = num2.toString().split('.')
+    sq1 = if arrNum1.length > 1 then arrNum1[1].length else 0
+    sq2 = if arrNum2.length > 1 then arrNum2[1].length else 0
+    mult = Math.pow(10, Math.max(sq1, sq2))
+    place = if sq1 >= sq2 then sq1 else sq2
+    return { mult, place }
 
   ###
     Clone data
