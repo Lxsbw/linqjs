@@ -774,6 +774,7 @@ const tools = {
 
   /**
    * Number calculate division
+   * To be improved
    */
   calcNumDiv(num1, num2) {
     return num1 / num2;
