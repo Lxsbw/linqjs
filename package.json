@@ -1,6 +1,6 @@
 {
   "name": "linq-to-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Linq + JavaScript",
   "main": "src/index.js",
   "types": "src/index.d.ts",
