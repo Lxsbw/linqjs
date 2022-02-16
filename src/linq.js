@@ -133,7 +133,7 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   Average(transform) {
-    return tools.calcNumDiv(this.Sum(transform), this.Count(transform));
+    return tools.calcNumDiv(this.Sum(transform), this.Count());
   }
 
   /**
