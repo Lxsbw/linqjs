@@ -375,6 +375,7 @@ class Linq
   ###
   ThenBy: (keySelector) ->
     return this.OrderBy(keySelector)
+
   ###
     Performs a subsequent ordering of the elements in a sequence in
     descending order, according to a key.
