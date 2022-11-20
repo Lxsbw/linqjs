@@ -29,16 +29,6 @@ result = new Linq(data).groupBy(el => el.category);
 
 // result = new Linq(data).ToLookup(el => el.category);
 
-// 去重
-// result = new Linq(data)
-//   .distinctBy(x => x.category)
-//   .toArray();
-// result = new Linq(data)
-//   .DistinctBy(el => {
-//     return { id: el.id, category: el.category };
-//   })
-//   .ToArray();
-
 // result.forEach(x => console.log(x.key.toString(), x.count));
 
 console.log('result:', result);

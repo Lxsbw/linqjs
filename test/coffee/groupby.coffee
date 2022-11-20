@@ -15,8 +15,4 @@ result = new Linq(data).GroupBy((el) -> el.category)
 # result = new Linq(data).GroupBy((el) -> el.id)
 # result = new Linq(data).GroupBy((el) -> { id: el.id, category: el.category })
 
-# 去重
-# result = new Linq(data).DistinctBy((x) -> x.category).toArray()
-# result = new Linq(data).DistinctBy((el) -> { id: el.id, category: el.category }).toArray()
-
 console.log 'result:', result

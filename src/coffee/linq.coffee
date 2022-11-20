@@ -27,6 +27,7 @@ class Linq
     this.defaultIfEmpty = this.DefaultIfEmpty
     this.distinct = this.Distinct
     this.distinctBy = this.DistinctBy
+    this.distinctMap = this.DistinctMap
     this.elementAt = this.ElementAt
     this.elementAtOrDefault = this.ElementAtOrDefault
     this.except = this.Except
@@ -182,6 +183,12 @@ class Linq
       return res
 
     return new Linq(groups).Select((x) -> x.key).ToArray().reduce(func, new Linq())
+
+  ###
+    Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+  ###
+  DistinctMap: (predicate) ->
+    return if predicate then this.Select(predicate).Distinct() else this.Distinct()
 
   ###
     Returns the element at a specified index in a sequence.
