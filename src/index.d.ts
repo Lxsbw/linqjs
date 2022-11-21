@@ -79,6 +79,11 @@ declare class Linq<T> {
    */
   DistinctBy<TOut>(keySelector: (key: T) => TOut): Linq<T>;
   /**
+   * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+   */
+  DistinctMap<TOut>(): Linq<T | TOut>;
+  DistinctMap<TOut>(selector: (element: T, index: number) => TOut): Linq<T | TOut>;
+  /**
    * Returns the element at a specified index in a sequence.
    */
   ElementAt(index: number): T;
