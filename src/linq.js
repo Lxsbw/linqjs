@@ -758,9 +758,8 @@ const tools = {
    * Key comparer
    */
   keyComparer(_keySelector, descending) {
-    return function (a, b) {
-      var sortKeyA = _keySelector(a);
-      var sortKeyB = _keySelector(b);
+    // common comparer
+    var _comparer = function (sortKeyA, sortKeyB) {
       if (sortKeyA > sortKeyB) {
         return !descending ? 1 : -1;
       } else if (sortKeyA < sortKeyB) {
@@ -768,6 +767,27 @@ const tools = {
       } else {
         return 0;
       }
+    };
+
+    // string comparer
+    var _stringComparer = function (sortKeyA, sortKeyB) {
+      if (sortKeyA.localeCompare(sortKeyB) > 0) {
+        return !descending ? 1 : -1;
+      } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
+        return !descending ? -1 : 1;
+      } else {
+        return 0;
+      }
+    };
+
+    return function (a, b) {
+      var sortKeyA = _keySelector(a);
+      var sortKeyB = _keySelector(b);
+
+      if (tools.isString(sortKeyA) && tools.isString(sortKeyB)) {
+        return _stringComparer(sortKeyA, sortKeyB);
+      }
+      return _comparer(sortKeyA, sortKeyB);
     };
   },
 
@@ -793,6 +813,13 @@ const tools = {
    */
   isNum(args) {
     return typeof args === 'number' && !isNaN(args);
+  },
+
+  /**
+   * Check string
+   */
+  isString(args) {
+    return typeof args === 'string' && args.constructor === String;
   },
 
   /**

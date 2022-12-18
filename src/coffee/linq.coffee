@@ -627,15 +627,31 @@ tools = {
   ###
     Key comparer
   ###
-  keyComparer: (_keySelector, descending) -> return (a, b) ->
-    sortKeyA = _keySelector(a)
-    sortKeyB = _keySelector(b)
-    if (sortKeyA > sortKeyB)
-      return if !descending then 1 else -1
-    else if (sortKeyA < sortKeyB)
-      return if !descending then -1 else 1
-    else
-      return 0
+  keyComparer: (_keySelector, descending) ->
+    # common comparer
+    _comparer = (sortKeyA, sortKeyB) ->
+      if (sortKeyA > sortKeyB)
+        return if !descending then 1 else -1
+      else if (sortKeyA < sortKeyB)
+        return if !descending then -1 else 1
+      else
+        return 0
+
+    # string comparer
+    _stringComparer = (sortKeyA, sortKeyB) ->
+      if (sortKeyA.localeCompare(sortKeyB) > 0)
+        return if !descending then 1 else -1
+      else if (sortKeyB.localeCompare(sortKeyA) > 0)
+        return if !descending then -1 else 1
+      else
+        return 0
+
+    return (a, b) =>
+      sortKeyA = _keySelector(a)
+      sortKeyB = _keySelector(b)
+      if @isString(sortKeyA) and @isString(sortKeyB)
+        return _stringComparer(sortKeyA, sortKeyB)
+      return _comparer(sortKeyA, sortKeyB)
 
   ###
     Number calculate addition
@@ -658,6 +674,12 @@ tools = {
   ###
   isNum: (args) ->
     return (typeof args is 'number') and (not isNaN(args))
+
+  ###
+    Check string
+  ###
+  isString: (args) ->
+    return (typeof args is 'string') and (args.constructor is String)
 
   ###
     Calculation multiple
