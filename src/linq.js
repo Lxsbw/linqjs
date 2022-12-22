@@ -297,7 +297,7 @@ class Linq {
         let existingMap = {
           key: key,
           count: 1,
-          elements: [mappedValue]
+          elements: [mappedValue],
         };
         ac.push(existingMap);
       }
@@ -627,7 +627,7 @@ class Linq {
       dicc[_this.Select(key).ElementAt(i).toString()] = value ? _this.Select(value).ElementAt(i) : v;
       dicc.Add({
         Key: _this.Select(key).ElementAt(i),
-        Value: value ? _this.Select(value).ElementAt(i) : v
+        Value: value ? _this.Select(value).ElementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -874,7 +874,7 @@ const tools = {
       return result;
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
-  }
+  },
 };
 
 module.exports = Linq;
