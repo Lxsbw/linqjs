@@ -27,6 +27,7 @@ class Linq
     this.defaultIfEmpty = this.DefaultIfEmpty
     this.distinct = this.Distinct
     this.distinctBy = this.DistinctBy
+    this.distinctMap = this.DistinctMap
     this.elementAt = this.ElementAt
     this.elementAtOrDefault = this.ElementAtOrDefault
     this.except = this.Except
@@ -182,6 +183,12 @@ class Linq
       return res
 
     return new Linq(groups).Select((x) -> x.key).ToArray().reduce(func, new Linq())
+
+  ###
+    Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+  ###
+  DistinctMap: (predicate) ->
+    return if predicate then this.Select(predicate).Distinct() else this.Distinct()
 
   ###
     Returns the element at a specified index in a sequence.
@@ -375,6 +382,7 @@ class Linq
   ###
   ThenBy: (keySelector) ->
     return this.OrderBy(keySelector)
+
   ###
     Performs a subsequent ordering of the elements in a sequence in
     descending order, according to a key.
@@ -619,15 +627,31 @@ tools = {
   ###
     Key comparer
   ###
-  keyComparer: (_keySelector, descending) -> return (a, b) ->
-    sortKeyA = _keySelector(a)
-    sortKeyB = _keySelector(b)
-    if (sortKeyA > sortKeyB)
-      return if !descending then 1 else -1
-    else if (sortKeyA < sortKeyB)
-      return if !descending then -1 else 1
-    else
-      return 0
+  keyComparer: (_keySelector, descending) ->
+    # common comparer
+    _comparer = (sortKeyA, sortKeyB) ->
+      if (sortKeyA > sortKeyB)
+        return if !descending then 1 else -1
+      else if (sortKeyA < sortKeyB)
+        return if !descending then -1 else 1
+      else
+        return 0
+
+    # string comparer
+    _stringComparer = (sortKeyA, sortKeyB) ->
+      if (sortKeyA.localeCompare(sortKeyB) > 0)
+        return if !descending then 1 else -1
+      else if (sortKeyB.localeCompare(sortKeyA) > 0)
+        return if !descending then -1 else 1
+      else
+        return 0
+
+    return (a, b) =>
+      sortKeyA = _keySelector(a)
+      sortKeyB = _keySelector(b)
+      if @isString(sortKeyA) and @isString(sortKeyB)
+        return _stringComparer(sortKeyA, sortKeyB)
+      return _comparer(sortKeyA, sortKeyB)
 
   ###
     Number calculate addition
@@ -650,6 +674,12 @@ tools = {
   ###
   isNum: (args) ->
     return (typeof args is 'number') and (not isNaN(args))
+
+  ###
+    Check string
+  ###
+  isString: (args) ->
+    return (typeof args is 'string') and (args.constructor is String)
 
   ###
     Calculation multiple

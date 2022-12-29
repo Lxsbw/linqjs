@@ -31,6 +31,7 @@ class Linq {
     this.defaultIfEmpty = this.DefaultIfEmpty;
     this.distinct = this.Distinct;
     this.distinctBy = this.DistinctBy;
+    this.distinctMap = this.DistinctMap;
     this.elementAt = this.ElementAt;
     this.elementAtOrDefault = this.ElementAtOrDefault;
     this.except = this.Except;
@@ -215,6 +216,13 @@ class Linq {
   }
 
   /**
+   * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+   */
+  DistinctMap(predicate) {
+    return predicate ? this.Select(predicate).Distinct() : this.Distinct();
+  }
+
+  /**
    * Returns the element at a specified index in a sequence.
    */
   ElementAt(index) {
@@ -289,7 +297,7 @@ class Linq {
         let existingMap = {
           key: key,
           count: 1,
-          elements: [mappedValue]
+          elements: [mappedValue],
         };
         ac.push(existingMap);
       }
@@ -619,7 +627,7 @@ class Linq {
       dicc[_this.Select(key).ElementAt(i).toString()] = value ? _this.Select(value).ElementAt(i) : v;
       dicc.Add({
         Key: _this.Select(key).ElementAt(i),
-        Value: value ? _this.Select(value).ElementAt(i) : v
+        Value: value ? _this.Select(value).ElementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -750,9 +758,8 @@ const tools = {
    * Key comparer
    */
   keyComparer(_keySelector, descending) {
-    return function (a, b) {
-      var sortKeyA = _keySelector(a);
-      var sortKeyB = _keySelector(b);
+    // common comparer
+    var _comparer = function (sortKeyA, sortKeyB) {
       if (sortKeyA > sortKeyB) {
         return !descending ? 1 : -1;
       } else if (sortKeyA < sortKeyB) {
@@ -760,6 +767,27 @@ const tools = {
       } else {
         return 0;
       }
+    };
+
+    // string comparer
+    var _stringComparer = function (sortKeyA, sortKeyB) {
+      if (sortKeyA.localeCompare(sortKeyB) > 0) {
+        return !descending ? 1 : -1;
+      } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
+        return !descending ? -1 : 1;
+      } else {
+        return 0;
+      }
+    };
+
+    return function (a, b) {
+      var sortKeyA = _keySelector(a);
+      var sortKeyB = _keySelector(b);
+
+      if (tools.isString(sortKeyA) && tools.isString(sortKeyB)) {
+        return _stringComparer(sortKeyA, sortKeyB);
+      }
+      return _comparer(sortKeyA, sortKeyB);
     };
   },
 
@@ -785,6 +813,13 @@ const tools = {
    */
   isNum(args) {
     return typeof args === 'number' && !isNaN(args);
+  },
+
+  /**
+   * Check string
+   */
+  isString(args) {
+    return typeof args === 'string' && args.constructor === String;
   },
 
   /**
@@ -839,7 +874,7 @@ const tools = {
       return result;
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
-  }
+  },
 };
 
 module.exports = Linq;

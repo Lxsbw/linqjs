@@ -111,7 +111,52 @@ const rstObj = new Linq(parameters)
   .ToArray(); // => [ "正一郎", "清次郎", "征史郎" ]
 ```
 
-### 8. First & FirstOrDefault
+### 8. DistinctBy
+
+```javascript
+const data = [
+  { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+  { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+  { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }
+];
+
+const rstKey = new Linq(data).DistinctBy(x => x.category).ToArray();
+const rstKeys = new Linq(data)
+  .DistinctBy(el => {
+    return { id: el.id, category: el.category };
+  })
+  .ToArray();
+// rstKey =>
+// [
+//   { id: 1, name: "one", category: "fruits", countries: [ "lxsbw", "xliecz" ] },
+//   { id: 2, name: "two", category: "vegetables", countries: [ "Italy", "Germany" ] }
+// ]
+// rstKeys =>
+// [
+//   { id: 1, name: "one", category: "fruits", countries: [ "lxsbw", "xliecz" ] },
+//   { id: 2, name: "two", category: "vegetables", countries: [ "Italy", "Germany" ] }
+// ]
+```
+
+### 9. DistinctMap
+
+```javascript
+const parameters = [
+  { ID: 5, Rate: 0.0, Name: '正一郎' },
+  { ID: 13, Rate: 0.1, Name: '清次郎' },
+  { ID: 25, Rate: 0.0, Name: '正一郎' },
+  { ID: 42, Rate: 0.3, Name: '征史郎' }
+];
+
+const rstObj = new Linq(parameters).DistinctMap(x => x.Name).ToArray(); // => [ "正一郎", "清次郎", "征史郎" ]
+const rstObj = new Linq(parameters)
+  .DistinctMap(x => {
+    return { Name: x.Name };
+  })
+  .ToArray(); // => [ { Name: '正一郎' }, { Name: '清次郎' }, { Name: '征史郎' } ]
+```
+
+### 10. First & FirstOrDefault
 
 ```javascript
 const numbers = [1, 2, 3, 5, 7, 11];
@@ -127,7 +172,7 @@ const rstObj = new Linq(parameters).FirstOrDefault(x => x.ID === 30); // => unde
 const rstObj = new Linq(parameters).FirstOrDefault(x => x.ID === 42); // => { ID: 42, Name: '征史郎' }
 ```
 
-### 9. Remove
+### 11. Remove
 
 ```javascript
 let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -137,7 +182,7 @@ new Linq(numbers).Remove(6);
 console.log(numbers.length); // => 9
 ```
 
-### 10. OrderBy & OrderByDescending
+### 12. OrderBy & OrderByDescending
 
 ```javascript
 const parameters = [
@@ -165,7 +210,7 @@ const rstDesc = new Linq(parameters).OrderByDescending(x => x.ID).ToArray();
 // ]
 ```
 
-### 11. ThenBy & ThenByDescending
+### 13. ThenBy & ThenByDescending
 
 ```javascript
 const persons = [
@@ -215,7 +260,7 @@ const rst = new Linq(persons)
 // ]
 ```
 
-### 12. GroupBy
+### 14. GroupBy
 
 ```javascript
 const data = [
@@ -258,34 +303,7 @@ const rstKeys = new Linq(data).GroupBy(el => {
 // ]
 ```
 
-### 13. DistinctBy
-
-```javascript
-const data = [
-  { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
-  { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
-  { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }
-];
-
-const rstKey = new Linq(data).DistinctBy(x => x.category).ToArray();
-const rstKeys = new Linq(data)
-  .DistinctBy(el => {
-    return { id: el.id, category: el.category };
-  })
-  .ToArray();
-// rstKey =>
-// [
-//   { id: 1, name: "one", category: "fruits", countries: [ "lxsbw", "xliecz" ] },
-//   { id: 2, name: "two", category: "vegetables", countries: [ "Italy", "Germany" ] }
-// ]
-// rstKeys =>
-// [
-//   { id: 1, name: "one", category: "fruits", countries: [ "lxsbw", "xliecz" ] },
-//   { id: 2, name: "two", category: "vegetables", countries: [ "Italy", "Germany" ] }
-// ]
-```
-
-### 14. Join
+### 15. Join
 
 ```javascript
 const persons = [
@@ -325,7 +343,7 @@ const rst = new Linq(persons)
 // ]
 ```
 
-### 15. ToDictionary
+### 16. ToDictionary
 
 ```javascript
 const parameters = [
@@ -357,7 +375,7 @@ const dictionaryObj = new Linq(parameters)
 // ]
 ```
 
-### 16. Sum
+### 17. Sum
 
 ```javascript
 const parameters = [
@@ -370,7 +388,7 @@ const parameters = [
 const rst = new Linq(parameters).Sum(x => x.Age); // => 118
 ```
 
-### 17. Max
+### 18. Max
 
 ```javascript
 const parameters = [
@@ -383,7 +401,7 @@ const parameters = [
 const rst = new Linq(parameters).Max(x => x.Age); // => 52
 ```
 
-### 18. Min
+### 19. Min
 
 ```javascript
 const parameters = [
@@ -396,7 +414,7 @@ const parameters = [
 const rst = new Linq(parameters).Min(x => x.Age); // => 18
 ```
 
-### 19. Take
+### 20. Take
 
 ```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -404,7 +422,7 @@ const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const rst = new Linq(texts).Take(4).ToArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
 ```
 
-### 20. Skip
+### 21. Skip
 
 ```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
