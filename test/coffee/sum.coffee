@@ -18,7 +18,13 @@ ageSum = new Linq(parameters).Sum( (value) -> value.Age )
 ageSumByNum = new Linq(numbers).Sum((x) -> x.Age)
 ageDivByNum = new Linq(numbers).Average((x) -> x.Age)
 
-
 console.log 'ageSum:', ageSum
 console.log 'ageSumByNum:', ageSumByNum
 console.log 'ageDivByNum:', ageDivByNum
+
+# entity = new Linq(parameters)
+# console.log entity
+# console.dir entity.__proto__, { showHidden: true }
+# console.dir Linq.prototype, { showHidden: true }
+# console.log entity.__proto__.hasOwnProperty('DistinctMap')
+# console.log entity.__proto__ is Linq.prototype
