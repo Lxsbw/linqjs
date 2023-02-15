@@ -1,11 +1,12 @@
 {
   "name": "linq-to-js",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "description": "Linq + JavaScript",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "files": [
-    "src/*"
+    "src/*.js",
+    "src/*.d.ts"
   ],
   "scripts": {},
   "repository": {
