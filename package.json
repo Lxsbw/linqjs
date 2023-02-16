@@ -8,7 +8,9 @@
     "src/*.js",
     "src/*.d.ts"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "uglifyjs ./src/linq.js --output ./src/linq.min.js --compress --mangle --toplevel"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Lxsbw/linqjs.git"
