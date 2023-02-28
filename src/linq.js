@@ -877,20 +877,8 @@ const tools = {
   },
 };
 
-console.log(0);
-// 导出类
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  // CommonJS 导出
-  console.log(1);
   module.exports = Linq;
-} else if (typeof exports !== 'undefined') {
-  console.log(2);
-  exports.default = { Linq } ;
 } else {
-  // 浏览器环境下使用
-  console.log(3);
   window.Linq = Linq;
 }
-
-// ES6 模块导出
-// export default Linq;
