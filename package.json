@@ -2,8 +2,8 @@
   "name": "linq-to-javascript",
   "version": "1.0.11",
   "description": "Linq + JavaScript",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "src/linq.js",
+  "types": "src/linq.d.ts",
   "files": [
     "src/*.js",
     "src/*.d.ts"
