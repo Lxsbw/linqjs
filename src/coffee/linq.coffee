@@ -24,16 +24,16 @@ class Linq
     # this.concat = this.concat
     # this.contains = this.contains
     # this.count = this.count
-    this.defaultIfEmpty = this.DefaultIfEmpty
-    this.distinct = this.Distinct
-    this.distinctBy = this.DistinctBy
-    this.distinctMap = this.DistinctMap
-    this.elementAt = this.ElementAt
-    this.elementAtOrDefault = this.ElementAtOrDefault
-    this.except = this.Except
-    this.first = this.First
-    this.firstOrDefault = this.FirstOrDefault
-    this.forEach = this.ForEach
+    # this.defaultIfEmpty = this.defaultIfEmpty
+    # this.distinct = this.distinct
+    # this.distinctBy = this.distinctBy
+    # this.distinctMap = this.distinctMap
+    # this.elementAt = this.elementAt
+    # this.elementAtOrDefault = this.elementAtOrDefault
+    # this.except = this.except
+    # this.first = this.first
+    # this.firstOrDefault = this.firstOrDefault
+    # this.forEach = this.forEach
     this.groupBy = this.GroupBy
     this.groupJoin = this.GroupJoin
     this.indexOf = this.IndexOf
@@ -158,13 +158,13 @@ class Linq
     Returns the elements of the specified sequence or the type parameter's default value
     in a singleton collection if the sequence is empty.
   ###
-  DefaultIfEmpty: (defaultValue) ->
+  defaultIfEmpty: (defaultValue) ->
     return if this.count() then this else new Linq([defaultValue])
 
   ###
     Returns distinct elements from a sequence by using the default equality comparer to compare values.
   ###
-  Distinct: () ->
+  distinct: () ->
     return this.Where((value, index, iter) ->
       return (
         (if tools.isObj(value) then iter.findIndex((obj) -> tools.equal(obj, value)) else iter.indexOf(value)) is index
@@ -174,11 +174,11 @@ class Linq
   ###
     Returns distinct elements from a sequence according to specified key selector.
   ###
-  DistinctBy: (keySelector) ->
+  distinctBy: (keySelector) ->
     groups = this.GroupBy(keySelector)
 
     func = (res, key) ->
-      curr = new Linq(groups).FirstOrDefault((x) -> tools.equal(x.key, key))
+      curr = new Linq(groups).firstOrDefault((x) -> tools.equal(x.key, key))
       res.add(curr.elements[0])
       return res
 
@@ -187,13 +187,13 @@ class Linq
   ###
     Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
   ###
-  DistinctMap: (predicate) ->
-    return if predicate then this.Select(predicate).Distinct() else this.Distinct()
+  distinctMap: (predicate) ->
+    return if predicate then this.Select(predicate).distinct() else this.distinct()
 
   ###
     Returns the element at a specified index in a sequence.
   ###
-  ElementAt: (index) ->
+  elementAt: (index) ->
     if (index < this.count() && index >= 0)
       return this._elements[index]
     else
@@ -202,21 +202,21 @@ class Linq
   ###
     Returns the element at a specified index in a sequence or a default value if the index is out of range.
   ###
-  ElementAtOrDefault: (index) ->
+  elementAtOrDefault: (index) ->
     return if index < this.count() && index >= 0 then this._elements[index] else undefined
 
   ###
     Produces the set difference of two sequences by using the default equality comparer to compare values.
   ###
-  Except: (source) ->
+  except: (source) ->
     return this.Where((x) -> !source.contains(x))
 
   ###
     Returns the first element of a sequence.
   ###
-  First: (predicate) ->
+  first: (predicate) ->
     if this.count()
-      return if predicate then this.Where(predicate).First() else this._elements[0]
+      return if predicate then this.Where(predicate).first() else this._elements[0]
     else
       throw new Error(
         'InvalidOperationException: The source sequence is empty.')
@@ -224,13 +224,13 @@ class Linq
   ###
     Returns the first element of a sequence, or a default value if the sequence contains no elements.
   ###
-  FirstOrDefault: (predicate) ->
-    return if this.count(predicate) then this.First(predicate) else undefined
+  firstOrDefault: (predicate) ->
+    return if this.count(predicate) then this.first(predicate) else undefined
 
   ###
     Performs the specified action on each element of the List<T>.
   ###
-  ForEach: (action) ->
+  forEach: (action) ->
     return this._elements.forEach(action)
 
   ###
@@ -244,7 +244,7 @@ class Linq
 
     func = (ac, v) ->
       key = grouper(v)
-      existingGroup = new Linq(ac).FirstOrDefault((x) -> tools.equal(x.key, key))
+      existingGroup = new Linq(ac).firstOrDefault((x) -> tools.equal(x.key, key))
       mappedValue = mapper(v)
 
       if existingGroup
@@ -296,7 +296,7 @@ class Linq
   Join: (list, key1, key2, result) ->
     selectmany = (selector) =>
       return this.aggregate(((ac, _, i) =>
-        ac.addRange(this.Select(selector).ElementAt(i).ToArray())
+        ac.addRange(this.Select(selector).elementAt(i).ToArray())
         ac
       ), new Linq())
 
@@ -426,7 +426,7 @@ class Linq
   SelectMany: (selector) ->
     _this = this
     return this.aggregate(((ac, _, i) ->
-      ac.addRange(_this.Select(selector).ElementAt(i).ToArray())
+      ac.addRange(_this.Select(selector).elementAt(i).ToArray())
       ac
     ), new Linq())
 
@@ -443,7 +443,7 @@ class Linq
     if (this.count(predicate) isnt 1)
       throw new Error('The collection does not contain exactly one element.')
     else
-      return this.First(predicate)
+      return this.first(predicate)
 
   ###
     Returns the only element of a sequence, or a default value if the sequence is empty;
@@ -471,7 +471,7 @@ class Linq
     _this = this
     return this.Skip(
       this.aggregate((ac) ->
-        return if predicate(_this.ElementAt(ac)) then ++ac else ac
+        return if predicate(_this.elementAt(ac)) then ++ac else ac
       , 0)
     )
 
@@ -501,7 +501,7 @@ class Linq
     _this = this
     return this.Take(
       this.aggregate((ac) ->
-        return if predicate(_this.ElementAt(ac)) then ++ac else ac
+        return if predicate(_this.elementAt(ac)) then ++ac else ac
       , 0)
     )
 
@@ -517,11 +517,11 @@ class Linq
   ToDictionary: (key, value) ->
     _this = this
     return this.aggregate((dicc, v, i) ->
-      dicc[_this.Select(key).ElementAt(i).toString()] = if value then _this.Select(value).ElementAt(i) else v
+      dicc[_this.Select(key).elementAt(i).toString()] = if value then _this.Select(value).elementAt(i) else v
 
       dicc.add({
-        Key: _this.Select(key).ElementAt(i),
-        Value: if value then _this.Select(value).ElementAt(i) else v
+        Key: _this.Select(key).elementAt(i),
+        Value: if value then _this.Select(value).elementAt(i) else v
       })
       return dicc
     , new Linq())
@@ -542,7 +542,7 @@ class Linq
     Produces the set union of two sequences by using the default equality comparer.
   ###
   Union: (list) ->
-    return this.concat(list).Distinct()
+    return this.concat(list).distinct()
 
   ###
     Filters a sequence of values based on a predicate.
@@ -555,7 +555,7 @@ class Linq
   ###
   Zip: (list, result) ->
     _this = this
-    return if list.count() < this.count() then list.Select((x, y) -> result(_this.ElementAt(y), x)) else this.Select((x, y) -> result(x, list.ElementAt(y)))
+    return if list.count() < this.count() then list.Select((x, y) -> result(_this.elementAt(y), x)) else this.Select((x, y) -> result(x, list.elementAt(y)))
 
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
