@@ -53,11 +53,11 @@ class Linq {
     // this.orderByDescending = this.orderByDescending;
     // this.thenBy = this.thenBy;
     // this.thenByDescending = this.thenByDescending;
-    this.remove = this.Remove;
-    this.removeAll = this.RemoveAll;
-    this.removeAt = this.RemoveAt;
-    this.reverse = this.Reverse;
-    this.select = this.Select;
+    // this.remove = this.remove;
+    // this.removeAll = this.removeAll;
+    // this.removeAt = this.removeAt;
+    // this.reverse = this.reverse;
+    // this.select = this.select;
     this.selectMany = this.SelectMany;
     this.sequenceEqual = this.SequenceEqual;
     this.single = this.Single;
@@ -210,16 +210,16 @@ class Linq {
     };
 
     return new Linq(groups)
-      .Select(x => x.key)
+      .select(x => x.key)
       .ToArray()
       .reduce(func, new Linq());
   }
 
   /**
-   * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+   * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.select method.
    */
   distinctMap(predicate) {
-    return predicate ? this.Select(predicate).distinct() : this.distinct();
+    return predicate ? this.select(predicate).distinct() : this.distinct();
   }
 
   /**
@@ -312,7 +312,7 @@ class Linq {
    * The default equality comparer is used to compare keys.
    */
   groupJoin(list, key1, key2, result) {
-    return this.Select(function (x) {
+    return this.select(function (x) {
       return result(
         x,
         list.where(function (z) {
@@ -354,7 +354,7 @@ class Linq {
   join(list, key1, key2, result) {
     const selectmany = selector => {
       return this.aggregate((ac, _, i) => {
-        return ac.addRange(this.Select(selector).elementAt(i).ToArray()), ac;
+        return ac.addRange(this.select(selector).elementAt(i).ToArray()), ac;
       }, new Linq());
     };
 
@@ -363,7 +363,7 @@ class Linq {
         .where(function (y) {
           return key2(y) === key1(x);
         })
-        .Select(function (z) {
+        .select(function (z) {
           return result(x, z);
         });
     });
@@ -477,35 +477,35 @@ class Linq {
   /**
    * Removes the first occurrence of a specific object from the List<T>.
    */
-  Remove(element) {
-    return this.indexOf(element) !== -1 ? (this.RemoveAt(this.indexOf(element)), true) : false;
+  remove(element) {
+    return this.indexOf(element) !== -1 ? (this.removeAt(this.indexOf(element)), true) : false;
   }
 
   /**
    * Removes all the elements that match the conditions defined by the specified predicate.
    */
-  RemoveAll(predicate) {
+  removeAll(predicate) {
     return this.where(tools.negate(predicate));
   }
 
   /**
    * Removes the element at the specified index of the List<T>.
    */
-  RemoveAt(index) {
+  removeAt(index) {
     this._elements.splice(index, 1);
   }
 
   /**
    * Reverses the order of the elements in the entire List<T>.
    */
-  Reverse() {
+  reverse() {
     return new Linq(this._elements.reverse());
   }
 
   /**
    * Projects each element of a sequence into a new form.
    */
-  Select(selector) {
+  select(selector) {
     return new Linq(this._elements.map(selector));
   }
 
@@ -515,7 +515,7 @@ class Linq {
   SelectMany(selector) {
     var _this = this;
     return this.aggregate(function (ac, _, i) {
-      return ac.addRange(_this.Select(selector).elementAt(i).ToArray()), ac;
+      return ac.addRange(_this.select(selector).elementAt(i).ToArray()), ac;
     }, new Linq());
   }
 
@@ -579,7 +579,7 @@ class Linq {
    */
   Sum(transform) {
     return transform
-      ? this.Select(transform).Sum()
+      ? this.select(transform).Sum()
       : this.aggregate(function (ac, v) {
           return (ac = tools.calcNum(ac, +v));
         }, 0);
@@ -624,10 +624,10 @@ class Linq {
   ToDictionary(key, value) {
     var _this = this;
     return this.aggregate(function (dicc, v, i) {
-      dicc[_this.Select(key).elementAt(i).toString()] = value ? _this.Select(value).elementAt(i) : v;
+      dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
       dicc.add({
-        Key: _this.Select(key).elementAt(i),
-        Value: value ? _this.Select(value).elementAt(i) : v,
+        Key: _this.select(key).elementAt(i),
+        Value: value ? _this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -667,10 +667,10 @@ class Linq {
   zip(list, result) {
     var _this = this;
     return list.count() < this.count()
-      ? list.Select(function (x, y) {
+      ? list.select(function (x, y) {
           return result(_this.elementAt(y), x);
         })
-      : this.Select(function (x, y) {
+      : this.select(function (x, y) {
           return result(x, list.elementAt(y));
         });
   }

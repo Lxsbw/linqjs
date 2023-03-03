@@ -56,7 +56,7 @@ const intArr = [0, 1, 2, 3, 4];
 const rst = new Linq(intArr).where(x => x % 2 === 0).toArray(); // => [ 0, 2, 4 ]
 ```
 
-### 5. Select & toArray
+### 5. select & toArray
 
 ```javascript
 const parameters = [
@@ -67,7 +67,7 @@ const parameters = [
 ];
 
 const rst = new Linq(parameters)
-  .Select(x => {
+  .select(x => {
     return { ID: x.ID, Name: x.Name };
   })
   .toArray();
@@ -106,7 +106,7 @@ const parameters = [
 
 const rstInt = new Linq(intArr).distinct().toArray(); // => [ 0, 1, 3, 2 ]
 const rstObj = new Linq(parameters)
-  .Select(x => x.Name)
+  .select(x => x.Name)
   .distinct()
   .toArray(); // => [ "正一郎", "清次郎", "征史郎" ]
 ```

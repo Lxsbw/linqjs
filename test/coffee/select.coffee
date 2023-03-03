@@ -7,6 +7,6 @@ parameters = [
   { ID: 42, Rate: 0.3, Name: "征史郎" }
 ]
 
-results = new Linq(parameters).Select( (value) -> { ID: value.ID, Name: value.Name } ).toArray()
+results = new Linq(parameters).select( (value) -> { ID: value.ID, Name: value.Name } ).toArray()
 
 console.log 'results:', results
