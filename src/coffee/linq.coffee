@@ -34,16 +34,16 @@ class Linq
     # this.first = this.first
     # this.firstOrDefault = this.firstOrDefault
     # this.forEach = this.forEach
-    this.groupBy = this.GroupBy
-    this.groupJoin = this.GroupJoin
-    this.indexOf = this.IndexOf
-    this.insert = this.Insert
-    this.intersect = this.Intersect
-    this.join = this.Join
-    this.last = this.Last
-    this.lastOrDefault = this.LastOrDefault
-    this.max = this.Max
-    this.min = this.Min
+    # this.groupBy = this.groupBy
+    # this.groupJoin = this.groupJoin
+    # this.indexOf = this.indexOf
+    # this.insert = this.insert
+    # this.intersect = this.intersect
+    # this.join = this.join
+    # this.last = this.last
+    # this.lastOrDefault = this.lastOrDefault
+    # this.max = this.max
+    # this.min = this.min
     this.ofType = this.OfType
     this.orderBy = this.OrderBy
     this.orderByDescending = this.OrderByDescending
@@ -175,7 +175,7 @@ class Linq
     Returns distinct elements from a sequence according to specified key selector.
   ###
   distinctBy: (keySelector) ->
-    groups = this.GroupBy(keySelector)
+    groups = this.groupBy(keySelector)
 
     func = (res, key) ->
       curr = new Linq(groups).firstOrDefault((x) -> tools.equal(x.key, key))
@@ -236,7 +236,7 @@ class Linq
   ###
     Groups the elements of a sequence according to a specified key selector function.
   ###
-  GroupBy: (grouper, mapper) ->
+  groupBy: (grouper, mapper) ->
     if (mapper is undefined)
       mapper = (val) -> val
 
@@ -265,7 +265,7 @@ class Linq
     Correlates the elements of two sequences based on equality of keys and groups the results.
     The default equality comparer is used to compare keys.
   ###
-  GroupJoin: (list, key1, key2, result) ->
+  groupJoin: (list, key1, key2, result) ->
     return this.Select((x) ->
       return result x, list.Where((z) -> key1(x) is key2(z))
     )
@@ -273,13 +273,13 @@ class Linq
   ###
     Returns the index of the first occurence of an element in the List.
   ###
-  IndexOf: (element) ->
+  indexOf: (element) ->
     return this._elements.indexOf(element)
 
   ###
     Inserts an element into the List<T> at the specified index.
   ###
-  Insert: (index, element) ->
+  insert: (index, element) ->
     if (index < 0 || index > this._elements.length)
       throw new Error('Index is out of range.')
     this._elements.splice(index, 0, element)
@@ -287,13 +287,13 @@ class Linq
   ###
     Produces the set intersection of two sequences by using the default equality comparer to compare values.
   ###
-  Intersect: (source) ->
+  intersect: (source) ->
     return this.Where((x) -> source.contains(x))
 
   ###
     Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
   ###
-  Join: (list, key1, key2, result) ->
+  join: (list, key1, key2, result) ->
     selectmany = (selector) =>
       return this.aggregate(((ac, _, i) =>
         ac.addRange(this.Select(selector).elementAt(i).ToArray())
@@ -309,29 +309,29 @@ class Linq
   ###
     Returns the last element of a sequence.
   ###
-  Last: (predicate) ->
+  last: (predicate) ->
     if this.count()
-      return if predicate then this.Where(predicate).Last() else this._elements[this.count() - 1]
+      return if predicate then this.Where(predicate).last() else this._elements[this.count() - 1]
     else
       throw Error('InvalidOperationException: The source sequence is empty.')
 
   ###
     Returns the last element of a sequence, or a default value if the sequence contains no elements.
   ###
-  LastOrDefault: (predicate) ->
-    return if this.count(predicate) then this.Last(predicate) else undefined
+  lastOrDefault: (predicate) ->
+    return if this.count(predicate) then this.last(predicate) else undefined
 
   ###
     Returns the maximum value in a generic sequence.
   ###
-  Max: (selector) ->
+  max: (selector) ->
     id = (x) -> x
     return Math.max.apply(Math, this._elements.map(selector || id))
 
   ###
     Returns the minimum value in a generic sequence.
   ###
-  Min: (selector) ->
+  min: (selector) ->
     id = (x) -> x
     return Math.min.apply(Math, this._elements.map(selector || id))
 
@@ -394,7 +394,7 @@ class Linq
     Removes the first occurrence of a specific object from the List<T>.
   ###
   Remove: (element) ->
-    return if this.IndexOf(element) isnt -1 then (this.RemoveAt(this.IndexOf(element)); true) else false
+    return if this.indexOf(element) isnt -1 then (this.RemoveAt(this.indexOf(element)); true) else false
 
   ###
     Removes all the elements that match the conditions defined by the specified predicate.
@@ -536,7 +536,7 @@ class Linq
     Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
   ###
   ToLookup: (keySelector, elementSelector) ->
-    return this.GroupBy(keySelector, elementSelector)
+    return this.groupBy(keySelector, elementSelector)
 
   ###
     Produces the set union of two sequences by using the default equality comparer.
