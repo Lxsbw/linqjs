@@ -1,5 +1,5 @@
 var Linq, parameters, results;
-Linq = require('../src/index');
+Linq = require('../src/linq');
 
 parameters = [
   { Name: '正一郎', Numbers: [1, 2, 3] },

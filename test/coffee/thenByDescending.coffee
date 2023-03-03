@@ -1,4 +1,4 @@
-Linq = require '../../src/coffee/linq'
+Linq = require '../../src/coffee/linq/linq'
 
 persons = [
   { ID: 0, Age: 30, Name: "A" }

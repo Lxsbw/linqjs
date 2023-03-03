@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee')
+Linq =  require('../../src/coffee/linq')
 
 dataA = [ 0, 1, 2, 3, 4 ]
 dataB = [ 1.5, 1.3, 3.2 ]

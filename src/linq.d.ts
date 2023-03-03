@@ -291,4 +291,4 @@ declare class Linq<T> {
   Zip<U, TOut>(list: Linq<U>, result: (first: T, second: U) => TOut): Linq<TOut>;
 }
 
-export = Linq;
+export { Linq };
