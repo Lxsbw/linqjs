@@ -58,14 +58,14 @@ class Linq {
     // this.removeAt = this.removeAt;
     // this.reverse = this.reverse;
     // this.select = this.select;
-    this.selectMany = this.SelectMany;
-    this.sequenceEqual = this.SequenceEqual;
-    this.single = this.Single;
-    this.singleOrDefault = this.SingleOrDefault;
-    this.skip = this.Skip;
-    this.skipLast = this.SkipLast;
-    this.skipWhile = this.SkipWhile;
-    this.sum = this.Sum;
+    // this.selectMany = this.selectMany;
+    // this.sequenceEqual = this.sequenceEqual;
+    // this.single = this.single;
+    // this.singleOrDefault = this.singleOrDefault;
+    // this.skip = this.skip;
+    // this.skipLast = this.skipLast;
+    // this.skipWhile = this.skipWhile;
+    // this.sum = this.sum;
     this.take = this.Take;
     this.takeLast = this.TakeLast;
     this.takeWhile = this.TakeWhile;
@@ -134,7 +134,7 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   average(transform) {
-    return tools.calcNumDiv(this.Sum(transform), this.count());
+    return tools.calcNumDiv(this.sum(transform), this.count());
   }
 
   /**
@@ -512,7 +512,7 @@ class Linq {
   /**
    * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
    */
-  SelectMany(selector) {
+  selectMany(selector) {
     var _this = this;
     return this.aggregate(function (ac, _, i) {
       return ac.addRange(_this.select(selector).elementAt(i).ToArray()), ac;
@@ -522,7 +522,7 @@ class Linq {
   /**
    * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
    */
-  SequenceEqual(list) {
+  sequenceEqual(list) {
     return this.all(function (e) {
       return list.contains(e);
     });
@@ -531,7 +531,7 @@ class Linq {
   /**
    * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
    */
-  Single(predicate) {
+  single(predicate) {
     if (this.count(predicate) !== 1) {
       throw new Error('The collection does not contain exactly one element.');
     } else {
@@ -543,30 +543,30 @@ class Linq {
    * Returns the only element of a sequence, or a default value if the sequence is empty;
    * this method throws an exception if there is more than one element in the sequence.
    */
-  SingleOrDefault(predicate) {
-    return this.count(predicate) ? this.Single(predicate) : undefined;
+  singleOrDefault(predicate) {
+    return this.count(predicate) ? this.single(predicate) : undefined;
   }
 
   /**
    * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
    */
-  Skip(amount) {
+  skip(amount) {
     return new Linq(this._elements.slice(Math.max(0, amount)));
   }
 
   /**
    * Omit the last specified number of elements in a sequence and then returns the remaining elements.
    */
-  SkipLast(amount) {
+  skipLast(amount) {
     return new Linq(this._elements.slice(0, -Math.max(0, amount)));
   }
 
   /**
    * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
    */
-  SkipWhile(predicate) {
+  skipWhile(predicate) {
     var _this = this;
-    return this.Skip(
+    return this.skip(
       this.aggregate(function (ac) {
         return predicate(_this.elementAt(ac)) ? ++ac : ac;
       }, 0)
@@ -577,9 +577,9 @@ class Linq {
    * Computes the sum of the sequence of number values that are obtained by invoking
    * a transform function on each element of the input sequence.
    */
-  Sum(transform) {
+  sum(transform) {
     return transform
-      ? this.select(transform).Sum()
+      ? this.select(transform).sum()
       : this.aggregate(function (ac, v) {
           return (ac = tools.calcNum(ac, +v));
         }, 0);

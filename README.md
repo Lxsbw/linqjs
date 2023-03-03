@@ -80,7 +80,7 @@ const rst = new Linq(parameters)
 // ]
 ```
 
-### 6. SelectMany
+### 6. selectMany
 
 ```javascript
 const parameters = [
@@ -90,7 +90,7 @@ const parameters = [
   { Name: '征史郎', Numbers: [9, 8, 7] }
 ];
 
-const rst = new Linq(parameters).SelectMany(x => new Linq(x.Numbers)).toArray(); // => [1, 2, 3, 1, 3, 5, 2, 4, 6, 9, 8, 7]
+const rst = new Linq(parameters).selectMany(x => new Linq(x.Numbers)).toArray(); // => [1, 2, 3, 1, 3, 5, 2, 4, 6, 9, 8, 7]
 ```
 
 ### 7. distinct
@@ -375,7 +375,7 @@ const dictionaryObj = new Linq(parameters)
 // ]
 ```
 
-### 17. Sum
+### 17. sum
 
 ```javascript
 const parameters = [
@@ -385,7 +385,7 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq(parameters).Sum(x => x.Age); // => 118
+const rst = new Linq(parameters).sum(x => x.Age); // => 118
 ```
 
 ### 18. max
@@ -422,12 +422,12 @@ const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const rst = new Linq(texts).Take(4).toArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
 ```
 
-### 21. Skip
+### 21. skip
 
 ```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const rst = new Linq(texts).Skip(4).toArray(); // => [ "Thu", "Fri", "Sat" ]
+const rst = new Linq(texts).skip(4).toArray(); // => [ "Thu", "Fri", "Sat" ]
 ```
 
 ## Documentation
