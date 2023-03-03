@@ -38,14 +38,14 @@ const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const rst = new Linq(numbers).any(x => x < 5); // => true
 ```
 
-### 3. Count
+### 3. count
 
 ```javascript
 const strArr = ['正一郎', '清次郎', '誠三郎', '征史郎'];
 const intArr = [1, 5, 8, 12, 15, 16];
 
-const rstStr = new Linq(strArr).Count(); // => 4
-const rstInt = new Linq(intArr).Count(x => x % 2 === 0); // => 3
+const rstStr = new Linq(strArr).count(); // => 4
+const rstInt = new Linq(intArr).count(x => x % 2 === 0); // => 3
 ```
 
 ### 4. Where & ToArray

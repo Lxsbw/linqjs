@@ -23,11 +23,11 @@ class Linq {
     // this.all = this.all;
     // this.any = this.any;
     // this.average = this.average;
-    this.cast = this.Cast;
-    this.clear = this.Clear;
-    this.concat = this.Concat;
-    this.contains = this.Contains;
-    this.count = this.Count;
+    // this.cast = this.cast;
+    // this.clear = this.clear;
+    // this.concat = this.concat;
+    // this.contains = this.contains;
+    this.count = this.count;
     this.defaultIfEmpty = this.DefaultIfEmpty;
     this.distinct = this.Distinct;
     this.distinctBy = this.DistinctBy;
@@ -134,34 +134,34 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   average(transform) {
-    return tools.calcNumDiv(this.Sum(transform), this.Count());
+    return tools.calcNumDiv(this.Sum(transform), this.count());
   }
 
   /**
    * Casts the elements of a sequence to the specified type.
    */
-  Cast() {
+  cast() {
     return new Linq(this._elements);
   }
 
   /**
    * Removes all elements from the List<T>.
    */
-  Clear() {
+  clear() {
     this._elements.length = 0;
   }
 
   /**
    * Concatenates two sequences.
    */
-  Concat(list) {
+  concat(list) {
     return new Linq(this._elements.concat(list.ToArray()));
   }
 
   /**
    * Determines whether an element is in the List<T>.
    */
-  Contains(element) {
+  contains(element) {
     return this.any(function (x) {
       return x === element;
     });
@@ -170,8 +170,8 @@ class Linq {
   /**
    * Returns the number of elements in a sequence.
    */
-  Count(predicate) {
-    return predicate ? this.Where(predicate).Count() : this._elements.length;
+  count(predicate) {
+    return predicate ? this.Where(predicate).count() : this._elements.length;
   }
 
   /**
@@ -179,7 +179,7 @@ class Linq {
    * in a singleton collection if the sequence is empty.
    */
   DefaultIfEmpty(defaultValue) {
-    return this.Count() ? this : new Linq([defaultValue]);
+    return this.count() ? this : new Linq([defaultValue]);
   }
 
   /**
@@ -226,7 +226,7 @@ class Linq {
    * Returns the element at a specified index in a sequence.
    */
   ElementAt(index) {
-    if (index < this.Count() && index >= 0) {
+    if (index < this.count() && index >= 0) {
       return this._elements[index];
     } else {
       throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.');
@@ -237,7 +237,7 @@ class Linq {
    * Returns the element at a specified index in a sequence or a default value if the index is out of range.
    */
   ElementAtOrDefault(index) {
-    return index < this.Count() && index >= 0 ? this._elements[index] : undefined;
+    return index < this.count() && index >= 0 ? this._elements[index] : undefined;
   }
 
   /**
@@ -245,7 +245,7 @@ class Linq {
    */
   Except(source) {
     return this.Where(function (x) {
-      return !source.Contains(x);
+      return !source.contains(x);
     });
   }
 
@@ -253,7 +253,7 @@ class Linq {
    * Returns the first element of a sequence.
    */
   First(predicate) {
-    if (this.Count()) {
+    if (this.count()) {
       return predicate ? this.Where(predicate).First() : this._elements[0];
     } else {
       throw new Error('InvalidOperationException: The source sequence is empty.');
@@ -264,7 +264,7 @@ class Linq {
    * Returns the first element of a sequence, or a default value if the sequence contains no elements.
    */
   FirstOrDefault(predicate) {
-    return this.Count(predicate) ? this.First(predicate) : undefined;
+    return this.count(predicate) ? this.First(predicate) : undefined;
   }
 
   /**
@@ -344,7 +344,7 @@ class Linq {
    */
   Intersect(source) {
     return this.Where(function (x) {
-      return source.Contains(x);
+      return source.contains(x);
     });
   }
 
@@ -373,8 +373,8 @@ class Linq {
    * Returns the last element of a sequence.
    */
   Last(predicate) {
-    if (this.Count()) {
-      return predicate ? this.Where(predicate).Last() : this._elements[this.Count() - 1];
+    if (this.count()) {
+      return predicate ? this.Where(predicate).Last() : this._elements[this.count() - 1];
     } else {
       throw Error('InvalidOperationException: The source sequence is empty.');
     }
@@ -384,7 +384,7 @@ class Linq {
    * Returns the last element of a sequence, or a default value if the sequence contains no elements.
    */
   LastOrDefault(predicate) {
-    return this.Count(predicate) ? this.Last(predicate) : undefined;
+    return this.count(predicate) ? this.Last(predicate) : undefined;
   }
 
   /**
@@ -432,10 +432,10 @@ class Linq {
     return typeName === null
       ? this.Where(function (x) {
           return x instanceof type;
-        }).Cast()
+        }).cast()
       : this.Where(function (x) {
           return typeof x === typeName;
-        }).Cast();
+        }).cast();
   }
 
   /**
@@ -524,7 +524,7 @@ class Linq {
    */
   SequenceEqual(list) {
     return this.all(function (e) {
-      return list.Contains(e);
+      return list.contains(e);
     });
   }
 
@@ -532,7 +532,7 @@ class Linq {
    * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
    */
   Single(predicate) {
-    if (this.Count(predicate) !== 1) {
+    if (this.count(predicate) !== 1) {
       throw new Error('The collection does not contain exactly one element.');
     } else {
       return this.First(predicate);
@@ -544,7 +544,7 @@ class Linq {
    * this method throws an exception if there is more than one element in the sequence.
    */
   SingleOrDefault(predicate) {
-    return this.Count(predicate) ? this.Single(predicate) : undefined;
+    return this.count(predicate) ? this.Single(predicate) : undefined;
   }
 
   /**
@@ -651,7 +651,7 @@ class Linq {
    * Produces the set union of two sequences by using the default equality comparer.
    */
   Union(list) {
-    return this.Concat(list).Distinct();
+    return this.concat(list).Distinct();
   }
 
   /**
@@ -666,7 +666,7 @@ class Linq {
    */
   Zip(list, result) {
     var _this = this;
-    return list.Count() < this.Count()
+    return list.count() < this.count()
       ? list.Select(function (x, y) {
           return result(_this.ElementAt(y), x);
         })

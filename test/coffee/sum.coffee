@@ -14,9 +14,9 @@ numbers = [
   { Age: 0.8, Name: '征史郎' }
 ]
 
-ageSum = new Linq(parameters).Sum( (value) -> value.Age )
-ageSumByNum = new Linq(numbers).Sum((x) -> x.Age)
-ageDivByNum = new Linq(numbers).Average((x) -> x.Age)
+ageSum = new Linq(parameters).sum( (value) -> value.Age )
+ageSumByNum = new Linq(numbers).sum((x) -> x.Age)
+ageDivByNum = new Linq(numbers).average((x) -> x.Age)
 
 console.log 'ageSum:', ageSum
 console.log 'ageSumByNum:', ageSumByNum
