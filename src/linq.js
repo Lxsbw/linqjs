@@ -38,16 +38,16 @@ class Linq {
     // this.first = this.first;
     // this.firstOrDefault = this.firstOrDefault;
     // this.forEach = this.forEach;
-    this.groupBy = this.GroupBy;
-    this.groupJoin = this.GroupJoin;
-    this.indexOf = this.IndexOf;
-    this.insert = this.Insert;
-    this.intersect = this.Intersect;
-    this.join = this.Join;
-    this.last = this.Last;
-    this.lastOrDefault = this.LastOrDefault;
-    this.max = this.Max;
-    this.min = this.Min;
+    // this.groupBy = this.groupBy;
+    // this.groupJoin = this.groupJoin;
+    // this.indexOf = this.indexOf;
+    // this.insert = this.insert;
+    // this.intersect = this.intersect;
+    // this.join = this.join;
+    // this.last = this.last;
+    // this.lastOrDefault = this.lastOrDefault;
+    // this.max = this.max;
+    // this.min = this.min;
     this.ofType = this.OfType;
     this.orderBy = this.OrderBy;
     this.orderByDescending = this.OrderByDescending;
@@ -201,7 +201,7 @@ class Linq {
    * Returns distinct elements from a sequence according to specified key selector.
    */
   distinctBy(keySelector) {
-    var groups = this.GroupBy(keySelector);
+    var groups = this.groupBy(keySelector);
 
     const func = function (res, key) {
       const curr = new Linq(groups).firstOrDefault(x => tools.equal(x.key, key));
@@ -277,7 +277,7 @@ class Linq {
   /**
    * Groups the elements of a sequence according to a specified key selector function.
    */
-  GroupBy(grouper, mapper) {
+  groupBy(grouper, mapper) {
     if (mapper === void 0) {
       mapper = function (val) {
         return val;
@@ -311,7 +311,7 @@ class Linq {
    * Correlates the elements of two sequences based on equality of keys and groups the results.
    * The default equality comparer is used to compare keys.
    */
-  GroupJoin(list, key1, key2, result) {
+  groupJoin(list, key1, key2, result) {
     return this.Select(function (x) {
       return result(
         x,
@@ -325,14 +325,14 @@ class Linq {
   /**
    * Returns the index of the first occurence of an element in the List.
    */
-  IndexOf(element) {
+  indexOf(element) {
     return this._elements.indexOf(element);
   }
 
   /**
    * Inserts an element into the List<T> at the specified index.
    */
-  Insert(index, element) {
+  insert(index, element) {
     if (index < 0 || index > this._elements.length) {
       throw new Error('Index is out of range.');
     }
@@ -342,7 +342,7 @@ class Linq {
   /**
    * Produces the set intersection of two sequences by using the default equality comparer to compare values.
    */
-  Intersect(source) {
+  intersect(source) {
     return this.Where(function (x) {
       return source.contains(x);
     });
@@ -351,7 +351,7 @@ class Linq {
   /**
    * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
    */
-  Join(list, key1, key2, result) {
+  join(list, key1, key2, result) {
     const selectmany = selector => {
       return this.aggregate((ac, _, i) => {
         return ac.addRange(this.Select(selector).elementAt(i).ToArray()), ac;
@@ -372,9 +372,9 @@ class Linq {
   /**
    * Returns the last element of a sequence.
    */
-  Last(predicate) {
+  last(predicate) {
     if (this.count()) {
-      return predicate ? this.Where(predicate).Last() : this._elements[this.count() - 1];
+      return predicate ? this.Where(predicate).last() : this._elements[this.count() - 1];
     } else {
       throw Error('InvalidOperationException: The source sequence is empty.');
     }
@@ -383,14 +383,14 @@ class Linq {
   /**
    * Returns the last element of a sequence, or a default value if the sequence contains no elements.
    */
-  LastOrDefault(predicate) {
-    return this.count(predicate) ? this.Last(predicate) : undefined;
+  lastOrDefault(predicate) {
+    return this.count(predicate) ? this.last(predicate) : undefined;
   }
 
   /**
    * Returns the maximum value in a generic sequence.
    */
-  Max(selector) {
+  max(selector) {
     var id = function (x) {
       return x;
     };
@@ -400,7 +400,7 @@ class Linq {
   /**
    * Returns the minimum value in a generic sequence.
    */
-  Min(selector) {
+  min(selector) {
     var id = function (x) {
       return x;
     };
@@ -478,7 +478,7 @@ class Linq {
    * Removes the first occurrence of a specific object from the List<T>.
    */
   Remove(element) {
-    return this.IndexOf(element) !== -1 ? (this.RemoveAt(this.IndexOf(element)), true) : false;
+    return this.indexOf(element) !== -1 ? (this.RemoveAt(this.indexOf(element)), true) : false;
   }
 
   /**
@@ -644,7 +644,7 @@ class Linq {
    * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
    */
   ToLookup(keySelector, elementSelector) {
-    return this.GroupBy(keySelector, elementSelector);
+    return this.groupBy(keySelector, elementSelector);
   }
 
   /**

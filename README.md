@@ -260,7 +260,7 @@ const rst = new Linq(persons)
 // ]
 ```
 
-### 14. GroupBy
+### 14. groupBy
 
 ```javascript
 const data = [
@@ -269,8 +269,8 @@ const data = [
   { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }
 ];
 
-const rstKey = new Linq(data).GroupBy(el => el.category);
-const rstKeys = new Linq(data).GroupBy(el => {
+const rstKey = new Linq(data).groupBy(el => el.category);
+const rstKeys = new Linq(data).groupBy(el => {
   return { id: el.id, category: el.category };
 });
 // rstKey =>
@@ -303,7 +303,7 @@ const rstKeys = new Linq(data).GroupBy(el => {
 // ]
 ```
 
-### 15. Join
+### 15. join
 
 ```javascript
 const persons = [
@@ -323,7 +323,7 @@ const cities = [
 ];
 
 const rst = new Linq(persons)
-  .Join(
+  .join(
     new Linq(cities),
     p => p.CityID,
     c => c.ID,
@@ -388,7 +388,7 @@ const parameters = [
 const rst = new Linq(parameters).Sum(x => x.Age); // => 118
 ```
 
-### 18. Max
+### 18. max
 
 ```javascript
 const parameters = [
@@ -398,10 +398,10 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq(parameters).Max(x => x.Age); // => 52
+const rst = new Linq(parameters).max(x => x.Age); // => 52
 ```
 
-### 19. Min
+### 19. min
 
 ```javascript
 const parameters = [
@@ -411,7 +411,7 @@ const parameters = [
   { Age: 18, Name: '征史郎' }
 ];
 
-const rst = new Linq(parameters).Min(x => x.Age); // => 18
+const rst = new Linq(parameters).min(x => x.Age); // => 18
 ```
 
 ### 20. Take

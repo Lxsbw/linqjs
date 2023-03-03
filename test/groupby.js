@@ -18,7 +18,7 @@ data = [
 // console.log('__proto__ keys:', Object.keys(new Linq(data).__proto__));
 result = new Linq(data).groupBy(el => el.category);
 // result = new Linq(data).groupBy(el => el.category);
-// result = new Linq(data).GroupBy((el) => {
+// result = new Linq(data).groupBy((el) => {
 //   return { id: el.id, category: el.category };
 // });
 // 定制化结果分组

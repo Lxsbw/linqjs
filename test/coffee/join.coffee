@@ -17,7 +17,7 @@ cities = [
 ]
 
 result = new Linq(persons)
-  .Join(
+  .join(
     new Linq(cities),
     (p) -> p.CityID,
     (c) -> c.ID,
