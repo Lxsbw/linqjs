@@ -1,6 +1,6 @@
 var data, Linq, result;
 
-Linq = require('../src/index');
+Linq = require('../src/linq');
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },

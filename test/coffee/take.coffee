@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee')
+Linq =  require('../../src/coffee/linq')
 
 numbers = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 texts   = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ]

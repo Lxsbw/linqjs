@@ -1,4 +1,4 @@
-const Linq = require('../src/index');
+const Linq = require('../src/linq');
 
 const persons = [
   { CityID: 1, Name: 'ABC' },

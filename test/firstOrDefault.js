@@ -1,6 +1,6 @@
 var Linq, numbers, parameters, result;
 
-Linq = require('../src/index');
+Linq = require('../src/linq');
 
 numbers = [1, 2, 3, 5, 7, 11];
 
