@@ -877,8 +877,11 @@ const tools = {
   },
 };
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Linq;
+if (typeof module !== 'undefined') {
+  if (typeof exports !== 'undefined') {
+    exports = module.exports = Linq;
+  }
+  exports.Linq = Linq;
 } else {
   window.Linq = Linq;
 }
