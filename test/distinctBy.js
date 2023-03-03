@@ -13,10 +13,10 @@ data = [
 // 去重
 result1 = new Linq(data).distinctBy(x => x.category).toArray();
 result2 = new Linq(data)
-  .DistinctBy(el => {
+  .distinctBy(el => {
     return { id: el.id, category: el.category };
   })
-  .ToArray();
+  .toArray();
 
 console.log('result:', result1);
 console.log('result:', result2);

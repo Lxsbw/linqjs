@@ -23,6 +23,6 @@ result = new Linq(persons)
     (c) -> c.ID,
     (p, c) -> return { CityID: c.ID, PersonName: p.Name, CityName: c.Name }
   )
-  .ToArray()
+  .toArray()
 
 console.log 'result:', result

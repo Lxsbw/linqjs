@@ -27,17 +27,17 @@ class Linq {
     // this.clear = this.clear;
     // this.concat = this.concat;
     // this.contains = this.contains;
-    this.count = this.count;
-    this.defaultIfEmpty = this.DefaultIfEmpty;
-    this.distinct = this.Distinct;
-    this.distinctBy = this.DistinctBy;
-    this.distinctMap = this.DistinctMap;
-    this.elementAt = this.ElementAt;
-    this.elementAtOrDefault = this.ElementAtOrDefault;
-    this.except = this.Except;
-    this.first = this.First;
-    this.firstOrDefault = this.FirstOrDefault;
-    this.forEach = this.ForEach;
+    // this.count = this.count;
+    // this.defaultIfEmpty = this.defaultIfEmpty;
+    // this.distinct = this.distinct;
+    // this.distinctBy = this.distinctBy;
+    // this.distinctMap = this.distinctMap;
+    // this.elementAt = this.elementAt;
+    // this.elementAtOrDefault = this.elementAtOrDefault;
+    // this.except = this.except;
+    // this.first = this.first;
+    // this.firstOrDefault = this.firstOrDefault;
+    // this.forEach = this.forEach;
     this.groupBy = this.GroupBy;
     this.groupJoin = this.GroupJoin;
     this.indexOf = this.IndexOf;
@@ -178,14 +178,14 @@ class Linq {
    * Returns the elements of the specified sequence or the type parameter's default value
    * in a singleton collection if the sequence is empty.
    */
-  DefaultIfEmpty(defaultValue) {
+  defaultIfEmpty(defaultValue) {
     return this.count() ? this : new Linq([defaultValue]);
   }
 
   /**
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
-  Distinct() {
+  distinct() {
     return this.Where(function (value, index, iter) {
       return (
         (tools.isObj(value)
@@ -200,11 +200,11 @@ class Linq {
   /**
    * Returns distinct elements from a sequence according to specified key selector.
    */
-  DistinctBy(keySelector) {
+  distinctBy(keySelector) {
     var groups = this.GroupBy(keySelector);
 
     const func = function (res, key) {
-      const curr = new Linq(groups).FirstOrDefault(x => tools.equal(x.key, key));
+      const curr = new Linq(groups).firstOrDefault(x => tools.equal(x.key, key));
       res.add(curr.elements[0]);
       return res;
     };
@@ -218,14 +218,14 @@ class Linq {
   /**
    * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
    */
-  DistinctMap(predicate) {
-    return predicate ? this.Select(predicate).Distinct() : this.Distinct();
+  distinctMap(predicate) {
+    return predicate ? this.Select(predicate).distinct() : this.distinct();
   }
 
   /**
    * Returns the element at a specified index in a sequence.
    */
-  ElementAt(index) {
+  elementAt(index) {
     if (index < this.count() && index >= 0) {
       return this._elements[index];
     } else {
@@ -236,14 +236,14 @@ class Linq {
   /**
    * Returns the element at a specified index in a sequence or a default value if the index is out of range.
    */
-  ElementAtOrDefault(index) {
+  elementAtOrDefault(index) {
     return index < this.count() && index >= 0 ? this._elements[index] : undefined;
   }
 
   /**
    * Produces the set difference of two sequences by using the default equality comparer to compare values.
    */
-  Except(source) {
+  except(source) {
     return this.Where(function (x) {
       return !source.contains(x);
     });
@@ -252,9 +252,9 @@ class Linq {
   /**
    * Returns the first element of a sequence.
    */
-  First(predicate) {
+  first(predicate) {
     if (this.count()) {
-      return predicate ? this.Where(predicate).First() : this._elements[0];
+      return predicate ? this.Where(predicate).first() : this._elements[0];
     } else {
       throw new Error('InvalidOperationException: The source sequence is empty.');
     }
@@ -263,14 +263,14 @@ class Linq {
   /**
    * Returns the first element of a sequence, or a default value if the sequence contains no elements.
    */
-  FirstOrDefault(predicate) {
-    return this.count(predicate) ? this.First(predicate) : undefined;
+  firstOrDefault(predicate) {
+    return this.count(predicate) ? this.first(predicate) : undefined;
   }
 
   /**
    * Performs the specified action on each element of the List<T>.
    */
-  ForEach(action) {
+  forEach(action) {
     return this._elements.forEach(action);
   }
 
@@ -287,7 +287,7 @@ class Linq {
 
     const func = function (ac, v) {
       var key = grouper(v);
-      var existingGroup = new Linq(ac).FirstOrDefault(x => tools.equal(x.key, key));
+      var existingGroup = new Linq(ac).firstOrDefault(x => tools.equal(x.key, key));
       var mappedValue = mapper(v);
 
       if (existingGroup) {
@@ -354,7 +354,7 @@ class Linq {
   Join(list, key1, key2, result) {
     const selectmany = selector => {
       return this.aggregate((ac, _, i) => {
-        return ac.addRange(this.Select(selector).ElementAt(i).ToArray()), ac;
+        return ac.addRange(this.Select(selector).elementAt(i).ToArray()), ac;
       }, new Linq());
     };
 
@@ -515,7 +515,7 @@ class Linq {
   SelectMany(selector) {
     var _this = this;
     return this.aggregate(function (ac, _, i) {
-      return ac.addRange(_this.Select(selector).ElementAt(i).ToArray()), ac;
+      return ac.addRange(_this.Select(selector).elementAt(i).ToArray()), ac;
     }, new Linq());
   }
 
@@ -535,7 +535,7 @@ class Linq {
     if (this.count(predicate) !== 1) {
       throw new Error('The collection does not contain exactly one element.');
     } else {
-      return this.First(predicate);
+      return this.first(predicate);
     }
   }
 
@@ -568,7 +568,7 @@ class Linq {
     var _this = this;
     return this.Skip(
       this.aggregate(function (ac) {
-        return predicate(_this.ElementAt(ac)) ? ++ac : ac;
+        return predicate(_this.elementAt(ac)) ? ++ac : ac;
       }, 0)
     );
   }
@@ -606,7 +606,7 @@ class Linq {
     var _this = this;
     return this.Take(
       this.aggregate(function (ac) {
-        return predicate(_this.ElementAt(ac)) ? ++ac : ac;
+        return predicate(_this.elementAt(ac)) ? ++ac : ac;
       }, 0)
     );
   }
@@ -624,10 +624,10 @@ class Linq {
   ToDictionary(key, value) {
     var _this = this;
     return this.aggregate(function (dicc, v, i) {
-      dicc[_this.Select(key).ElementAt(i).toString()] = value ? _this.Select(value).ElementAt(i) : v;
+      dicc[_this.Select(key).elementAt(i).toString()] = value ? _this.Select(value).elementAt(i) : v;
       dicc.add({
-        Key: _this.Select(key).ElementAt(i),
-        Value: value ? _this.Select(value).ElementAt(i) : v,
+        Key: _this.Select(key).elementAt(i),
+        Value: value ? _this.Select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -651,7 +651,7 @@ class Linq {
    * Produces the set union of two sequences by using the default equality comparer.
    */
   Union(list) {
-    return this.concat(list).Distinct();
+    return this.concat(list).distinct();
   }
 
   /**
@@ -668,10 +668,10 @@ class Linq {
     var _this = this;
     return list.count() < this.count()
       ? list.Select(function (x, y) {
-          return result(_this.ElementAt(y), x);
+          return result(_this.elementAt(y), x);
         })
       : this.Select(function (x, y) {
-          return result(x, list.ElementAt(y));
+          return result(x, list.elementAt(y));
         });
   }
 }

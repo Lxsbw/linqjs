@@ -13,9 +13,9 @@ parameters = [
   { ID: 42, Rate: 0.3, Name: '征史郎' }
 ];
 
-dataA_D = new Linq(dataA).Distinct().toArray();
-dataB_D = new Linq(dataB).Distinct().toArray();
-dataC_D = new Linq(dataC).Distinct().toArray();
+dataA_D = new Linq(dataA).distinct().toArray();
+dataB_D = new Linq(dataB).distinct().toArray();
+dataC_D = new Linq(dataC).distinct().toArray();
 dataC_E = new Linq(parameters)
   .select(x => x.Name)
   .distinct()

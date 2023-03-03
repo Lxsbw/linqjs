@@ -17,13 +17,13 @@ parameters = [
   { ID: 27, Rate: 0.0, Name: '正二郎' }
 ];
 
-dataC_F = new Linq(parameters).DistinctMap(x => x.Name).ToArray();
+dataC_F = new Linq(parameters).distinctMap(x => x.Name).toArray();
 dataC_G = new Linq(parameters)
-  .DistinctMap(x => {
+  .distinctMap(x => {
     return { Name: x.Name };
   })
-  .ToArray();
-dataC_H = new Linq(dataA).DistinctMap().ToArray();
+  .toArray();
+dataC_H = new Linq(dataA).distinctMap().toArray();
 
 console.log('dataC_F:', dataC_F);
 console.log('dataC_G:', dataC_G);

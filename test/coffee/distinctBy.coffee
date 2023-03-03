@@ -10,8 +10,8 @@ data = [
 ]
 
 # 去重
-result1 = new Linq(data).DistinctBy((x) -> x.category).toArray()
-result2 = new Linq(data).DistinctBy((el) -> { id: el.id, category: el.category }).toArray()
+result1 = new Linq(data).distinctBy((x) -> x.category).toArray()
+result2 = new Linq(data).distinctBy((el) -> { id: el.id, category: el.category }).toArray()
 
 console.log 'result:', result1
 console.log 'result:', result2

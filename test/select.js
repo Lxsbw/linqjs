@@ -13,8 +13,8 @@ results = new Linq(parameters)
   .Select(value => {
     return { ID: value.ID, Name: value.Name };
   })
-  .ToArray();
+  .toArray();
 
-results2 = new Linq(parameters).Select(value => value.Name).ToArray();
+results2 = new Linq(parameters).Select(value => value.Name).toArray();
 
 console.log('results:', results, results2);

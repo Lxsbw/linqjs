@@ -7,7 +7,7 @@ parameters = [
   { Name: "征史郎", Numbers: [ 9, 8, 7 ] }
 ]
 
-results = new Linq(parameters).SelectMany((value) -> new Linq(value.Numbers)).ToArray()
+results = new Linq(parameters).SelectMany((value) -> new Linq(value.Numbers)).toArray()
 
 console.log 'results:', results
 console.log 'results:', results.length

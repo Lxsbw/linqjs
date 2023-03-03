@@ -9,16 +9,16 @@ parameters = [
   { ID: 4, Age: 18, Name: '征史郎' }
 ];
 
-dictionary = new Linq(parameters).ToDictionary(x => x.ID).ToArray();
+dictionary = new Linq(parameters).ToDictionary(x => x.ID).toArray();
 
 dictionary2 = new Linq(parameters)
   .ToDictionary(function (value) {
     return { ID: value.ID, Name: value.Name };
   })
-  .ToArray();
+  .toArray();
 
 // dictionary3  =  new Linq(parameters).ToDictionary \
-//   ((value) -> value.ID, (value) -> value.Name).ToArray()
+//   ((value) -> value.ID, (value) -> value.Name).toArray()
 console.log('dictionary:', dictionary);
 
 console.log('dictionary2:', dictionary2);
