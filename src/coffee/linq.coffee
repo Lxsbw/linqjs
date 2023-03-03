@@ -19,11 +19,11 @@ class Linq
     # this.all = this.all
     # this.any = this.any
     # this.average = this.average
-    this.cast = this.Cast
-    this.clear = this.Clear
-    this.concat = this.Concat
-    this.contains = this.Contains
-    this.count = this.Count
+    # this.cast = this.cast
+    # this.clear = this.clear
+    # this.concat = this.concat
+    # this.contains = this.contains
+    # this.count = this.count
     this.defaultIfEmpty = this.DefaultIfEmpty
     this.distinct = this.Distinct
     this.distinctBy = this.DistinctBy
@@ -122,44 +122,44 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   average: (transform) ->
-    return tools.calcNumDiv(this.Sum(transform), this.Count())
+    return tools.calcNumDiv(this.Sum(transform), this.count())
 
   ###
     Casts the elements of a sequence to the specified type.
   ###
-  Cast: () ->
+  cast: () ->
     return new Linq(this._elements)
 
   ###
     Removes all elements from the List<T>.
   ###
-  Clear: () ->
+  clear: () ->
     this._elements.length = 0
 
   ###
     Concatenates two sequences.
   ###
-  Concat: (list) ->
+  concat: (list) ->
     return new Linq(this._elements.concat(list.ToArray()))
 
   ###
     Determines whether an element is in the List<T>.
   ###
-  Contains: (element) ->
+  contains: (element) ->
     return this.any((x) -> x is element)
 
   ###
     Returns the number of elements in a sequence.
   ###
-  Count: (predicate) ->
-    return if predicate then this.Where(predicate).Count() else this._elements.length
+  count: (predicate) ->
+    return if predicate then this.Where(predicate).count() else this._elements.length
 
   ###
     Returns the elements of the specified sequence or the type parameter's default value
     in a singleton collection if the sequence is empty.
   ###
   DefaultIfEmpty: (defaultValue) ->
-    return if this.Count() then this else new Linq([defaultValue])
+    return if this.count() then this else new Linq([defaultValue])
 
   ###
     Returns distinct elements from a sequence by using the default equality comparer to compare values.
@@ -194,7 +194,7 @@ class Linq
     Returns the element at a specified index in a sequence.
   ###
   ElementAt: (index) ->
-    if (index < this.Count() && index >= 0)
+    if (index < this.count() && index >= 0)
       return this._elements[index]
     else
       throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.')
@@ -203,19 +203,19 @@ class Linq
     Returns the element at a specified index in a sequence or a default value if the index is out of range.
   ###
   ElementAtOrDefault: (index) ->
-    return if index < this.Count() && index >= 0 then this._elements[index] else undefined
+    return if index < this.count() && index >= 0 then this._elements[index] else undefined
 
   ###
     Produces the set difference of two sequences by using the default equality comparer to compare values.
   ###
   Except: (source) ->
-    return this.Where((x) -> !source.Contains(x))
+    return this.Where((x) -> !source.contains(x))
 
   ###
     Returns the first element of a sequence.
   ###
   First: (predicate) ->
-    if this.Count()
+    if this.count()
       return if predicate then this.Where(predicate).First() else this._elements[0]
     else
       throw new Error(
@@ -225,7 +225,7 @@ class Linq
     Returns the first element of a sequence, or a default value if the sequence contains no elements.
   ###
   FirstOrDefault: (predicate) ->
-    return if this.Count(predicate) then this.First(predicate) else undefined
+    return if this.count(predicate) then this.First(predicate) else undefined
 
   ###
     Performs the specified action on each element of the List<T>.
@@ -288,7 +288,7 @@ class Linq
     Produces the set intersection of two sequences by using the default equality comparer to compare values.
   ###
   Intersect: (source) ->
-    return this.Where((x) -> source.Contains(x))
+    return this.Where((x) -> source.contains(x))
 
   ###
     Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
@@ -310,8 +310,8 @@ class Linq
     Returns the last element of a sequence.
   ###
   Last: (predicate) ->
-    if this.Count()
-      return if predicate then this.Where(predicate).Last() else this._elements[this.Count() - 1]
+    if this.count()
+      return if predicate then this.Where(predicate).Last() else this._elements[this.count() - 1]
     else
       throw Error('InvalidOperationException: The source sequence is empty.')
 
@@ -319,7 +319,7 @@ class Linq
     Returns the last element of a sequence, or a default value if the sequence contains no elements.
   ###
   LastOrDefault: (predicate) ->
-    return if this.Count(predicate) then this.Last(predicate) else undefined
+    return if this.count(predicate) then this.Last(predicate) else undefined
 
   ###
     Returns the maximum value in a generic sequence.
@@ -356,7 +356,7 @@ class Linq
       else
         typeName = null
         break
-    return if typeName is null then this.Where((x) -> x instanceof type).Cast() else this.Where((x) -> typeof x is typeName).Cast()
+    return if typeName is null then this.Where((x) -> x instanceof type).cast() else this.Where((x) -> typeof x is typeName).cast()
 
   ###
     Sorts the elements of a sequence in ascending order according to a key.
@@ -434,13 +434,13 @@ class Linq
     Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
   ###
   SequenceEqual: (list) ->
-    return this.all((e) -> list.Contains(e))
+    return this.all((e) -> list.contains(e))
 
   ###
     Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
   ###
   Single: (predicate) ->
-    if (this.Count(predicate) isnt 1)
+    if (this.count(predicate) isnt 1)
       throw new Error('The collection does not contain exactly one element.')
     else
       return this.First(predicate)
@@ -450,7 +450,7 @@ class Linq
     this method throws an exception if there is more than one element in the sequence.
   ###
   SingleOrDefault: (predicate) ->
-    return if this.Count(predicate) then this.Single(predicate) else undefined
+    return if this.count(predicate) then this.Single(predicate) else undefined
 
   ###
     Bypasses a specified number of elements in a sequence and then returns the remaining elements.
@@ -542,7 +542,7 @@ class Linq
     Produces the set union of two sequences by using the default equality comparer.
   ###
   Union: (list) ->
-    return this.Concat(list).Distinct()
+    return this.concat(list).Distinct()
 
   ###
     Filters a sequence of values based on a predicate.
@@ -555,7 +555,7 @@ class Linq
   ###
   Zip: (list, result) ->
     _this = this
-    return if list.Count() < this.Count() then list.Select((x, y) -> result(_this.ElementAt(y), x)) else this.Select((x, y) -> result(x, list.ElementAt(y)))
+    return if list.count() < this.count() then list.Select((x, y) -> result(_this.ElementAt(y), x)) else this.Select((x, y) -> result(x, list.ElementAt(y)))
 
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
