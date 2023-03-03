@@ -172,13 +172,13 @@ const rstObj = new Linq(parameters).firstOrDefault(x => x.ID === 30); // => unde
 const rstObj = new Linq(parameters).firstOrDefault(x => x.ID === 42); // => { ID: 42, Name: '征史郎' }
 ```
 
-### 11. Remove
+### 11. remove
 
 ```javascript
 let numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 console.log(numbers.length); // => 10
-new Linq(numbers).Remove(6);
+new Linq(numbers).remove(6);
 console.log(numbers.length); // => 9
 ```
 
@@ -343,7 +343,7 @@ const rst = new Linq(persons)
 // ]
 ```
 
-### 16. ToDictionary
+### 16. toDictionary
 
 ```javascript
 const parameters = [
@@ -353,9 +353,9 @@ const parameters = [
   { ID: 4, Age: 18, Name: '征史郎' }
 ];
 
-const dictionary = new Linq(parameters).ToDictionary(x => x.ID).toArray();
+const dictionary = new Linq(parameters).toDictionary(x => x.ID).toArray();
 const dictionaryObj = new Linq(parameters)
-  .ToDictionary(x => {
+  .toDictionary(x => {
     return { ID: x.ID, Name: x.Name };
   })
   .toArray();
@@ -414,12 +414,12 @@ const parameters = [
 const rst = new Linq(parameters).min(x => x.Age); // => 18
 ```
 
-### 20. Take
+### 20. take
 
 ```javascript
 const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const rst = new Linq(texts).Take(4).toArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
+const rst = new Linq(texts).take(4).toArray(); // => [ "Sun", "Mon", "Tue", "Wed" ]
 ```
 
 ### 21. skip

@@ -27,7 +27,7 @@ result = new Linq(data).groupBy(el => el.category);
 // };
 // result = new Linq(data).groupBy((el) => el.category, func);
 
-// result = new Linq(data).ToLookup(el => el.category);
+// result = new Linq(data).toLookup(el => el.category);
 
 // result.forEach(x => console.log(x.key.toString(), x.count));
 

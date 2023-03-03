@@ -66,13 +66,13 @@ class Linq {
     // this.skipLast = this.skipLast;
     // this.skipWhile = this.skipWhile;
     // this.sum = this.sum;
-    this.take = this.Take;
-    this.takeLast = this.TakeLast;
-    this.takeWhile = this.TakeWhile;
-    this.toArray = this.ToArray;
-    this.toDictionary = this.ToDictionary;
-    this.toList = this.ToList;
-    this.toLookup = this.ToLookup;
+    // this.take = this.take;
+    // this.takeLast = this.takeLast;
+    // this.takeWhile = this.takeWhile;
+    // this.toArray = this.toArray;
+    // this.toDictionary = this.toDictionary;
+    // this.toList = this.toList;
+    // this.toLookup = this.toLookup;
     // this.union = this.union;
     // this.where = this.where;
     // this.zip = this.zip;
@@ -155,7 +155,7 @@ class Linq {
    * Concatenates two sequences.
    */
   concat(list) {
-    return new Linq(this._elements.concat(list.ToArray()));
+    return new Linq(this._elements.concat(list.toArray()));
   }
 
   /**
@@ -211,7 +211,7 @@ class Linq {
 
     return new Linq(groups)
       .select(x => x.key)
-      .ToArray()
+      .toArray()
       .reduce(func, new Linq());
   }
 
@@ -354,7 +354,7 @@ class Linq {
   join(list, key1, key2, result) {
     const selectmany = selector => {
       return this.aggregate((ac, _, i) => {
-        return ac.addRange(this.select(selector).elementAt(i).ToArray()), ac;
+        return ac.addRange(this.select(selector).elementAt(i).toArray()), ac;
       }, new Linq());
     };
 
@@ -515,7 +515,7 @@ class Linq {
   selectMany(selector) {
     var _this = this;
     return this.aggregate(function (ac, _, i) {
-      return ac.addRange(_this.select(selector).elementAt(i).ToArray()), ac;
+      return ac.addRange(_this.select(selector).elementAt(i).toArray()), ac;
     }, new Linq());
   }
 
@@ -588,23 +588,23 @@ class Linq {
   /**
    * Returns a specified number of contiguous elements from the start of a sequence.
    */
-  Take(amount) {
+  take(amount) {
     return new Linq(this._elements.slice(0, Math.max(0, amount)));
   }
 
   /**
    * Returns a specified number of contiguous elements from the end of a sequence.
    */
-  TakeLast(amount) {
+  takeLast(amount) {
     return new Linq(this._elements.slice(-Math.max(0, amount)));
   }
 
   /**
    * Returns elements from a sequence as long as a specified condition is true.
    */
-  TakeWhile(predicate) {
+  takeWhile(predicate) {
     var _this = this;
-    return this.Take(
+    return this.take(
       this.aggregate(function (ac) {
         return predicate(_this.elementAt(ac)) ? ++ac : ac;
       }, 0)
@@ -614,14 +614,14 @@ class Linq {
   /**
    * Copies the elements of the List<T> to a new array.
    */
-  ToArray() {
+  toArray() {
     return this._elements;
   }
 
   /**
    * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
    */
-  ToDictionary(key, value) {
+  toDictionary(key, value) {
     var _this = this;
     return this.aggregate(function (dicc, v, i) {
       dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
@@ -636,14 +636,14 @@ class Linq {
   /**
    * Creates a List<T> from an Enumerable.List<T>.
    */
-  ToList() {
+  toList() {
     return this;
   }
 
   /**
    * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
    */
-  ToLookup(keySelector, elementSelector) {
+  toLookup(keySelector, elementSelector) {
     return this.groupBy(keySelector, elementSelector);
   }
 
@@ -680,7 +680,7 @@ class Linq {
  * Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
  * The immediate return value is an object that stores all the information that is required to perform the action.
  * The query represented by this method is not executed until the object is enumerated either by
- * calling its ToDictionary, ToLookup, ToList or ToArray methods
+ * calling its toDictionary, toLookup, toList or toArray methods
  */
 class OrderedList extends Linq {
   constructor(elements, _comparer) {

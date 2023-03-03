@@ -9,15 +9,15 @@ parameters = [
   { ID: 4, Age: 18, Name: '征史郎' }
 ];
 
-dictionary = new Linq(parameters).ToDictionary(x => x.ID).toArray();
+dictionary = new Linq(parameters).toDictionary(x => x.ID).toArray();
 
 dictionary2 = new Linq(parameters)
-  .ToDictionary(function (value) {
+  .toDictionary(function (value) {
     return { ID: value.ID, Name: value.Name };
   })
   .toArray();
 
-// dictionary3  =  new Linq(parameters).ToDictionary \
+// dictionary3  =  new Linq(parameters).toDictionary \
 //   ((value) -> value.ID, (value) -> value.Name).toArray()
 console.log('dictionary:', dictionary);
 
