@@ -15,14 +15,14 @@ class Linq {
 
     //#region Method alias
 
-    this.add = this.Add;
-    this.append = this.Append;
-    this.prepend = this.Prepend;
-    this.addRange = this.AddRange;
-    this.aggregate = this.Aggregate;
-    this.all = this.All;
-    this.any = this.Any;
-    this.average = this.Average;
+    // this.add = this.add;
+    // this.append = this.append;
+    // this.prepend = this.prepend;
+    // this.addRange = this.addRange;
+    // this.aggregate = this.aggregate;
+    // this.all = this.all;
+    // this.any = this.any;
+    // this.average = this.average;
     this.cast = this.Cast;
     this.clear = this.Clear;
     this.concat = this.Concat;
@@ -82,28 +82,28 @@ class Linq {
   /**
    * Adds an object to the end of the List<T>.
    */
-  Add(element) {
+  add(element) {
     this._elements.push(element);
   }
 
   /**
    * Appends an object to the end of the List<T>.
    */
-  Append(element) {
-    this.Add(element);
+  append(element) {
+    this.add(element);
   }
 
   /**
    * Add an object to the start of the List<T>.
    */
-  Prepend(element) {
+  prepend(element) {
     this._elements.unshift(element);
   }
 
   /**
    * Adds the elements of the specified collection to the end of the List<T>.
    */
-  AddRange(elements) {
+  addRange(elements) {
     var _a;
     (_a = this._elements).push.apply(_a, elements);
   }
@@ -111,21 +111,21 @@ class Linq {
   /**
    * Applies an accumulator function over a sequence.
    */
-  Aggregate(accumulator, initialValue) {
+  aggregate(accumulator, initialValue) {
     return this._elements.reduce(accumulator, initialValue);
   }
 
   /**
    * Determines whether all elements of a sequence satisfy a condition.
    */
-  All(predicate) {
+  all(predicate) {
     return this._elements.every(predicate);
   }
 
   /**
    * Determines whether a sequence contains any elements.
    */
-  Any(predicate) {
+  any(predicate) {
     return predicate ? this._elements.some(predicate) : this._elements.length > 0;
   }
 
@@ -133,7 +133,7 @@ class Linq {
    * Computes the average of a sequence of number values that are obtained by invoking
    * a transform function on each element of the input sequence.
    */
-  Average(transform) {
+  average(transform) {
     return tools.calcNumDiv(this.Sum(transform), this.Count());
   }
 
@@ -162,7 +162,7 @@ class Linq {
    * Determines whether an element is in the List<T>.
    */
   Contains(element) {
-    return this.Any(function (x) {
+    return this.any(function (x) {
       return x === element;
     });
   }
@@ -205,7 +205,7 @@ class Linq {
 
     const func = function (res, key) {
       const curr = new Linq(groups).FirstOrDefault(x => tools.equal(x.key, key));
-      res.Add(curr.elements[0]);
+      res.add(curr.elements[0]);
       return res;
     };
 
@@ -304,7 +304,7 @@ class Linq {
       return ac;
     };
 
-    return this.Aggregate(func, initialValue);
+    return this.aggregate(func, initialValue);
   }
 
   /**
@@ -353,8 +353,8 @@ class Linq {
    */
   Join(list, key1, key2, result) {
     const selectmany = selector => {
-      return this.Aggregate((ac, _, i) => {
-        return ac.AddRange(this.Select(selector).ElementAt(i).ToArray()), ac;
+      return this.aggregate((ac, _, i) => {
+        return ac.addRange(this.Select(selector).ElementAt(i).ToArray()), ac;
       }, new Linq());
     };
 
@@ -514,8 +514,8 @@ class Linq {
    */
   SelectMany(selector) {
     var _this = this;
-    return this.Aggregate(function (ac, _, i) {
-      return ac.AddRange(_this.Select(selector).ElementAt(i).ToArray()), ac;
+    return this.aggregate(function (ac, _, i) {
+      return ac.addRange(_this.Select(selector).ElementAt(i).ToArray()), ac;
     }, new Linq());
   }
 
@@ -523,7 +523,7 @@ class Linq {
    * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
    */
   SequenceEqual(list) {
-    return this.All(function (e) {
+    return this.all(function (e) {
       return list.Contains(e);
     });
   }
@@ -567,7 +567,7 @@ class Linq {
   SkipWhile(predicate) {
     var _this = this;
     return this.Skip(
-      this.Aggregate(function (ac) {
+      this.aggregate(function (ac) {
         return predicate(_this.ElementAt(ac)) ? ++ac : ac;
       }, 0)
     );
@@ -580,7 +580,7 @@ class Linq {
   Sum(transform) {
     return transform
       ? this.Select(transform).Sum()
-      : this.Aggregate(function (ac, v) {
+      : this.aggregate(function (ac, v) {
           return (ac = tools.calcNum(ac, +v));
         }, 0);
   }
@@ -605,7 +605,7 @@ class Linq {
   TakeWhile(predicate) {
     var _this = this;
     return this.Take(
-      this.Aggregate(function (ac) {
+      this.aggregate(function (ac) {
         return predicate(_this.ElementAt(ac)) ? ++ac : ac;
       }, 0)
     );
@@ -623,9 +623,9 @@ class Linq {
    */
   ToDictionary(key, value) {
     var _this = this;
-    return this.Aggregate(function (dicc, v, i) {
+    return this.aggregate(function (dicc, v, i) {
       dicc[_this.Select(key).ElementAt(i).toString()] = value ? _this.Select(value).ElementAt(i) : v;
-      dicc.Add({
+      dicc.add({
         Key: _this.Select(key).ElementAt(i),
         Value: value ? _this.Select(value).ElementAt(i) : v,
       });

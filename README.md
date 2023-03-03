@@ -22,20 +22,20 @@ npm install linq-to-javascript --save
 const Linq = require('linq-to-javascript');
 ```
 
-### 1. All
+### 1. all
 
 ```javascript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq(numbers).All(x => x < 5); // => false
+const rst = new Linq(numbers).all(x => x < 5); // => false
 ```
 
-### 2. Any
+### 2. any
 
 ```javascript
 const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-const rst = new Linq(numbers).Any(x => x < 5); // => true
+const rst = new Linq(numbers).any(x => x < 5); // => true
 ```
 
 ### 3. Count
