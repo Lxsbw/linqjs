@@ -44,11 +44,11 @@ class Linq
     # this.lastOrDefault = this.lastOrDefault
     # this.max = this.max
     # this.min = this.min
-    this.ofType = this.OfType
-    this.orderBy = this.OrderBy
-    this.orderByDescending = this.OrderByDescending
-    this.thenBy = this.ThenBy
-    this.thenByDescending = this.ThenByDescending
+    # this.ofType = this.ofType
+    # this.orderBy = this.orderBy
+    # this.orderByDescending = this.orderByDescending
+    # this.thenBy = this.thenBy
+    # this.thenByDescending = this.thenByDescending
     this.remove = this.Remove
     this.removeAll = this.RemoveAll
     this.removeAt = this.RemoveAt
@@ -69,9 +69,9 @@ class Linq
     this.toDictionary = this.ToDictionary
     this.toList = this.ToList
     this.toLookup = this.ToLookup
-    this.union = this.Union
-    this.where = this.Where
-    this.zip = this.Zip
+    # this.union = this.union
+    # this.where = this.where
+    # this.zip = this.zip
     #endregion
 
   ###
@@ -152,7 +152,7 @@ class Linq
     Returns the number of elements in a sequence.
   ###
   count: (predicate) ->
-    return if predicate then this.Where(predicate).count() else this._elements.length
+    return if predicate then this.where(predicate).count() else this._elements.length
 
   ###
     Returns the elements of the specified sequence or the type parameter's default value
@@ -165,7 +165,7 @@ class Linq
     Returns distinct elements from a sequence by using the default equality comparer to compare values.
   ###
   distinct: () ->
-    return this.Where((value, index, iter) ->
+    return this.where((value, index, iter) ->
       return (
         (if tools.isObj(value) then iter.findIndex((obj) -> tools.equal(obj, value)) else iter.indexOf(value)) is index
       )
@@ -209,14 +209,14 @@ class Linq
     Produces the set difference of two sequences by using the default equality comparer to compare values.
   ###
   except: (source) ->
-    return this.Where((x) -> !source.contains(x))
+    return this.where((x) -> !source.contains(x))
 
   ###
     Returns the first element of a sequence.
   ###
   first: (predicate) ->
     if this.count()
-      return if predicate then this.Where(predicate).first() else this._elements[0]
+      return if predicate then this.where(predicate).first() else this._elements[0]
     else
       throw new Error(
         'InvalidOperationException: The source sequence is empty.')
@@ -267,7 +267,7 @@ class Linq
   ###
   groupJoin: (list, key1, key2, result) ->
     return this.Select((x) ->
-      return result x, list.Where((z) -> key1(x) is key2(z))
+      return result x, list.where((z) -> key1(x) is key2(z))
     )
 
   ###
@@ -288,7 +288,7 @@ class Linq
     Produces the set intersection of two sequences by using the default equality comparer to compare values.
   ###
   intersect: (source) ->
-    return this.Where((x) -> source.contains(x))
+    return this.where((x) -> source.contains(x))
 
   ###
     Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
@@ -302,7 +302,7 @@ class Linq
 
     return selectmany((x) ->
       return list
-        .Where((y) -> key2(y) is key1(x))
+        .where((y) -> key2(y) is key1(x))
         .Select((z) -> result(x, z))
     )
 
@@ -311,7 +311,7 @@ class Linq
   ###
   last: (predicate) ->
     if this.count()
-      return if predicate then this.Where(predicate).last() else this._elements[this.count() - 1]
+      return if predicate then this.where(predicate).last() else this._elements[this.count() - 1]
     else
       throw Error('InvalidOperationException: The source sequence is empty.')
 
@@ -338,7 +338,7 @@ class Linq
   ###
     Filters the elements of a sequence based on a specified type.
   ###
-  OfType: (type) ->
+  ofType: (type) ->
     typeName
     switch (type)
       when Number
@@ -356,12 +356,12 @@ class Linq
       else
         typeName = null
         break
-    return if typeName is null then this.Where((x) -> x instanceof type).cast() else this.Where((x) -> typeof x is typeName).cast()
+    return if typeName is null then this.where((x) -> x instanceof type).cast() else this.where((x) -> typeof x is typeName).cast()
 
   ###
     Sorts the elements of a sequence in ascending order according to a key.
   ###
-  OrderBy: (keySelector, comparer) ->
+  orderBy: (keySelector, comparer) ->
     if (comparer is undefined)
       comparer = tools.keyComparer(keySelector, false)
     # tslint:disable-next-line: no-use-before-declare
@@ -370,7 +370,7 @@ class Linq
   ###
     Sorts the elements of a sequence in descending order according to a key.
   ###
-  OrderByDescending: (keySelector, comparer) ->
+  orderByDescending: (keySelector, comparer) ->
     if (comparer is undefined)
       comparer = tools.keyComparer(keySelector, true)
     # tslint:disable-next-line: no-use-before-declare
@@ -380,15 +380,15 @@ class Linq
     Performs a subsequent ordering of the elements in a sequence in
     ascending order according to a key.
   ###
-  ThenBy: (keySelector) ->
-    return this.OrderBy(keySelector)
+  thenBy: (keySelector) ->
+    return this.orderBy(keySelector)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in
     descending order, according to a key.
   ###
-  ThenByDescending: (keySelector) ->
-    return this.OrderByDescending(keySelector)
+  thenByDescending: (keySelector) ->
+    return this.orderByDescending(keySelector)
 
   ###
     Removes the first occurrence of a specific object from the List<T>.
@@ -400,7 +400,7 @@ class Linq
     Removes all the elements that match the conditions defined by the specified predicate.
   ###
   RemoveAll: (predicate) ->
-    return this.Where(tools.negate(predicate))
+    return this.where(tools.negate(predicate))
 
   ###
     Removes the element at the specified index of the List<T>.
@@ -541,19 +541,19 @@ class Linq
   ###
     Produces the set union of two sequences by using the default equality comparer.
   ###
-  Union: (list) ->
+  union: (list) ->
     return this.concat(list).distinct()
 
   ###
     Filters a sequence of values based on a predicate.
   ###
-  Where: (predicate) ->
+  where: (predicate) ->
     return new Linq(this._elements.filter(predicate))
 
   ###
     Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
   ###
-  Zip: (list, result) ->
+  zip: (list, result) ->
     _this = this
     return if list.count() < this.count() then list.Select((x, y) -> result(_this.elementAt(y), x)) else this.Select((x, y) -> result(x, list.elementAt(y)))
 
@@ -572,7 +572,7 @@ class OrderedList extends Linq
     Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
     @override
   ###
-  ThenBy: (keySelector) ->
+  thenBy: (keySelector) ->
     return new OrderedList(
       this._elements,
       tools.composeComparers @_comparer, tools.keyComparer(keySelector, false))
@@ -581,7 +581,7 @@ class OrderedList extends Linq
     Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
     @override
   ###
-  ThenByDescending: (keySelector) ->
+  thenByDescending: (keySelector) ->
     return new OrderedList(
       this._elements,
       tools.composeComparers @_comparer, tools.keyComparer(keySelector, true))
