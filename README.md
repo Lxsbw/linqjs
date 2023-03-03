@@ -182,7 +182,7 @@ new Linq(numbers).Remove(6);
 console.log(numbers.length); // => 9
 ```
 
-### 12. OrderBy & OrderByDescending
+### 12. orderBy & orderByDescending
 
 ```javascript
 const parameters = [
@@ -192,8 +192,8 @@ const parameters = [
   { ID: 5, Name: '征史郎' }
 ];
 
-const rst = new Linq(parameters).OrderBy(x => x.ID).toArray();
-const rstDesc = new Linq(parameters).OrderByDescending(x => x.ID).toArray();
+const rst = new Linq(parameters).orderBy(x => x.ID).toArray();
+const rstDesc = new Linq(parameters).orderByDescending(x => x.ID).toArray();
 // rst =>
 // [
 //   { ID: 0, Name: "正一郎" },
@@ -210,7 +210,7 @@ const rstDesc = new Linq(parameters).OrderByDescending(x => x.ID).toArray();
 // ]
 ```
 
-### 13. ThenBy & ThenByDescending
+### 13. thenBy & thenByDescending
 
 ```javascript
 const persons = [
@@ -224,11 +224,11 @@ const persons = [
 ];
 
 const rst = new Linq(persons)
-  .OrderByDescending(x => x.ID)
-  .ThenBy(x => x.Age)
-  .ThenByDescending(x => x.Name)
+  .orderByDescending(x => x.ID)
+  .thenBy(x => x.Age)
+  .thenByDescending(x => x.Name)
   .toArray();
-// 1 OrderByDescending =>
+// 1 orderByDescending =>
 // [
 //   { ID: 2, Age: 2, Name: "G" },
 //   { ID: 2, Age: 18, Name: "C" },
@@ -238,7 +238,7 @@ const rst = new Linq(persons)
 //   { ID: 1, Age: 25, Name: "E" },
 //   { ID: 0, Age: 30, Name: "A" }
 // ]
-// 2 ThenBy =>
+// 2 thenBy =>
 // [
 //   { ID: 2, Age: 2, Name: "G" },
 //   { ID: 2, Age: 15, Name: "F" },
@@ -248,7 +248,7 @@ const rst = new Linq(persons)
 //   { ID: 1, Age: 30, Name: "D" },
 //   { ID: 0, Age: 30, Name: "A" }
 // ]
-// 3 ThenByDescending =>
+// 3 thenByDescending =>
 // [
 //   { ID: 2, Age: 2, Name: "G" },
 //   { ID: 2, Age: 15, Name: "F" },

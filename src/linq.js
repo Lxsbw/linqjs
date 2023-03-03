@@ -48,11 +48,11 @@ class Linq {
     // this.lastOrDefault = this.lastOrDefault;
     // this.max = this.max;
     // this.min = this.min;
-    this.ofType = this.OfType;
-    this.orderBy = this.OrderBy;
-    this.orderByDescending = this.OrderByDescending;
-    this.thenBy = this.ThenBy;
-    this.thenByDescending = this.ThenByDescending;
+    // this.ofType = this.ofType;
+    // this.orderBy = this.orderBy;
+    // this.orderByDescending = this.orderByDescending;
+    // this.thenBy = this.thenBy;
+    // this.thenByDescending = this.thenByDescending;
     this.remove = this.Remove;
     this.removeAll = this.RemoveAll;
     this.removeAt = this.RemoveAt;
@@ -73,9 +73,9 @@ class Linq {
     this.toDictionary = this.ToDictionary;
     this.toList = this.ToList;
     this.toLookup = this.ToLookup;
-    this.union = this.Union;
-    this.where = this.Where;
-    this.zip = this.Zip;
+    // this.union = this.union;
+    // this.where = this.where;
+    // this.zip = this.zip;
     //#endregion
   }
 
@@ -171,7 +171,7 @@ class Linq {
    * Returns the number of elements in a sequence.
    */
   count(predicate) {
-    return predicate ? this.Where(predicate).count() : this._elements.length;
+    return predicate ? this.where(predicate).count() : this._elements.length;
   }
 
   /**
@@ -186,7 +186,7 @@ class Linq {
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
   distinct() {
-    return this.Where(function (value, index, iter) {
+    return this.where(function (value, index, iter) {
       return (
         (tools.isObj(value)
           ? iter.findIndex(function (obj) {
@@ -244,7 +244,7 @@ class Linq {
    * Produces the set difference of two sequences by using the default equality comparer to compare values.
    */
   except(source) {
-    return this.Where(function (x) {
+    return this.where(function (x) {
       return !source.contains(x);
     });
   }
@@ -254,7 +254,7 @@ class Linq {
    */
   first(predicate) {
     if (this.count()) {
-      return predicate ? this.Where(predicate).first() : this._elements[0];
+      return predicate ? this.where(predicate).first() : this._elements[0];
     } else {
       throw new Error('InvalidOperationException: The source sequence is empty.');
     }
@@ -315,7 +315,7 @@ class Linq {
     return this.Select(function (x) {
       return result(
         x,
-        list.Where(function (z) {
+        list.where(function (z) {
           return key1(x) === key2(z);
         })
       );
@@ -343,7 +343,7 @@ class Linq {
    * Produces the set intersection of two sequences by using the default equality comparer to compare values.
    */
   intersect(source) {
-    return this.Where(function (x) {
+    return this.where(function (x) {
       return source.contains(x);
     });
   }
@@ -360,7 +360,7 @@ class Linq {
 
     return selectmany(function (x) {
       return list
-        .Where(function (y) {
+        .where(function (y) {
           return key2(y) === key1(x);
         })
         .Select(function (z) {
@@ -374,7 +374,7 @@ class Linq {
    */
   last(predicate) {
     if (this.count()) {
-      return predicate ? this.Where(predicate).last() : this._elements[this.count() - 1];
+      return predicate ? this.where(predicate).last() : this._elements[this.count() - 1];
     } else {
       throw Error('InvalidOperationException: The source sequence is empty.');
     }
@@ -410,7 +410,7 @@ class Linq {
   /**
    * Filters the elements of a sequence based on a specified type.
    */
-  OfType(type) {
+  ofType(type) {
     var typeName;
     switch (type) {
       case Number:
@@ -430,10 +430,10 @@ class Linq {
         break;
     }
     return typeName === null
-      ? this.Where(function (x) {
+      ? this.where(function (x) {
           return x instanceof type;
         }).cast()
-      : this.Where(function (x) {
+      : this.where(function (x) {
           return typeof x === typeName;
         }).cast();
   }
@@ -441,7 +441,7 @@ class Linq {
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  OrderBy(keySelector, comparer) {
+  orderBy(keySelector, comparer) {
     if (comparer === void 0) {
       comparer = tools.keyComparer(keySelector, false);
     }
@@ -452,7 +452,7 @@ class Linq {
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  OrderByDescending(keySelector, comparer) {
+  orderByDescending(keySelector, comparer) {
     if (comparer === void 0) {
       comparer = tools.keyComparer(keySelector, true);
     }
@@ -463,15 +463,15 @@ class Linq {
   /**
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
    */
-  ThenBy(keySelector) {
-    return this.OrderBy(keySelector);
+  thenBy(keySelector) {
+    return this.orderBy(keySelector);
   }
 
   /**
    * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
    */
-  ThenByDescending(keySelector) {
-    return this.OrderByDescending(keySelector);
+  thenByDescending(keySelector) {
+    return this.orderByDescending(keySelector);
   }
 
   /**
@@ -485,7 +485,7 @@ class Linq {
    * Removes all the elements that match the conditions defined by the specified predicate.
    */
   RemoveAll(predicate) {
-    return this.Where(tools.negate(predicate));
+    return this.where(tools.negate(predicate));
   }
 
   /**
@@ -650,21 +650,21 @@ class Linq {
   /**
    * Produces the set union of two sequences by using the default equality comparer.
    */
-  Union(list) {
+  union(list) {
     return this.concat(list).distinct();
   }
 
   /**
    * Filters a sequence of values based on a predicate.
    */
-  Where(predicate) {
+  where(predicate) {
     return new Linq(this._elements.filter(predicate));
   }
 
   /**
    * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
    */
-  Zip(list, result) {
+  zip(list, result) {
     var _this = this;
     return list.count() < this.count()
       ? list.Select(function (x, y) {
@@ -693,7 +693,7 @@ class OrderedList extends Linq {
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
    * @override
    */
-  ThenBy(keySelector) {
+  thenBy(keySelector) {
     return new OrderedList(this._elements, tools.composeComparers(this._comparer, tools.keyComparer(keySelector, false)));
   }
 
@@ -701,7 +701,7 @@ class OrderedList extends Linq {
    * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
    * @override
    */
-  ThenByDescending(keySelector) {
+  thenByDescending(keySelector) {
     return new OrderedList(this._elements, tools.composeComparers(this._comparer, tools.keyComparer(keySelector, true)));
   }
 }

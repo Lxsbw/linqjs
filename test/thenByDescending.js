@@ -16,13 +16,13 @@ orderByID = new Linq(persons).orderByDescending(x => x.ID).toArray();
 
 thenByAge = new Linq(persons)
   .orderByDescending(x => x.ID)
-  .ThenBy(x => x.Age)
+  .thenBy(x => x.Age)
   .toArray();
 
 thenByName = new Linq(persons)
   .orderByDescending(x => x.ID)
-  .ThenBy(x => x.Age)
-  .ThenByDescending(x => x.Name)
+  .thenBy(x => x.Age)
+  .thenByDescending(x => x.Name)
   .toArray();
 
 console.log('orderByID:', orderByID);
@@ -31,7 +31,7 @@ console.log('thenByName:', thenByName);
 // console.log('persons:', persons);
 
 intArray = [1, 5, 8, 12, 15, 16];
-console.log('number:', new Linq(intArray).OrderByDescending(x => x).toArray());
+console.log('number:', new Linq(intArray).orderByDescending(x => x).toArray());
 console.log('number:', intArray);
 
 

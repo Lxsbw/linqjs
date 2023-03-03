@@ -9,9 +9,9 @@ persons = [
   { ID: 2, Age: 15, Name: "F" }
 ]
 
-orderByID  = new Linq(persons).OrderBy((value) -> value.ID).toArray()
-thenByAge  = new Linq(persons).OrderBy((value) -> value.ID).ThenBy((value) -> value.Age).toArray()
-thenByName = new Linq(persons).OrderBy((value) -> value.ID).ThenBy((value) -> value.Age).ThenByDescending((value) -> value.Name).toArray()
+orderByID  = new Linq(persons).orderBy((value) -> value.ID).toArray()
+thenByAge  = new Linq(persons).orderBy((value) -> value.ID).thenBy((value) -> value.Age).toArray()
+thenByName = new Linq(persons).orderBy((value) -> value.ID).thenBy((value) -> value.Age).thenByDescending((value) -> value.Name).toArray()
 
 console.log 'orderByID:', orderByID
 console.log 'thenByAge:', thenByAge
@@ -20,5 +20,5 @@ console.log 'thenByName:', thenByName
 console.log 'persons:', persons
 
 intArray = [ 1, 5, 8, 12, 15, 16 ]
-console.log 'number:', new Linq(intArray).OrderByDescending((x) -> x).toArray()
+console.log 'number:', new Linq(intArray).orderByDescending((x) -> x).toArray()
 console.log 'number:', intArray
