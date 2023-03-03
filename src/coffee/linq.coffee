@@ -49,11 +49,11 @@ class Linq
     # this.orderByDescending = this.orderByDescending
     # this.thenBy = this.thenBy
     # this.thenByDescending = this.thenByDescending
-    this.remove = this.Remove
-    this.removeAll = this.RemoveAll
-    this.removeAt = this.RemoveAt
-    this.reverse = this.Reverse
-    this.select = this.Select
+    # this.remove = this.remove
+    # this.removeAll = this.removeAll
+    # this.removeAt = this.removeAt
+    # this.reverse = this.reverse
+    # this.select = this.select
     this.selectMany = this.SelectMany
     this.sequenceEqual = this.SequenceEqual
     this.single = this.Single
@@ -182,13 +182,13 @@ class Linq
       res.add(curr.elements[0])
       return res
 
-    return new Linq(groups).Select((x) -> x.key).ToArray().reduce(func, new Linq())
+    return new Linq(groups).select((x) -> x.key).ToArray().reduce(func, new Linq())
 
   ###
-    Returns distinct elements from a sequence by using the default equality comparer to compare values and this.Select method.
+    Returns distinct elements from a sequence by using the default equality comparer to compare values and this.select method.
   ###
   distinctMap: (predicate) ->
-    return if predicate then this.Select(predicate).distinct() else this.distinct()
+    return if predicate then this.select(predicate).distinct() else this.distinct()
 
   ###
     Returns the element at a specified index in a sequence.
@@ -266,7 +266,7 @@ class Linq
     The default equality comparer is used to compare keys.
   ###
   groupJoin: (list, key1, key2, result) ->
-    return this.Select((x) ->
+    return this.select((x) ->
       return result x, list.where((z) -> key1(x) is key2(z))
     )
 
@@ -296,14 +296,14 @@ class Linq
   join: (list, key1, key2, result) ->
     selectmany = (selector) =>
       return this.aggregate(((ac, _, i) =>
-        ac.addRange(this.Select(selector).elementAt(i).ToArray())
+        ac.addRange(this.select(selector).elementAt(i).ToArray())
         ac
       ), new Linq())
 
     return selectmany((x) ->
       return list
         .where((y) -> key2(y) is key1(x))
-        .Select((z) -> result(x, z))
+        .select((z) -> result(x, z))
     )
 
   ###
@@ -393,31 +393,31 @@ class Linq
   ###
     Removes the first occurrence of a specific object from the List<T>.
   ###
-  Remove: (element) ->
-    return if this.indexOf(element) isnt -1 then (this.RemoveAt(this.indexOf(element)); true) else false
+  remove: (element) ->
+    return if this.indexOf(element) isnt -1 then (this.removeAt(this.indexOf(element)); true) else false
 
   ###
     Removes all the elements that match the conditions defined by the specified predicate.
   ###
-  RemoveAll: (predicate) ->
+  removeAll: (predicate) ->
     return this.where(tools.negate(predicate))
 
   ###
     Removes the element at the specified index of the List<T>.
   ###
-  RemoveAt: (index) ->
+  removeAt: (index) ->
     this._elements.splice(index, 1)
 
   ###
     Reverses the order of the elements in the entire List<T>.
   ###
-  Reverse: () ->
+  reverse: () ->
     return new Linq(this._elements.reverse())
 
   ###
     Projects each element of a sequence into a new form.
   ###
-  Select: (selector) ->
+  select: (selector) ->
     return new Linq(this._elements.map(selector))
 
   ###
@@ -426,7 +426,7 @@ class Linq
   SelectMany: (selector) ->
     _this = this
     return this.aggregate(((ac, _, i) ->
-      ac.addRange(_this.Select(selector).elementAt(i).ToArray())
+      ac.addRange(_this.select(selector).elementAt(i).ToArray())
       ac
     ), new Linq())
 
@@ -480,7 +480,7 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   Sum: (transform) ->
-    return if transform then this.Select(transform).Sum() else this.aggregate(((ac, v) -> return (ac = tools.calcNum(ac, +v))), 0)
+    return if transform then this.select(transform).Sum() else this.aggregate(((ac, v) -> return (ac = tools.calcNum(ac, +v))), 0)
 
   ###
     Returns a specified number of contiguous elements from the start of a sequence.
@@ -517,11 +517,11 @@ class Linq
   ToDictionary: (key, value) ->
     _this = this
     return this.aggregate((dicc, v, i) ->
-      dicc[_this.Select(key).elementAt(i).toString()] = if value then _this.Select(value).elementAt(i) else v
+      dicc[_this.select(key).elementAt(i).toString()] = if value then _this.select(value).elementAt(i) else v
 
       dicc.add({
-        Key: _this.Select(key).elementAt(i),
-        Value: if value then _this.Select(value).elementAt(i) else v
+        Key: _this.select(key).elementAt(i),
+        Value: if value then _this.select(value).elementAt(i) else v
       })
       return dicc
     , new Linq())
@@ -555,7 +555,7 @@ class Linq
   ###
   zip: (list, result) ->
     _this = this
-    return if list.count() < this.count() then list.Select((x, y) -> result(_this.elementAt(y), x)) else this.Select((x, y) -> result(x, list.elementAt(y)))
+    return if list.count() < this.count() then list.select((x, y) -> result(_this.elementAt(y), x)) else this.select((x, y) -> result(x, list.elementAt(y)))
 
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
