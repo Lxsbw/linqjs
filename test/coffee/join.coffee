@@ -1,4 +1,4 @@
-Linq = require '../../src/coffee/linq/linq'
+Linq = require '../../src/coffee/linq'
 
 persons = [
   { CityID: 1, Name: 'ABC' },
@@ -17,12 +17,12 @@ cities = [
 ]
 
 result = new Linq(persons)
-  .Join(
+  .join(
     new Linq(cities),
     (p) -> p.CityID,
     (c) -> c.ID,
     (p, c) -> return { CityID: c.ID, PersonName: p.Name, CityName: c.Name }
   )
-  .ToArray()
+  .toArray()
 
 console.log 'result:', result

@@ -7,6 +7,6 @@ parameters = [
   { ID: 5, Name: "征史郎" }
 ]
 
-orderedParameters = new Linq(parameters).OrderByDescending( (value) -> value.ID ).ToArray()
+orderedParameters = new Linq(parameters).orderByDescending( (value) -> value.ID ).toArray()
 
 console.log 'orderedParameters:', orderedParameters

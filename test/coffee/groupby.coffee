@@ -1,4 +1,4 @@
-Linq = require '../../src/coffee/linq/linq'
+Linq = require '../../src/coffee/linq'
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
@@ -11,8 +11,8 @@ data = [
 
 # 分组
 # console.log 'this:', new Linq(data)
-result = new Linq(data).GroupBy((el) -> el.category)
-# result = new Linq(data).GroupBy((el) -> el.id)
-# result = new Linq(data).GroupBy((el) -> { id: el.id, category: el.category })
+result = new Linq(data).groupBy((el) -> el.category)
+# result = new Linq(data).groupBy((el) -> el.id)
+# result = new Linq(data).groupBy((el) -> { id: el.id, category: el.category })
 
 console.log 'result:', result

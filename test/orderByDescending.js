@@ -10,7 +10,7 @@ parameters = [
 
 console.log('parameters:', parameters);
 
-orderedParameters = new Linq(parameters).OrderByDescending(x => x.ID).ToArray();
+orderedParameters = new Linq(parameters).orderByDescending(x => x.ID).toArray();
 
 console.log('parameters:', parameters);
 console.log('orderedParameters:', orderedParameters);

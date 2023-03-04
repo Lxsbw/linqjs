@@ -7,10 +7,10 @@ numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 // 开始的3个
-takenNumbers = new Linq(numbers).Take(3).ToArray();
+takenNumbers = new Linq(numbers).take(3).toArray();
 
 // 开始的4个
-takenTexts = new Linq(texts).Take(4).ToArray();
+takenTexts = new Linq(texts).take(4).toArray();
 
 console.log('takenNumbers:', takenNumbers);
 
