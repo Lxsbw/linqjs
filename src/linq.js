@@ -798,6 +798,13 @@ const tools = {
       }
       return result;
     }
+
+    // // Handle Mongoose Object
+    // if (obj.constructor.name === 'model' && typeof obj.toObject === 'function') {
+    //   result = obj.toObject({ getters: true, virtuals: true });
+    //   return result;
+    // }
+
     // Handle Object
     if (obj instanceof Object) {
       result = {};
