@@ -774,11 +774,16 @@ const tools = {
    * Clone data
    */
   cloneDeep(obj) {
+    if (typeof structuredClone === 'function') {
+      return structuredClone(obj);
+    }
+
     let result;
     // Handle the 3 simple types, and null or undefined
     if (null === obj || 'object' !== typeof obj) {
       return obj;
     }
+
     // Handle Date
     if (obj instanceof Date) {
       result = new Date();
