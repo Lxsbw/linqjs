@@ -123,7 +123,7 @@ class Linq {
   distinct() {
     return this.where(function (value, index, iter) {
       return (
-        (tools.isObj(value)
+        (tools.isObject(value)
           ? iter.findIndex(function (obj) {
               return tools.equal(obj, value);
             })
@@ -648,7 +648,7 @@ const tools = {
   /**
    * Checks if the argument passed is an object
    */
-  isObj(x) {
+  isObject(x) {
     return !!x && typeof x === 'object';
   },
 
@@ -657,14 +657,20 @@ const tools = {
    */
   equal(a, b) {
     if (a === b) return true;
-    if (typeof a != typeof b) return false;
-    if (!(a instanceof Object)) return a === b;
+    if (typeof a !== typeof b) return false;
+    if (!isObject(a) || !isObject(b)) return a === b;
+    if (a instanceof Date && b instanceof Date) {
+      return a.getTime() === b.getTime();
+    }
 
-    return Object.entries(a).every(_a => {
-      var key = _a[0],
-        val = _a[1];
-      return this.isObj(val) ? this.equal(b[key], val) : b[key] === val;
-    });
+    var Fn = (entries, _b) =>
+      entries.every(_a => {
+        var key = _a[0],
+          val = _a[1];
+        return isObj(val) ? equal(_b[key], val) : _b[key] === val;
+      });
+
+    return Fn(Object.entries(a), b) && Fn(Object.entries(b), a);
   },
 
   /**
