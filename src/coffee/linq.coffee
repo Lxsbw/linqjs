@@ -548,10 +548,7 @@ tools = {
       return a.getTime() is b.getTime()
 
     Fn = (entries, _b) =>
-      entries.every((_a) =>
-        key = _a[0]
-        val = _a[1]
-        return if @isObject(val) then @equal(_b[key], val) else _b[key] is val)
+      entries.every(([key, val]) => if @isObject(val) then @equal(_b[key], val) else _b[key] is val)
 
     return Fn(Object.entries(a), b) and Fn(Object.entries(b), a)
 

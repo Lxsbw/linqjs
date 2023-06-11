@@ -232,7 +232,7 @@ class Linq {
         let existingMap = {
           key: key,
           count: 1,
-          elements: [mappedValue],
+          elements: [mappedValue]
         };
         ac.push(existingMap);
       }
@@ -562,7 +562,7 @@ class Linq {
       dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
       dicc.add({
         Key: _this.select(key).elementAt(i),
-        Value: value ? _this.select(value).elementAt(i) : v,
+        Value: value ? _this.select(value).elementAt(i) : v
       });
       return dicc;
     }, new Linq());
@@ -670,12 +670,8 @@ const tools = {
       return a.getTime() === b.getTime();
     }
 
-    var Fn = (entries, _b) =>
-      entries.every(_a => {
-        var key = _a[0],
-          val = _a[1];
-        return this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val;
-      });
+    var Fn = (entries, _b) => 
+      entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
 
     return Fn(Object.entries(a), b) && Fn(Object.entries(b), a);
   },
@@ -834,7 +830,7 @@ const tools = {
       return result;
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
-  },
+  }
 };
 
 if (typeof module !== 'undefined') {
