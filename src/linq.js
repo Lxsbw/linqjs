@@ -609,6 +609,13 @@ class Linq {
           return result(x, list.elementAt(y));
         });
   }
+
+  /**
+   * Determine if two objects are equal.
+   */
+  equals(param1, param2) {
+    return tools.equal(param1, param2);
+  }
 }
 
 /**
@@ -658,7 +665,7 @@ const tools = {
   equal(a, b) {
     if (a === b) return true;
     if (typeof a !== typeof b) return false;
-    if (!isObject(a) || !isObject(b)) return a === b;
+    if (!this.isObject(a) || !this.isObject(b)) return a === b;
     if (a instanceof Date && b instanceof Date) {
       return a.getTime() === b.getTime();
     }
@@ -667,7 +674,7 @@ const tools = {
       entries.every(_a => {
         var key = _a[0],
           val = _a[1];
-        return isObj(val) ? equal(_b[key], val) : _b[key] === val;
+        return this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val;
       });
 
     return Fn(Object.entries(a), b) && Fn(Object.entries(b), a);
