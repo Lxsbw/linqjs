@@ -546,11 +546,14 @@ tools = {
     if not @isObject(a) or not @isObject(b) then return a is b
     if a instanceof Date and b instanceof Date
       return a.getTime() is b.getTime()
+    entriesA = Object.entries(a)
+    entriesB = Object.entries(b)
+    if entriesA.length isnt entriesB.length then return false
 
     Fn = (entries, _b) =>
       entries.every(([key, val]) => if @isObject(val) then @equal(_b[key], val) else _b[key] is val)
 
-    return Fn(Object.entries(a), b) and Fn(Object.entries(b), a)
+    return Fn(entriesA, b) and Fn(entriesB, a)
 
   ###
     Creates a function that negates the result of the predicate

@@ -669,11 +669,14 @@ const tools = {
     if (a instanceof Date && b instanceof Date) {
       return a.getTime() === b.getTime();
     }
+    var entriesA = Object.entries(a);
+    var entriesB = Object.entries(b);
+    if (entriesA.length !== entriesB.length)  return false;
 
     var Fn = (entries, _b) => 
-      entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
+    entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
 
-    return Fn(Object.entries(a), b) && Fn(Object.entries(b), a);
+    return Fn(entriesA, b) && Fn(entriesB, a);
   },
 
   /**
