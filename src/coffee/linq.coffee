@@ -546,6 +546,11 @@ tools = {
     if not @isObject(a) or not @isObject(b) then return a is b
     if a instanceof Date and b instanceof Date
       return a.getTime() is b.getTime()
+    if a instanceof RegExp and b instanceof RegExp
+      return a.toString() is b.toString()
+    types = [a, b].map (x) -> x.constructor
+    if types[0] isnt types[1] then return false
+
     entriesA = Object.entries(a)
     entriesB = Object.entries(b)
     if entriesA.length isnt entriesB.length then return false
