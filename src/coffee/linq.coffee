@@ -495,8 +495,8 @@ class Linq
   ###
     Determine if two objects are equal.
   ###
-  equals: (param1, param2) ->
-    return tools.equal(param1, param2)
+  # equals: (param1, param2) ->
+  #   return tools.equal(param1, param2)
 
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
@@ -544,12 +544,14 @@ tools = {
     if (a is b) then return true
     if (typeof a isnt typeof b) then return false
     if not @isObject(a) or not @isObject(b) then return a is b
+
+    types = [a, b].map (x) -> x.constructor
+    if types[0] isnt types[1] then return false
+
     if a instanceof Date and b instanceof Date
       return a.getTime() is b.getTime()
     if a instanceof RegExp and b instanceof RegExp
       return a.toString() is b.toString()
-    types = [a, b].map (x) -> x.constructor
-    if types[0] isnt types[1] then return false
 
     entriesA = Object.entries(a)
     entriesB = Object.entries(b)
