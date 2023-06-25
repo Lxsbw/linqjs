@@ -102,7 +102,7 @@ class Linq
   distinct: () ->
     return this.where((value, index, iter) ->
       return (
-        (if tools.isObj(value) then iter.findIndex((obj) -> tools.equal(obj, value)) else iter.indexOf(value)) is index
+        (if tools.isObject(value) then iter.findIndex((obj) -> tools.equal(obj, value)) else iter.indexOf(value)) is index
       )
     )
 
@@ -492,6 +492,12 @@ class Linq
     _this = this
     return if list.count() < this.count() then list.select((x, y) -> result(_this.elementAt(y), x)) else this.select((x, y) -> result(x, list.elementAt(y)))
 
+  ###
+    Determine if two objects are equal.
+  ###
+  # equals: (param1, param2) ->
+  #   return tools.equal(param1, param2)
+
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
   The immediate return value is an object that stores all the information that is required to perform the action.
@@ -528,7 +534,7 @@ tools = {
   ###
     Checks if the argument passed is an object
   ###
-  isObj: (x) ->
+  isObject: (x) ->
     return !!x && typeof x is 'object'
 
   ###
@@ -537,12 +543,24 @@ tools = {
   equal: (a, b) ->
     if (a is b) then return true
     if (typeof a isnt typeof b) then return false
-    if not (a instanceof Object) then return a is b
+    if not @isObject(a) or not @isObject(b) then return a is b
 
-    return Object.entries(a).every((_a) =>
-      key = _a[0]
-      val = _a[1]
-      return if @isObj(val) then @equal(b[key], val) else b[key] is val)
+    types = [a, b].map (x) -> x.constructor
+    if types[0] isnt types[1] then return false
+
+    if a instanceof Date and b instanceof Date
+      return a.getTime() is b.getTime()
+    if a instanceof RegExp and b instanceof RegExp
+      return a.toString() is b.toString()
+
+    entriesA = Object.entries(a)
+    entriesB = Object.entries(b)
+    if entriesA.length isnt entriesB.length then return false
+
+    Fn = (entries, _b) =>
+      entries.every(([key, val]) => if @isObject(val) then @equal(_b[key], val) else _b[key] is val)
+
+    return Fn(entriesA, b) and Fn(entriesB, a)
 
   ###
     Creates a function that negates the result of the predicate
@@ -632,6 +650,9 @@ tools = {
     Clone data
   ###
   cloneDeep: (obj) ->
+    if typeof structuredClone is 'function'
+      return structuredClone obj
+    
     # Handle the 3 simple types, and null or undefined
     return obj if null is obj || "object" isnt typeof obj
 
