@@ -14,3 +14,5 @@ dataC_F = new Linq(dataC).where( (value) -> value.length < 5 ).toArray()
 console.log 'dataA_F:', dataA_F
 console.log 'dataB_F:', dataB_F
 console.log 'dataC_F:', dataC_F
+
+console.log 'toList:', new Linq(dataC).toList()

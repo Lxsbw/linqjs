@@ -94,7 +94,7 @@ class Linq
     in a singleton collection if the sequence is empty.
   ###
   defaultIfEmpty: (defaultValue) ->
-    return if @count() then this else new Linq([defaultValue])
+    return if @count() then @ else new Linq([defaultValue])
 
   ###
     Returns distinct elements from a sequence by using the default equality comparer to compare values.
@@ -359,7 +359,7 @@ class Linq
     Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
   ###
   selectMany: (selector) ->
-    _this = this
+    _this = @
     return @aggregate(((ac, _, i) ->
       ac.addRange(_this.select(selector).elementAt(i).toArray())
       ac
@@ -403,7 +403,7 @@ class Linq
     Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
   ###
   skipWhile: (predicate) ->
-    _this = this
+    _this = @
     return @skip(
       @aggregate((ac) ->
         return if predicate(_this.elementAt(ac)) then ++ac else ac
@@ -433,7 +433,7 @@ class Linq
     Returns elements from a sequence as long as a specified condition is true.
   ###
   takeWhile: (predicate) ->
-    _this = this
+    _this = @
     return @take(
       @aggregate((ac) ->
         return if predicate(_this.elementAt(ac)) then ++ac else ac
@@ -450,7 +450,7 @@ class Linq
     Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
   ###
   toDictionary: (key, value) ->
-    _this = this
+    _this = @
     return @aggregate((dicc, v, i) ->
       dicc[_this.select(key).elementAt(i).toString()] = if value then _this.select(value).elementAt(i) else v
 
@@ -465,7 +465,7 @@ class Linq
     Creates a List<T> from an Enumerable.List<T>.
   ###
   toList: () ->
-    return this
+    return @
 
   ###
     Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
@@ -489,7 +489,7 @@ class Linq
     Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
   ###
   zip: (list, result) ->
-    _this = this
+    _this = @
     return if list.count() < @count() then list.select((x, y) -> result(_this.elementAt(y), x)) else @select((x, y) -> result(x, list.elementAt(y)))
 
   ###
