@@ -120,7 +120,7 @@ class Linq
     return new Linq(groups).select((x) -> x.key).toArray().reduce(func, new Linq())
 
   ###
-    Returns distinct elements from a sequence by using the default equality comparer to compare values and @select method.
+    Returns distinct elements from a sequence by using the default equality comparer to compare values and this select method.
   ###
   distinctMap: (predicate) ->
     return if predicate then @select(predicate).distinct() else @distinct()
