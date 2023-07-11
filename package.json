@@ -9,7 +9,8 @@
     "src/*.d.ts"
   ],
   "scripts": {
-    "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle"
+    "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
+    "cbuild": "coffee -o ./build/clinq.js -c -b ./src/coffee/linq.coffee"
   },
   "repository": {
     "type": "git",
