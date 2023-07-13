@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * LINQ to TypeScript (Language Integrated Query)
+ * LINQ to JavaScript (Language Integrated Query)
  */
 var Linq = (function () {
   /**
@@ -830,6 +830,7 @@ var Tools = (function () {
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
   };
+  
   return Tools;
 })();
 
