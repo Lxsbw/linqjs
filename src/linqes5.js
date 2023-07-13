@@ -1,22 +1,5 @@
 'use strict';
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-
 /**
  * LINQ to TypeScript (Language Integrated Query)
  */
@@ -73,9 +56,18 @@ var Linq = (function () {
   Linq.prototype.all = function (predicate) {
     return this._elements.every(predicate);
   };
+
+  /**
+   * Determines whether a sequence contains any elements.
+   */
   Linq.prototype.any = function (predicate) {
     return predicate ? this._elements.some(predicate) : this._elements.length > 0;
   };
+
+  /**
+   * Computes the average of a sequence of number values that are obtained by invoking
+   * a transform function on each element of the input sequence.
+   */
   Linq.prototype.average = function (transform) {
     return Tools.calcNumDiv(this.sum(transform), this.count());
   };
@@ -109,6 +101,10 @@ var Linq = (function () {
       return x === element;
     });
   };
+
+  /**
+   * Returns the number of elements in a sequence.
+   */
   Linq.prototype.count = function (predicate) {
     return predicate ? this.where(predicate).count() : this._elements.length;
   };
@@ -155,6 +151,10 @@ var Linq = (function () {
       .toArray()
       .reduce(func, new Linq());
   };
+
+  /**
+   * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.select method.
+   */
   Linq.prototype.distinctMap = function (selector) {
     return selector ? this.select(selector).distinct() : this.distinct();
   };
@@ -185,6 +185,10 @@ var Linq = (function () {
       return !source.contains(x);
     });
   };
+
+  /**
+   * Returns the first element of a sequence.
+   */
   Linq.prototype.first = function (predicate) {
     if (this.count()) {
       return predicate ? this.where(predicate).first() : this._elements[0];
@@ -192,6 +196,10 @@ var Linq = (function () {
       throw new Error('InvalidOperationException: The source sequence is empty.');
     }
   };
+
+  /**
+   * Returns the first element of a sequence, or a default value if the sequence contains no elements.
+   */
   Linq.prototype.firstOrDefault = function (predicate) {
     return this.count(predicate) ? this.first(predicate) : undefined;
   };
@@ -286,6 +294,10 @@ var Linq = (function () {
         });
     });
   };
+
+  /**
+   * Returns the last element of a sequence.
+   */
   Linq.prototype.last = function (predicate) {
     if (this.count()) {
       return predicate ? this.where(predicate).last() : this._elements[this.count() - 1];
@@ -293,15 +305,27 @@ var Linq = (function () {
       throw Error('InvalidOperationException: The source sequence is empty.');
     }
   };
+
+  /**
+   * Returns the last element of a sequence, or a default value if the sequence contains no elements.
+   */
   Linq.prototype.lastOrDefault = function (predicate) {
     return this.count(predicate) ? this.last(predicate) : undefined;
   };
+
+  /**
+   * Returns the maximum value in a generic sequence.
+   */
   Linq.prototype.max = function (selector) {
     var id = function (x) {
       return x;
     };
     return Math.max.apply(Math, this._elements.map(selector || id));
   };
+
+  /**
+   * Returns the minimum value in a generic sequence.
+   */
   Linq.prototype.min = function (selector) {
     var id = function (x) {
       return x;
@@ -474,6 +498,11 @@ var Linq = (function () {
       }, 0)
     );
   };
+
+  /**
+   * Computes the sum of the sequence of number values that are obtained by invoking
+   * a transform function on each element of the input sequence.
+   */
   Linq.prototype.sum = function (transform) {
     return transform
       ? this.select(transform).sum()
@@ -514,6 +543,10 @@ var Linq = (function () {
   Linq.prototype.toArray = function () {
     return this._elements;
   };
+
+  /**
+   * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+   */
   Linq.prototype.toDictionary = function (key, value) {
     var _this = this;
     return this.aggregate(function (dicc, v, i) {
@@ -567,6 +600,7 @@ var Linq = (function () {
           return result(x, list.elementAt(y));
         });
   };
+
   return Linq;
 })();
 
@@ -577,13 +611,15 @@ var Linq = (function () {
  * calling its toDictionary, toLookup, toList or toArray methods
  */
 var OrderedList = (function (_super) {
-  __extends(OrderedList, _super);
   function OrderedList(elements, _comparer) {
     var _this = _super.call(this, elements) || this;
     _this._comparer = _comparer;
     _this._elements.sort(_this._comparer);
     return _this;
   }
+
+  OrderedList.prototype = new _super();
+  OrderedList.prototype.constructor = OrderedList;
 
   /**
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
@@ -600,6 +636,7 @@ var OrderedList = (function (_super) {
   OrderedList.prototype.thenByDescending = function (keySelector) {
     return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true)));
   };
+
   return OrderedList;
 })(Linq);
 
@@ -796,7 +833,6 @@ var Tools = (function () {
   return Tools;
 })();
 
-// exports.default = Linq;
 if (typeof module !== 'undefined') {
   if (typeof exports !== 'undefined') {
     exports = module.exports = Linq;
