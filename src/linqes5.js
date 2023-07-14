@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", { value: true });
+
 /**
  * LINQ to JavaScript (Language Integrated Query)
  */
