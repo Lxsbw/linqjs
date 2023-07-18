@@ -620,7 +620,7 @@ var OrderedList = (function (_super) {
     return _this;
   }
 
-  OrderedList.prototype = new _super();
+  OrderedList.prototype = Object.create(_super.prototype);
   OrderedList.prototype.constructor = OrderedList;
 
   /**
