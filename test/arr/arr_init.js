@@ -283,7 +283,7 @@
   Linq.toDictionary = function (key, value) {
     var _this = this;
     return this.aggregate(function (dicc, v, i) {
-      dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
+      // dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
       dicc.add({
         Key: _this.select(key).elementAt(i),
         Value: value ? _this.select(value).elementAt(i) : v
