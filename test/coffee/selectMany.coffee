@@ -8,6 +8,9 @@ parameters = [
 ]
 
 results = new Linq(parameters).selectMany((value) -> new Linq(value.Numbers)).toArray()
+# results2 = new Linq(parameters).selectMany((value) -> value.Name).toArray()
 
 console.log 'results:', results
 console.log 'results:', results.length
+
+# console.log 'results2:', results2

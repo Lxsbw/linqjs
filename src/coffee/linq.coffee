@@ -359,9 +359,8 @@ class Linq
     Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
   ###
   selectMany: (selector) ->
-    _this = @
-    return @aggregate(((ac, _, i) ->
-      ac.addRange(_this.select(selector).elementAt(i).toArray())
+    return @aggregate(((ac, _, i) =>
+      ac.addRange(@select(selector).elementAt(i).toArray())
       ac
     ), new Linq())
 
@@ -450,13 +449,11 @@ class Linq
     Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
   ###
   toDictionary: (key, value) ->
-    _this = @
-    return @aggregate((dicc, v, i) ->
-      dicc[_this.select(key).elementAt(i).toString()] = if value then _this.select(value).elementAt(i) else v
-
+    return @aggregate((dicc, v, i) =>
+      # dicc[@select(key).elementAt(i).toString()] = if value then @select(value).elementAt(i) else v
       dicc.add({
-        Key: _this.select(key).elementAt(i),
-        Value: if value then _this.select(value).elementAt(i) else v
+        Key: @select(key).elementAt(i),
+        Value: if value then @select(value).elementAt(i) else v
       })
       return dicc
     , new Linq())
