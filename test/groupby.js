@@ -1,6 +1,7 @@
 var data, Linq, result;
 
 Linq = require('../src/linq');
+// Linq = require('../src/es5/linq');
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },

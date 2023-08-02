@@ -65,7 +65,7 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   average(transform) {
-    return tools.calcNumDiv(this.sum(transform), this.count());
+    return Tools.calcNumDiv(this.sum(transform), this.count());
   }
 
   /**
@@ -115,7 +115,7 @@ class Linq {
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
   distinct() {
-    return this.where((value, index, iter) => (tools.isObject(value) ? iter.findIndex(obj => tools.equal(obj, value)) : iter.indexOf(value)) === index);
+    return this.where((value, index, iter) => (Tools.isObject(value) ? iter.findIndex(obj => Tools.equal(obj, value)) : iter.indexOf(value)) === index);
   }
 
   /**
@@ -125,7 +125,7 @@ class Linq {
     const groups = this.groupBy(keySelector);
 
     const func = function (res, key) {
-      const curr = new Linq(groups).firstOrDefault(x => tools.equal(x.key, key));
+      const curr = new Linq(groups).firstOrDefault(x => Tools.equal(x.key, key));
       res.add(curr.elements[0]);
       return res;
     };
@@ -200,7 +200,7 @@ class Linq {
     const initialValue = [];
     const func = function (ac, v) {
       const key = grouper(v);
-      const existingGroup = new Linq(ac).firstOrDefault(x => tools.equal(x.key, key));
+      const existingGroup = new Linq(ac).firstOrDefault(x => Tools.equal(x.key, key));
       const mappedValue = mapper(v);
       if (existingGroup) {
         existingGroup.elements.push(mappedValue);
@@ -326,17 +326,17 @@ class Linq {
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  orderBy(keySelector, comparer = tools.keyComparer(keySelector, false)) {
+  orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
   }
 
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  orderByDescending(keySelector, comparer = tools.keyComparer(keySelector, true)) {
+  orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
   }
 
   /**
@@ -364,7 +364,7 @@ class Linq {
    * Removes all the elements that match the conditions defined by the specified predicate.
    */
   removeAll(predicate) {
-    return this.where(tools.negate(predicate));
+    return this.where(Tools.negate(predicate));
   }
 
   /**
@@ -447,7 +447,7 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   sum(transform) {
-    return transform ? this.select(transform).sum() : this.aggregate((ac, v) => (ac = tools.calcNum(ac, +v)), 0);
+    return transform ? this.select(transform).sum() : this.aggregate((ac, v) => (ac = Tools.calcNum(ac, +v)), 0);
   }
 
   /**
@@ -531,7 +531,7 @@ class Linq {
    * Determine if two objects are equal.
    */
   // equals(param1, param2) {
-  //   return tools.equal(param1, param2);
+  //   return Tools.equal(param1, param2);
   // }
 }
 
@@ -553,7 +553,7 @@ class OrderedList extends Linq {
    * @override
    */
   thenBy(keySelector) {
-    return new OrderedList(this._elements, tools.composeComparers(this._comparer, tools.keyComparer(keySelector, false)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false)));
   }
 
   /**
@@ -561,14 +561,14 @@ class OrderedList extends Linq {
    * @override
    */
   thenByDescending(keySelector) {
-    return new OrderedList(this._elements, tools.composeComparers(this._comparer, tools.keyComparer(keySelector, true)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true)));
   }
 }
 
 /**
  * Tool method
  */
-const tools = {
+const Tools = {
   /**
    * Checks if the argument passed is an object
    */
@@ -648,11 +648,11 @@ const tools = {
       }
     };
 
-    return function (a, b) {
+    return (a, b) => {
       const sortKeyA = _keySelector(a);
       const sortKeyB = _keySelector(b);
 
-      if (tools.isString(sortKeyA) && tools.isString(sortKeyB)) {
+      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
         return _stringComparer(sortKeyA, sortKeyB);
       }
       return _comparer(sortKeyA, sortKeyB);

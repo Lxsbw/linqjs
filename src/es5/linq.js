@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 /**
- * LINQ to JavaScript (Language Integrated Query)
+ * LINQ to JavaScript ES6 (Language Integrated Query)
  */
 var Linq = (function () {
   /**
@@ -647,8 +647,6 @@ var OrderedList = (function (_super) {
  */
 var Tools = (function () {
   function Tools() {}
-  var _a;
-  _a = Tools;
 
   /**
    * Checks if the argument passed is an object
@@ -663,7 +661,7 @@ var Tools = (function () {
   Tools.equal = function (a, b) {
     if (a === b) return true;
     if (typeof a !== typeof b) return false;
-    if (!_a.isObject(a) || !_a.isObject(b)) return a === b;
+    if (!Tools.isObject(a) || !Tools.isObject(b)) return a === b;
     var types = [a, b].map(function (x) {
       return x.constructor;
     });

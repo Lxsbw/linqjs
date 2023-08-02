@@ -57,7 +57,7 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   average: (transform) ->
-    return tools.calcNumDiv(@sum(transform), @count())
+    return Tools.calcNumDiv(@sum(transform), @count())
 
   ###
     Casts the elements of a sequence to the specified type.
@@ -102,7 +102,7 @@ class Linq
   distinct: () ->
     return @where((value, index, iter) ->
       return (
-        (if tools.isObject(value) then iter.findIndex((obj) -> tools.equal(obj, value)) else iter.indexOf(value)) is index
+        (if Tools.isObject(value) then iter.findIndex((obj) -> Tools.equal(obj, value)) else iter.indexOf(value)) is index
       )
     )
 
@@ -113,7 +113,7 @@ class Linq
     groups = @groupBy(keySelector)
 
     func = (res, key) ->
-      curr = new Linq(groups).firstOrDefault((x) -> tools.equal(x.key, key))
+      curr = new Linq(groups).firstOrDefault((x) -> Tools.equal(x.key, key))
       res.add(curr.elements[0])
       return res
 
@@ -179,7 +179,7 @@ class Linq
 
     func = (ac, v) ->
       key = grouper(v)
-      existingGroup = new Linq(ac).firstOrDefault((x) -> tools.equal(x.key, key))
+      existingGroup = new Linq(ac).firstOrDefault((x) -> Tools.equal(x.key, key))
       mappedValue = mapper(v)
 
       if existingGroup
@@ -293,18 +293,18 @@ class Linq
   ###
   orderBy: (keySelector, comparer) ->
     if (comparer is undefined)
-      comparer = tools.keyComparer(keySelector, false)
+      comparer = Tools.keyComparer(keySelector, false)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
 
   ###
     Sorts the elements of a sequence in descending order according to a key.
   ###
   orderByDescending: (keySelector, comparer) ->
     if (comparer is undefined)
-      comparer = tools.keyComparer(keySelector, true)
+      comparer = Tools.keyComparer(keySelector, true)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in
@@ -330,7 +330,7 @@ class Linq
     Removes all the elements that match the conditions defined by the specified predicate.
   ###
   removeAll: (predicate) ->
-    return @where(tools.negate(predicate))
+    return @where Tools.negate(predicate)
 
   ###
     Removes the element at the specified index of the List<T>.
@@ -407,7 +407,7 @@ class Linq
     a transform function on each element of the input sequence.
   ###
   sum: (transform) ->
-    return if transform then @select(transform).sum() else @aggregate(((ac, v) -> return (ac = tools.calcNum(ac, +v))), 0)
+    return if transform then @select(transform).sum() else @aggregate(((ac, v) -> return (ac = Tools.calcNum(ac, +v))), 0)
 
   ###
     Returns a specified number of contiguous elements from the start of a sequence.
@@ -484,7 +484,7 @@ class Linq
     Determine if two objects are equal.
   ###
   # equals: (param1, param2) ->
-  #   return tools.equal(param1, param2)
+  #   return Tools.equal(param1, param2)
 
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
@@ -504,7 +504,7 @@ class OrderedList extends Linq
   thenBy: (keySelector) ->
     return new OrderedList(
       @_elements,
-      tools.composeComparers @_comparer, tools.keyComparer(keySelector, false))
+      Tools.composeComparers @_comparer, Tools.keyComparer(keySelector, false))
 
   ###
     Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
@@ -513,12 +513,12 @@ class OrderedList extends Linq
   thenByDescending: (keySelector) ->
     return new OrderedList(
       @_elements,
-      tools.composeComparers @_comparer, tools.keyComparer(keySelector, true))
+      Tools.composeComparers @_comparer, Tools.keyComparer(keySelector, true))
 
 ###
   Tool method
 ###
-tools = {
+Tools = {
   ###
     Checks if the argument passed is an object
   ###
