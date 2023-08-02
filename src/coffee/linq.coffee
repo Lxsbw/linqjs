@@ -81,7 +81,7 @@ class Linq
     Determines whether an element is in the List<T>.
   ###
   contains: (element) ->
-    return @any((x) -> x is element)
+    return @any (x) -> x is element
 
   ###
     Returns the number of elements in a sequence.
@@ -144,7 +144,7 @@ class Linq
     Produces the set difference of two sequences by using the default equality comparer to compare values.
   ###
   except: (source) ->
-    return @where((x) -> !source.contains(x))
+    return @where (x) -> !source.contains(x)
 
   ###
     Returns the first element of a sequence.
@@ -186,11 +186,7 @@ class Linq
         existingGroup.elements.push(mappedValue)
         existingGroup.count++
       else
-        existingMap = {
-          key: key,
-          count: 1,
-          elements: [mappedValue]
-        }
+        existingMap = { key: key, count: 1, elements: [mappedValue] }
         ac.push(existingMap)
       return ac
 
@@ -201,9 +197,8 @@ class Linq
     The default equality comparer is used to compare keys.
   ###
   groupJoin: (list, key1, key2, result) ->
-    return @select((x) ->
+    return @select (x) ->
       return result x, list.where((z) -> key1(x) is key2(z))
-    )
 
   ###
     Returns the index of the first occurence of an element in the List.
@@ -368,7 +363,7 @@ class Linq
     Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
   ###
   sequenceEqual: (list) ->
-    return @all((e) -> list.contains(e))
+    return @all (e) -> list.contains(e)
 
   ###
     Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
@@ -402,12 +397,10 @@ class Linq
     Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
   ###
   skipWhile: (predicate) ->
-    _this = @
     return @skip(
-      @aggregate((ac) ->
-        return if predicate(_this.elementAt(ac)) then ++ac else ac
-      , 0)
-    )
+      @aggregate((ac) =>
+        return if predicate(@elementAt(ac)) then ++ac else ac
+      , 0))
 
   ###
     Computes the sum of the sequence of number values that are obtained by invoking
@@ -432,10 +425,9 @@ class Linq
     Returns elements from a sequence as long as a specified condition is true.
   ###
   takeWhile: (predicate) ->
-    _this = @
     return @take(
-      @aggregate((ac) ->
-        return if predicate(_this.elementAt(ac)) then ++ac else ac
+      @aggregate((ac) =>
+        return if predicate(@elementAt(ac)) then ++ac else ac
       , 0)
     )
 
@@ -486,8 +478,7 @@ class Linq
     Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
   ###
   zip: (list, result) ->
-    _this = @
-    return if list.count() < @count() then list.select((x, y) -> result(_this.elementAt(y), x)) else @select((x, y) -> result(x, list.elementAt(y)))
+    return if list.count() < @count() then list.select((x, y) => result(@elementAt(y), x)) else @select((x, y) -> result(x, list.elementAt(y)))
 
   ###
     Determine if two objects are equal.
@@ -571,8 +562,9 @@ tools = {
   ###
     Comparer helpers
   ###
-  composeComparers: (previousComparer, currentComparer) -> return (a, b) ->
-    return previousComparer(a, b) || currentComparer(a, b)
+  composeComparers: (previousComparer, currentComparer) ->
+    return (a, b) ->
+      return previousComparer(a, b) || currentComparer(a, b)
 
   ###
     Key comparer

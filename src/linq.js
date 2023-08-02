@@ -7,10 +7,7 @@ class Linq {
   /**
    * Defaults the elements of the list
    */
-  constructor(elements) {
-    if (elements === void 0) {
-      elements = [];
-    }
+  constructor(elements = []) {
     this._elements = elements;
   }
 
@@ -39,8 +36,7 @@ class Linq {
    * Adds the elements of the specified collection to the end of the List<T>.
    */
   addRange(elements) {
-    var _a;
-    (_a = this._elements).push.apply(_a, elements);
+    this._elements.push(...elements);
   }
 
   /**
@@ -97,9 +93,7 @@ class Linq {
    * Determines whether an element is in the List<T>.
    */
   contains(element) {
-    return this.any(function (x) {
-      return x === element;
-    });
+    return this.any(x => x === element);
   }
 
   /**
@@ -121,22 +115,14 @@ class Linq {
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
   distinct() {
-    return this.where(function (value, index, iter) {
-      return (
-        (tools.isObject(value)
-          ? iter.findIndex(function (obj) {
-              return tools.equal(obj, value);
-            })
-          : iter.indexOf(value)) === index
-      );
-    });
+    return this.where((value, index, iter) => (tools.isObject(value) ? iter.findIndex(obj => tools.equal(obj, value)) : iter.indexOf(value)) === index);
   }
 
   /**
    * Returns distinct elements from a sequence according to specified key selector.
    */
   distinctBy(keySelector) {
-    var groups = this.groupBy(keySelector);
+    const groups = this.groupBy(keySelector);
 
     const func = function (res, key) {
       const curr = new Linq(groups).firstOrDefault(x => tools.equal(x.key, key));
@@ -179,9 +165,7 @@ class Linq {
    * Produces the set difference of two sequences by using the default equality comparer to compare values.
    */
   except(source) {
-    return this.where(function (x) {
-      return !source.contains(x);
-    });
+    return this.where(x => !source.contains(x));
   }
 
   /**
@@ -212,33 +196,21 @@ class Linq {
   /**
    * Groups the elements of a sequence according to a specified key selector function.
    */
-  groupBy(grouper, mapper) {
-    if (mapper === void 0) {
-      mapper = function (val) {
-        return val;
-      };
-    }
-    var initialValue = [];
-
+  groupBy(grouper, mapper = val => val) {
+    const initialValue = [];
     const func = function (ac, v) {
-      var key = grouper(v);
-      var existingGroup = new Linq(ac).firstOrDefault(x => tools.equal(x.key, key));
-      var mappedValue = mapper(v);
-
+      const key = grouper(v);
+      const existingGroup = new Linq(ac).firstOrDefault(x => tools.equal(x.key, key));
+      const mappedValue = mapper(v);
       if (existingGroup) {
         existingGroup.elements.push(mappedValue);
         existingGroup.count++;
       } else {
-        let existingMap = {
-          key: key,
-          count: 1,
-          elements: [mappedValue]
-        };
+        const existingMap = { key: key, count: 1, elements: [mappedValue] };
         ac.push(existingMap);
       }
       return ac;
     };
-
     return this.aggregate(func, initialValue);
   }
 
@@ -247,14 +219,12 @@ class Linq {
    * The default equality comparer is used to compare keys.
    */
   groupJoin(list, key1, key2, result) {
-    return this.select(function (x) {
-      return result(
+    return this.select(x =>
+      result(
         x,
-        list.where(function (z) {
-          return key1(x) === key2(z);
-        })
-      );
-    });
+        list.where(z => key1(x) === key2(z))
+      )
+    );
   }
 
   /**
@@ -278,9 +248,7 @@ class Linq {
    * Produces the set intersection of two sequences by using the default equality comparer to compare values.
    */
   intersect(source) {
-    return this.where(function (x) {
-      return source.contains(x);
-    });
+    return this.where(x => source.contains(x));
   }
 
   /**
@@ -293,15 +261,7 @@ class Linq {
       }, new Linq());
     };
 
-    return selectmany(function (x) {
-      return list
-        .where(function (y) {
-          return key2(y) === key1(x);
-        })
-        .select(function (z) {
-          return result(x, z);
-        });
-    });
+    return selectmany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
   }
 
   /**
@@ -326,27 +286,23 @@ class Linq {
    * Returns the maximum value in a generic sequence.
    */
   max(selector) {
-    var id = function (x) {
-      return x;
-    };
-    return Math.max.apply(Math, this._elements.map(selector || id));
+    const id = x => x;
+    return Math.max(...this._elements.map(selector || id));
   }
 
   /**
    * Returns the minimum value in a generic sequence.
    */
   min(selector) {
-    var id = function (x) {
-      return x;
-    };
-    return Math.min.apply(Math, this._elements.map(selector || id));
+    const id = x => x;
+    return Math.min(...this._elements.map(selector || id));
   }
 
   /**
    * Filters the elements of a sequence based on a specified type.
    */
   ofType(type) {
-    var typeName;
+    let typeName;
     switch (type) {
       case Number:
         typeName = typeof 0;
@@ -364,22 +320,13 @@ class Linq {
         typeName = null;
         break;
     }
-    return typeName === null
-      ? this.where(function (x) {
-          return x instanceof type;
-        }).cast()
-      : this.where(function (x) {
-          return typeof x === typeName;
-        }).cast();
+    return typeName === null ? this.where(x => x instanceof type).cast() : this.where(x => typeof x === typeName).cast();
   }
 
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  orderBy(keySelector, comparer) {
-    if (comparer === void 0) {
-      comparer = tools.keyComparer(keySelector, false);
-    }
+  orderBy(keySelector, comparer = tools.keyComparer(keySelector, false)) {
     // tslint:disable-next-line: no-use-before-declare
     return new OrderedList(tools.cloneDeep(this._elements), comparer);
   }
@@ -387,10 +334,7 @@ class Linq {
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  orderByDescending(keySelector, comparer) {
-    if (comparer === void 0) {
-      comparer = tools.keyComparer(keySelector, true);
-    }
+  orderByDescending(keySelector, comparer = tools.keyComparer(keySelector, true)) {
     // tslint:disable-next-line: no-use-before-declare
     return new OrderedList(tools.cloneDeep(this._elements), comparer);
   }
@@ -448,19 +392,14 @@ class Linq {
    * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
    */
   selectMany(selector) {
-    var _this = this;
-    return this.aggregate(function (ac, _, i) {
-      return ac.addRange(_this.select(selector).elementAt(i).toArray()), ac;
-    }, new Linq());
+    return this.aggregate((ac, _, i) => (ac.addRange(this.select(selector).elementAt(i).toArray()), ac), new Linq());
   }
 
   /**
    * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
    */
   sequenceEqual(list) {
-    return this.all(function (e) {
-      return list.contains(e);
-    });
+    return this.all(e => list.contains(e));
   }
 
   /**
@@ -500,12 +439,7 @@ class Linq {
    * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
    */
   skipWhile(predicate) {
-    var _this = this;
-    return this.skip(
-      this.aggregate(function (ac) {
-        return predicate(_this.elementAt(ac)) ? ++ac : ac;
-      }, 0)
-    );
+    return this.skip(this.aggregate(ac => (predicate(this.elementAt(ac)) ? ++ac : ac), 0));
   }
 
   /**
@@ -513,11 +447,7 @@ class Linq {
    * a transform function on each element of the input sequence.
    */
   sum(transform) {
-    return transform
-      ? this.select(transform).sum()
-      : this.aggregate(function (ac, v) {
-          return (ac = tools.calcNum(ac, +v));
-        }, 0);
+    return transform ? this.select(transform).sum() : this.aggregate((ac, v) => (ac = tools.calcNum(ac, +v)), 0);
   }
 
   /**
@@ -538,12 +468,7 @@ class Linq {
    * Returns elements from a sequence as long as a specified condition is true.
    */
   takeWhile(predicate) {
-    var _this = this;
-    return this.take(
-      this.aggregate(function (ac) {
-        return predicate(_this.elementAt(ac)) ? ++ac : ac;
-      }, 0)
-    );
+    return this.take(this.aggregate(ac => (predicate(this.elementAt(ac)) ? ++ac : ac), 0));
   }
 
   /**
@@ -557,12 +482,11 @@ class Linq {
    * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
    */
   toDictionary(key, value) {
-    var _this = this;
-    return this.aggregate(function (dicc, v, i) {
-      // dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
+    return this.aggregate((dicc, v, i) => {
+      dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
-        Key: _this.select(key).elementAt(i),
-        Value: value ? _this.select(value).elementAt(i) : v
+        Key: this.select(key).elementAt(i),
+        Value: value ? this.select(value).elementAt(i) : v
       });
       return dicc;
     }, new Linq());
@@ -600,14 +524,7 @@ class Linq {
    * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
    */
   zip(list, result) {
-    var _this = this;
-    return list.count() < this.count()
-      ? list.select(function (x, y) {
-          return result(_this.elementAt(y), x);
-        })
-      : this.select(function (x, y) {
-          return result(x, list.elementAt(y));
-        });
+    return list.count() < this.count() ? list.select((x, y) => result(this.elementAt(y), x)) : this.select((x, y) => result(x, list.elementAt(y)));
   }
 
   /**
@@ -669,20 +586,19 @@ const tools = {
 
     const types = [a, b].map(x => x.constructor);
     if (types[0] !== types[1]) return false;
-    
+
     if (a instanceof Date && b instanceof Date) {
       return a.getTime() === b.getTime();
     }
     if (a instanceof RegExp && b instanceof RegExp) {
       return a.toString() === b.toString();
     }
-    
-    var entriesA = Object.entries(a);
-    var entriesB = Object.entries(b);
+
+    const entriesA = Object.entries(a);
+    const entriesB = Object.entries(b);
     if (entriesA.length !== entriesB.length) return false;
 
-    var Fn = (entries, _b) =>
-      entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
+    const Fn = (entries, _b) => entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
 
     return Fn(entriesA, b) && Fn(entriesB, a);
   },
@@ -704,9 +620,7 @@ const tools = {
    * Comparer helpers
    */
   composeComparers(previousComparer, currentComparer) {
-    return function (a, b) {
-      return previousComparer(a, b) || currentComparer(a, b);
-    };
+    return (a, b) => previousComparer(a, b) || currentComparer(a, b);
   },
 
   /**
@@ -714,7 +628,7 @@ const tools = {
    */
   keyComparer(_keySelector, descending) {
     // common comparer
-    var _comparer = function (sortKeyA, sortKeyB) {
+    const _comparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA > sortKeyB) {
         return !descending ? 1 : -1;
       } else if (sortKeyA < sortKeyB) {
@@ -723,9 +637,8 @@ const tools = {
         return 0;
       }
     };
-
     // string comparer
-    var _stringComparer = function (sortKeyA, sortKeyB) {
+    const _stringComparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA.localeCompare(sortKeyB) > 0) {
         return !descending ? 1 : -1;
       } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
@@ -736,8 +649,8 @@ const tools = {
     };
 
     return function (a, b) {
-      var sortKeyA = _keySelector(a);
-      var sortKeyB = _keySelector(b);
+      const sortKeyA = _keySelector(a);
+      const sortKeyB = _keySelector(b);
 
       if (tools.isString(sortKeyA) && tools.isString(sortKeyB)) {
         return _stringComparer(sortKeyA, sortKeyB);
