@@ -9,16 +9,15 @@ parameters = [
   { ID: 4, Age: 18, Name: '征史郎' }
 ];
 
-dictionary = parameters.toDictionary(x => x.ID)//.toArray();
+dictionary = parameters.toDictionary(x => x.ID);
 
 dictionary2 = parameters
   .toDictionary(function (value) {
     return { ID: value.ID, Name: value.Name };
-  })
-  .toArray();
+  });
 
 // dictionary3  =  parameters.toDictionary \
-//   ((value) -> value.ID, (value) -> value.Name).toArray()
+//   ((value) -> value.ID, (value) -> value.Name)
 console.log('dictionary:', dictionary);
 
 console.log('dictionary2:', dictionary2);

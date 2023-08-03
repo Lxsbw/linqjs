@@ -13,13 +13,13 @@ parameters = [
   { ID: 42, Rate: 0.3, Name: '征史郎' }
 ];
 
-dataA_D = dataA.distinct().toArray();
-dataB_D = dataB.distinct().toArray();
-dataC_D = dataC.distinct().toArray();
+dataA_D = dataA.distinct();
+dataB_D = dataB.distinct();
+dataC_D = dataC.distinct();
 dataC_E = parameters
   .select(x => x.Name)
   .distinct()
-  .toArray();
+  ;
 
 console.log('dataA_D:', dataA_D);
 console.log('dataB_D:', dataB_D);

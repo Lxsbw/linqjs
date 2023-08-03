@@ -13,8 +13,8 @@ results = parameters
   .select(value => {
     return { ID: value.ID, Name: value.Name };
   })
-  .toArray();
+  ;
 
-results2 = parameters.select(value => value.Name).toArray();
+results2 = parameters.select(value => value.Name);
 
 console.log('results:', results, results2);

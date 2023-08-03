@@ -18,11 +18,11 @@ parameters = [
 
 // parameters = [];
 
-// dataC_E = parameters.select(x=>x.Name).distinct().toArray();
+// dataC_E = parameters.select(x=>x.Name).distinct();
 
 let boxs = parameters.select(x => x.box).distinct();
 
 const res = boxs.count(x => parameters.where(p => p.box === x).all(p => [30, 40].includes(p.status)));
 
-console.log('boxs:', boxs.toArray());
+console.log('boxs:', boxs);
 console.log('res:', res);

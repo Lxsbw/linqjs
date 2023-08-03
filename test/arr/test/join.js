@@ -25,6 +25,6 @@ const result = persons
       return { CityID: c.ID, PersonName: p.Name, CityName: c.Name };
     }
   )
-  .toArray();
+  ;
 
 console.log('result:', result);

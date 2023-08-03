@@ -17,13 +17,13 @@ parameters = [
   { ID: 27, Rate: 0.0, Name: '正二郎' }
 ];
 
-dataC_F = parameters.distinctMap(x => x.Name).toArray();
+dataC_F = parameters.distinctMap(x => x.Name);
 dataC_G = parameters
   .distinctMap(x => {
     return { Name: x.Name };
   })
-  .toArray();
-dataC_H = dataA.distinctMap().toArray();
+  ;
+dataC_H = dataA.distinctMap();
 
 console.log('dataC_F:', dataC_F);
 console.log('dataC_G:', dataC_G);

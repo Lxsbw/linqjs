@@ -7,10 +7,10 @@ numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 // 开始的3个
-takenNumbers = numbers.take(3).toArray();
+takenNumbers = numbers.take(3);
 
 // 开始的4个
-takenTexts = texts.take(4).toArray();
+takenTexts = texts.take(4);
 
 console.log('takenNumbers:', takenNumbers);
 
