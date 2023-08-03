@@ -428,8 +428,7 @@ class Linq
     return @take(
       @aggregate((ac) =>
         return if predicate(@elementAt(ac)) then ++ac else ac
-      , 0)
-    )
+      , 0))
 
   ###
     Copies the elements of the List<T> to a new array.
