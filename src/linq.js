@@ -477,7 +477,7 @@ class Linq {
    */
   toDictionary(key, value) {
     return this.aggregate((dicc, v, i) => {
-      dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
+      // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
         Key: this.select(key).elementAt(i),
         Value: value ? this.select(value).elementAt(i) : v

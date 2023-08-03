@@ -12,8 +12,7 @@
    * Adds the elements of the specified collection to the end of the List<T>.
    */
   Linq.addRange = function (elements) {
-    var _a;
-    (_a = this).push.apply(_a, elements);
+    this.push(...elements);
   };
 
   /**
@@ -42,7 +41,7 @@
    * a transform function on each element of the input sequence.
    */
   Linq.average = function (transform) {
-    return tools.calcNumDiv(this.sum(transform), this.count());
+    return Tools.calcNumDiv(this.sum(transform), this.count());
   };
 
   /**
@@ -56,25 +55,17 @@
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
   Linq.distinct = function () {
-    return this.where(function (value, index, iter) {
-      return (
-        (tools.isObject(value)
-          ? iter.findIndex(function (obj) {
-              return tools.equal(obj, value);
-            })
-          : iter.indexOf(value)) === index
-      );
-    });
+    return this.where((value, index, iter) => (Tools.isObject(value) ? iter.findIndex(obj => Tools.equal(obj, value)) : iter.indexOf(value)) === index);
   };
 
   /**
    * Returns distinct elements from a sequence according to specified key selector.
    */
   Linq.distinctBy = function (keySelector) {
-    var groups = this.groupBy(keySelector);
+    const groups = this.groupBy(keySelector);
 
     const func = function (res, key) {
-      const curr = groups.firstOrDefault(x => tools.equal(x.key, key));
+      const curr = groups.firstOrDefault(x => Tools.equal(x.key, key));
       res.add(curr.elements[0]);
       return res;
     };
@@ -121,33 +112,21 @@
   /**
    * Groups the elements of a sequence according to a specified key selector function.
    */
-  Linq.groupBy = function (grouper, mapper) {
-    if (mapper === void 0) {
-      mapper = function (val) {
-        return val;
-      };
-    }
-    var initialValue = [];
-
+  Linq.groupBy = function (grouper, mapper = val => val) {
+    const initialValue = [];
     const func = function (ac, v) {
-      var key = grouper(v);
-      var existingGroup = ac.firstOrDefault(x => tools.equal(x.key, key));
-      var mappedValue = mapper(v);
-
+      const key = grouper(v);
+      const existingGroup = ac.firstOrDefault(x => Tools.equal(x.key, key));
+      const mappedValue = mapper(v);
       if (existingGroup) {
         existingGroup.elements.push(mappedValue);
         existingGroup.count++;
       } else {
-        let existingMap = {
-          key: key,
-          count: 1,
-          elements: [mappedValue]
-        };
+        const existingMap = { key: key, count: 1, elements: [mappedValue] };
         ac.push(existingMap);
       }
       return ac;
     };
-
     return this.aggregate(func, initialValue);
   };
 
@@ -155,41 +134,23 @@
    * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
    */
   Linq.join = function (list, key1, key2, result) {
-    const selectmany = selector => {
-      return this.aggregate((ac, _, i) => {
-        return ac.addRange(this.select(selector).elementAt(i)), ac;
-      }, []);
-    };
-
-    return selectmany(function (x) {
-      return list
-        .where(function (y) {
-          return key2(y) === key1(x);
-        })
-        .select(function (z) {
-          return result(x, z);
-        });
-    });
+    return this.selectMany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
   };
 
   /**
    * Returns the maximum value in a generic sequence.
    */
   Linq.max = function (selector) {
-    var id = function (x) {
-      return x;
-    };
-    return Math.max.apply(Math, this.map(selector || id));
+    const id = x => x;
+    return Math.max(...this.map(selector || id));
   };
 
   /**
    * Returns the minimum value in a generic sequence.
    */
   Linq.min = function (selector) {
-    var id = function (x) {
-      return x;
-    };
-    return Math.min.apply(Math, this.map(selector || id));
+    const id = x => x;
+    return Math.min(...this.map(selector || id));
   };
 
   /**
@@ -203,7 +164,7 @@
    * Removes all the elements that match the conditions defined by the specified predicate.
    */
   Linq.removeAll = function (predicate) {
-    return this.where(tools.negate(predicate));
+    return this.where(Tools.negate(predicate));
   };
 
   /**
@@ -224,10 +185,7 @@
    * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
    */
   Linq.selectMany = function (selector) {
-    var _this = this;
-    return this.aggregate(function (ac, _, i) {
-      return ac.addRange(_this.select(selector).elementAt(i)), ac;
-    }, []);
+    return this.aggregate((ac, _, i) => (ac.addRange(this.select(selector).elementAt(i)), ac), []);
   };
 
   /**
@@ -249,11 +207,7 @@
    * a transform function on each element of the input sequence.
    */
   Linq.sum = function (transform) {
-    return transform
-      ? this.select(transform).sum()
-      : this.aggregate(function (ac, v) {
-          return (ac = tools.calcNum(ac, +v));
-        }, 0);
+    return transform ? this.select(transform).sum() : this.aggregate((ac, v) => (ac = Tools.calcNum(ac, +v)), 0);
   };
 
   /**
@@ -281,12 +235,11 @@
    * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
    */
   Linq.toDictionary = function (key, value) {
-    var _this = this;
-    return this.aggregate(function (dicc, v, i) {
-      // dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
+    return this.aggregate((dicc, v, i) => {
+      // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
-        Key: _this.select(key).elementAt(i),
-        Value: value ? _this.select(value).elementAt(i) : v
+        Key: this.select(key).elementAt(i),
+        Value: value ? this.select(value).elementAt(i) : v
       });
       return dicc;
     }, []);
@@ -305,7 +258,7 @@
 /**
  * Tool method
  */
-const tools = {
+const Tools = {
   /**
    * Checks if the argument passed is an object
    */
@@ -331,11 +284,11 @@ const tools = {
       return a.toString() === b.toString();
     }
 
-    var entriesA = Object.entries(a);
-    var entriesB = Object.entries(b);
+    const entriesA = Object.entries(a);
+    const entriesB = Object.entries(b);
     if (entriesA.length !== entriesB.length) return false;
 
-    var Fn = (entries, _b) => entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
+    const Fn = (entries, _b) => entries.every(([key, val]) => (this.isObject(val) ? this.equal(_b[key], val) : _b[key] === val));
 
     return Fn(entriesA, b) && Fn(entriesB, a);
   },
@@ -357,9 +310,7 @@ const tools = {
    * Comparer helpers
    */
   composeComparers(previousComparer, currentComparer) {
-    return function (a, b) {
-      return previousComparer(a, b) || currentComparer(a, b);
-    };
+    return (a, b) => previousComparer(a, b) || currentComparer(a, b);
   },
 
   /**
@@ -367,7 +318,7 @@ const tools = {
    */
   keyComparer(_keySelector, descending) {
     // common comparer
-    var _comparer = function (sortKeyA, sortKeyB) {
+    const _comparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA > sortKeyB) {
         return !descending ? 1 : -1;
       } else if (sortKeyA < sortKeyB) {
@@ -376,9 +327,8 @@ const tools = {
         return 0;
       }
     };
-
     // string comparer
-    var _stringComparer = function (sortKeyA, sortKeyB) {
+    const _stringComparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA.localeCompare(sortKeyB) > 0) {
         return !descending ? 1 : -1;
       } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
@@ -388,11 +338,11 @@ const tools = {
       }
     };
 
-    return function (a, b) {
-      var sortKeyA = _keySelector(a);
-      var sortKeyB = _keySelector(b);
+    return (a, b) => {
+      const sortKeyA = _keySelector(a);
+      const sortKeyB = _keySelector(b);
 
-      if (tools.isString(sortKeyA) && tools.isString(sortKeyB)) {
+      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
         return _stringComparer(sortKeyA, sortKeyB);
       }
       return _comparer(sortKeyA, sortKeyB);
