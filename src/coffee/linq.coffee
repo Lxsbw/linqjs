@@ -218,23 +218,14 @@ class Linq
     Produces the set intersection of two sequences by using the default equality comparer to compare values.
   ###
   intersect: (source) ->
-    return @where((x) -> source.contains(x))
+    return @where (x) -> source.contains(x)
 
   ###
     Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
   ###
   join: (list, key1, key2, result) ->
-    selectmany = (selector) =>
-      return @aggregate(((ac, _, i) =>
-        ac.addRange(@select(selector).elementAt(i).toArray())
-        ac
-      ), new Linq())
-
-    return selectmany((x) ->
-      return list
-        .where((y) -> key2(y) is key1(x))
-        .select((z) -> result(x, z))
-    )
+    return @selectMany (x) ->
+      return list.where((y) -> key2(y) is key1(x)).select((z) -> result(x, z))
 
   ###
     Returns the last element of a sequence.

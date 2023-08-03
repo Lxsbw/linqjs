@@ -255,13 +255,7 @@ class Linq {
    * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
    */
   join(list, key1, key2, result) {
-    const selectmany = selector => {
-      return this.aggregate((ac, _, i) => {
-        return ac.addRange(this.select(selector).elementAt(i).toArray()), ac;
-      }, new Linq());
-    };
-
-    return selectmany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
+    return this.selectMany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
   }
 
   /**
