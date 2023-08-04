@@ -1,7 +1,6 @@
 var data, Linq, result;
 
-Linq = require('../src/linq');
-// Linq = require('../src/es5/linq');
+require('../arr_init');
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
@@ -13,22 +12,22 @@ data = [
 ];
 
 // 分组
-// console.log('this:', new Linq(data));
-// // console.log('__proto__:', new Linq(data).__proto__);
-// console.log('get:', Object.getOwnPropertyNames(new Linq(data).__proto__));
-// console.log('__proto__ keys:', Object.keys(new Linq(data).__proto__));
-result = new Linq(data).groupBy(el => el.category);
-// result = new Linq(data).groupBy(el => el.category);
-// result = new Linq(data).groupBy((el) => {
+// console.log('this:', data);
+// // console.log('__proto__:', data.__proto__);
+// console.log('get:', Object.getOwnPropertyNames(data.__proto__));
+// console.log('__proto__ keys:', Object.keys(data.__proto__));
+result = data.groupBy(el => el.category);
+// result = data.groupBy(el => el.category);
+// result = data.groupBy((el) => {
 //   return { id: el.id, category: el.category };
 // });
 // 定制化结果分组
 // func = (x) => {
 //   return { id: x.id, category: x.category };
 // };
-// result = new Linq(data).groupBy((el) => el.category, func);
+// result = data.groupBy((el) => el.category, func);
 
-// result = new Linq(data).toLookup(el => el.category);
+// result = data.toLookup(el => el.category);
 
 // result.forEach(x => console.log(x.key.toString(), x.count));
 

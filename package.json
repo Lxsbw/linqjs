@@ -1,6 +1,6 @@
 {
   "name": "linq-to-js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Linq + JavaScript",
   "main": "src/linq.js",
   "types": "src/linq.d.ts",
@@ -9,7 +9,9 @@
     "src/*.d.ts"
   ],
   "scripts": {
-    "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle"
+    "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
+    "buildes": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
+    "cbuild": "coffee -o ./build/clinq.js -c -b ./src/coffee/linq.coffee"
   },
   "repository": {
     "type": "git",
