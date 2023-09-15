@@ -4,6 +4,7 @@
 .idea
 logs
 dist
+coverage
 node_modules
 heapdump-*
 package-lock.json

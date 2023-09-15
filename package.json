@@ -11,7 +11,9 @@
   "scripts": {
     "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
     "buildes": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
-    "cbuild": "coffee -o ./build/clinq.js -c -b ./src/coffee/linq.coffee"
+    "cbuild": "coffee -o ./build/clinq.js -c -b ./src/coffee/linq.coffee",
+    "test": "jest",
+    "testc": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -29,5 +31,7 @@
   "license": "MIT",
   "homepage": "https://github.com/Lxsbw/linqjs#README",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "jest": "~29.7.0"
+  }
 }
