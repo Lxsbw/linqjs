@@ -1,6 +1,6 @@
 var dataA, dataB, dataC, dataC_F, dataC_G, dataC_H, Linq;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 
 dataA = [0, 1, 3, 3, 2];
 dataB = [1.5, 1.5, 1.5, 1.5];

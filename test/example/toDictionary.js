@@ -1,6 +1,6 @@
 var dictionary, dictionary2, Linq, parameters;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 
 parameters = [
   { ID: 0, Age: 52, Name: '正一郎' },

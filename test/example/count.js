@@ -1,6 +1,6 @@
 var intArray, intCount, intCount2, Linq, stringCount, stringCount2, stringList;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 
 intArray = [1, 5, 8, 12, 15, 16];
 stringList = ['正一郎', '清次郎', '誠三郎', '征史郎'];
@@ -26,7 +26,7 @@ intCount2 = new Linq(intArray).count(x => x % 2 === 0);
 stringCount2 = new Linq(stringList).count(x => x.indexOf('三') >= 0);
 
 const Qty = new Linq(parameters).count(x => x.sn && x.sn.length > 0);
-const noQty = new Linq(parameters).where(x => !x.sn);
+const noQty = new Linq(parameters).where(x => !x.sn).toArray();
 
 console.log('intCount:', intCount);
 console.log('stringCount:', stringCount);

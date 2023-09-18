@@ -1,6 +1,6 @@
 var Linq, orderByID, persons, persons2, persons3, thenByAge, thenByName;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 
 persons = [
   { ID: 0, Age: 30, Name: 'A' },

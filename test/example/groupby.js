@@ -1,6 +1,6 @@
 var data, Linq, result;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 // Linq = require('../src/es5/linq');
 
 data = [
@@ -13,12 +13,7 @@ data = [
 ];
 
 // 分组
-// console.log('this:', new Linq(data));
-// // console.log('__proto__:', new Linq(data).__proto__);
-// console.log('get:', Object.getOwnPropertyNames(new Linq(data).__proto__));
-// console.log('__proto__ keys:', Object.keys(new Linq(data).__proto__));
 result = new Linq(data).groupBy(el => el.category);
-// result = new Linq(data).groupBy(el => el.category);
 // result = new Linq(data).groupBy((el) => {
 //   return { id: el.id, category: el.category };
 // });
@@ -28,10 +23,9 @@ result = new Linq(data).groupBy(el => el.category);
 // };
 // result = new Linq(data).groupBy((el) => el.category, func);
 
-// result = new Linq(data).toLookup(el => el.category);
+result = new Linq(data).toLookup(el => el.category);
 
 // result.forEach(x => console.log(x.key.toString(), x.count));
 
 console.log('result:', result);
-// result.forEach((x) => console.log(x.elements));
 // console.log('result:', JSON.stringify(result));

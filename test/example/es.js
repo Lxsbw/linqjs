@@ -1,5 +1,5 @@
 
-const Linq = require('../src/linq');
+const Linq = require('../../src/linq');
 
 const Linq5 = require('../src/es5/linq');
 

@@ -1,6 +1,6 @@
 var Linq, parameters, results;
 
-Linq = require('../src/linq');
+Linq = require('../../src/linq');
 
 
 const obj1 = { A: '1', B: '2', C: '3'};
