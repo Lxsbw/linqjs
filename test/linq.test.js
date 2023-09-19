@@ -293,6 +293,57 @@ describe('Group 2:', () => {
     ]);
   });
 
+  test('thenBy & thenByDescending', () => {
+    const persons = [
+      { ID: 0, Age: 30, Name: 'A' },
+      { ID: 1, Age: 25, Name: 'B' },
+      { ID: 2, Age: 2, Name: 'G' },
+      { ID: 2, Age: 18, Name: 'C' },
+      { ID: 1, Age: 30, Name: 'D' },
+      { ID: 1, Age: 25, Name: 'E' },
+      { ID: 2, Age: 15, Name: 'F' },
+    ];
+
+    const orderByID = new Linq(persons).orderByDescending(x => x.ID).toArray();
+    const thenByAge = new Linq(persons)
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .toArray();
+    const thenByName = new Linq(persons)
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .thenByDescending(x => x.Name)
+      .toArray();
+
+    expect(orderByID).toEqual([
+      { ID: 2, Age: 2, Name: 'G' },
+      { ID: 2, Age: 18, Name: 'C' },
+      { ID: 2, Age: 15, Name: 'F' },
+      { ID: 1, Age: 25, Name: 'B' },
+      { ID: 1, Age: 30, Name: 'D' },
+      { ID: 1, Age: 25, Name: 'E' },
+      { ID: 0, Age: 30, Name: 'A' },
+    ]);
+    expect(thenByAge).toEqual([
+      { ID: 2, Age: 2, Name: 'G' },
+      { ID: 2, Age: 15, Name: 'F' },
+      { ID: 2, Age: 18, Name: 'C' },
+      { ID: 1, Age: 25, Name: 'B' },
+      { ID: 1, Age: 25, Name: 'E' },
+      { ID: 1, Age: 30, Name: 'D' },
+      { ID: 0, Age: 30, Name: 'A' },
+    ]);
+    expect(thenByName).toEqual([
+      { ID: 2, Age: 2, Name: 'G' },
+      { ID: 2, Age: 15, Name: 'F' },
+      { ID: 2, Age: 18, Name: 'C' },
+      { ID: 1, Age: 25, Name: 'E' },
+      { ID: 1, Age: 25, Name: 'B' },
+      { ID: 1, Age: 30, Name: 'D' },
+      { ID: 0, Age: 30, Name: 'A' },
+    ]);
+  });
+
   test('Remove', () => {
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     new Linq(numbers).remove(6);
@@ -372,6 +423,47 @@ describe('Group 3:', () => {
     expect(new Linq(numbers).take(3).toArray()).toEqual([0, 1, 2]);
     // 开始的4个
     expect(new Linq(texts).take(4).toArray()).toEqual(['Sun', 'Mon', 'Tue', 'Wed']);
+  });
+
+  test('ToDictionary', () => {
+    const parameters = [
+      { ID: 0, Age: 52, Name: '正一郎' },
+      { ID: 8, Age: 28, Name: '清次郎' },
+      { ID: 3, Age: 20, Name: '誠三郎' },
+      { ID: 4, Age: 18, Name: '征史郎' },
+    ];
+
+    const dictionary = new Linq(parameters).toDictionary(x => x.ID).toArray();
+    const dictionary2 = new Linq(parameters)
+      .toDictionary(function (value) {
+        return { ID: value.ID, Name: value.Name };
+      })
+      .toArray();
+
+    expect(dictionary).toEqual([
+      { Key: 0, Value: { ID: 0, Age: 52, Name: '正一郎' } },
+      { Key: 8, Value: { ID: 8, Age: 28, Name: '清次郎' } },
+      { Key: 3, Value: { ID: 3, Age: 20, Name: '誠三郎' } },
+      { Key: 4, Value: { ID: 4, Age: 18, Name: '征史郎' } },
+    ]);
+    expect(dictionary2).toEqual([
+      {
+        Key: { ID: 0, Name: '正一郎' },
+        Value: { ID: 0, Age: 52, Name: '正一郎' },
+      },
+      {
+        Key: { ID: 8, Name: '清次郎' },
+        Value: { ID: 8, Age: 28, Name: '清次郎' },
+      },
+      {
+        Key: { ID: 3, Name: '誠三郎' },
+        Value: { ID: 3, Age: 20, Name: '誠三郎' },
+      },
+      {
+        Key: { ID: 4, Name: '征史郎' },
+        Value: { ID: 4, Age: 18, Name: '征史郎' },
+      },
+    ]);
   });
 
   test('Where', () => {
