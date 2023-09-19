@@ -1,16 +1,46 @@
 const Linq = require('../src/linq');
 
 describe('Group 1:', () => {
-  test('Any', () => {
-    const fruits = new Linq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  test('Add', () => {
+    const list = new Linq([]);
 
-    expect(fruits.any(x => x % 2 === 0)).toBeTruthy();
-    expect(fruits.any(x => x >= 10)).toBeFalsy();
-    expect(fruits.any(x => x < 5)).toBeTruthy();
+    list.add('hey');
+    expect(list.first()).toBe('hey');
+  });
+
+  test('Append', () => {
+    const list = new Linq([]);
+
+    list.addRange(['hey', "what's", 'up']);
+    list.append('there');
+    expect(list.last()).toBe('there');
+  });
+
+  test('Prepend', () => {
+    const list = new Linq([]);
+
+    list.addRange(['hey', "what's", 'up']);
+    list.prepend('there');
+    expect(list.first()).toBe('there');
+  });
+
+  test('AddRange', () => {
+    const list = new Linq([]);
+
+    list.addRange(['hey', "what's", 'up']);
+    expect(list.toArray()).toEqual(['hey', "what's", 'up']);
+  });
+
+  test('Aggregate', () => {
+    const sentence = 'the quick brown fox jumps over the lazy dog';
+    const reversed = 'dog lazy the over jumps fox brown quick the ';
+    const words = new Linq(sentence.split(' '));
+    expect(words.aggregate((workingSentence, next) => next + ' ' + workingSentence, '')).toBe(reversed);
+    expect(new Linq([1, 2, 3, 4, 5]).aggregate((item, num) => num + item, 0)).toBe(15);
   });
 
   test('All', () => {
-    parameters = [
+    const parameters = [
       { bill: 1, box: 'one', sn: 'fruits0', status: 30 },
       { bill: 1, box: 'one', sn: 'fruits1', status: 40 },
       { bill: 1, box: 'one', sn: 'fruits2', status: 0 },
@@ -25,6 +55,14 @@ describe('Group 1:', () => {
     expect(res).toBe(3);
   });
 
+  test('Any', () => {
+    const fruits = new Linq([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+    expect(fruits.any(x => x % 2 === 0)).toBeTruthy();
+    expect(fruits.any(x => x >= 10)).toBeFalsy();
+    expect(fruits.any(x => x < 5)).toBeTruthy();
+  });
+
   test('Average', () => {
     const numbers = [
       { Age: 0, Name: '正一郎' },
@@ -35,6 +73,56 @@ describe('Group 1:', () => {
 
     // expect(new Linq(numbers).average(x => x.Age)).toBe(0.4);
     expect(new Linq(numbers).average(x => x.Age)).toBeCloseTo(0.4);
+  });
+
+  test('Cast', () => {
+    const pets = new Linq([
+      { Age: 8, Name: 'Barley', Vaccinated: true },
+      { Age: 1, Name: 'Whiskers', Vaccinated: false },
+    ]);
+
+    const dogs = pets.cast();
+
+    // t.true(typeof dogs.first().Speak === 'function')
+    expect(typeof dogs.first().Speak === 'function').toBeFalsy();
+    // t.is(dogs.first().Speak(), 'Bark')
+    // t.true(typeof dogs.last().Speak === 'undefined')
+  });
+
+  test('Clear', () => {
+    const pets = new Linq([
+      { Age: 8, Name: 'Barley', Vaccinated: true },
+      { Age: 1, Name: 'Whiskers', Vaccinated: false },
+    ]);
+
+    expect(pets.count()).toBe(2);
+    pets.clear();
+    expect(pets.count()).toBe(0);
+  });
+
+  test('Concat', () => {
+    const cats = new Linq([
+      { Age: 8, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 1, Name: 'Whiskers' },
+    ]);
+    const dogs = new Linq([
+      { Age: 3, Name: 'Bounder' },
+      { Age: 14, Name: 'Snoopy' },
+      { Age: 9, Name: 'Fido' },
+    ]);
+    const expected = ['Barley', 'Boots', 'Whiskers', 'Bounder', 'Snoopy', 'Fido'];
+    expect(
+      cats
+        .select(cat => cat.Name)
+        .concat(dogs.select(dog => dog.Name))
+        .toArray()
+    ).toEqual(expected);
+  });
+
+  test('Contains', () => {
+    const fruits = new Linq(['apple', 'banana', 'mango', 'orange', 'passionfruit', 'grape']);
+    expect(fruits.contains('mango')).toBeTruthy();
   });
 
   test('Count', () => {
@@ -59,6 +147,22 @@ describe('Group 1:', () => {
     expect(new Linq(intArray).count(x => x % 2 === 0)).toBe(3);
     expect(new Linq(stringList).count(x => x.indexOf('三') >= 0)).toBe(1);
     expect(new Linq(parameters).count(x => x.sn && x.sn.length > 0)).toBe(3);
+  });
+
+  test('DefaultIfEmpty', () => {
+    const pets = new Linq([
+      { Age: 8, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 1, Name: 'Whiskers' },
+    ]);
+    expect(
+      pets
+        .defaultIfEmpty()
+        .select(pet => pet.Name)
+        .toArray()
+    ).toEqual(['Barley', 'Boots', 'Whiskers']);
+    const numbers = new Linq();
+    expect(numbers.defaultIfEmpty(0).toArray()).toEqual([0]);
   });
 
   test('Distinct', () => {
@@ -141,6 +245,28 @@ describe('Group 1:', () => {
     expect(dataC_G).toEqual([{ Name: '正一郎' }, { Name: '清次郎' }, { Name: '征史郎' }, { Name: '正二郎' }]);
     expect(dataC_H).toEqual([0, 1, 3, 2]);
   });
+
+  test('ElementAt', () => {
+    const a = new Linq(['hey', 'hola', 'que', 'tal']);
+
+    expect(a.elementAt(0)).toBe('hey');
+    expect(() => a.elementAt(4)).toThrow('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.');
+    expect(() => a.elementAt(-1)).toThrow(/ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source./);
+  });
+
+  test('ElementAtOrDefault', () => {
+    const a = new Linq(['hey', 'hola', 'que', 'tal']);
+    const b = new Linq([2, 1, 0, -1, -2]);
+    expect(a.elementAtOrDefault(0)).toBe('hey');
+    expect(b.elementAtOrDefault(2)).toBe(0);
+    expect(a.elementAtOrDefault(4)).toBeUndefined;
+  });
+
+  test('Except', () => {
+    const numbers1 = new Linq([2.0, 2.1, 2.2, 2.3, 2.4, 2.5]);
+    const numbers2 = new Linq([2.2, 2.3]);
+    expect(numbers1.except(numbers2).toArray()).toEqual([2, 2.1, 2.4, 2.5]);
+  });
 });
 
 describe('Group 2:', () => {
@@ -149,6 +275,7 @@ describe('Group 2:', () => {
 
     expect(new Linq(numbers).first()).toBe(1);
     expect(new Linq(numbers).first(x => x % 2 === 0)).toBe(2);
+    expect(() => new Linq().first()).toThrow(/InvalidOperationException: The source sequence is empty./);
   });
 
   test('FirstOrDefault', () => {
@@ -160,6 +287,13 @@ describe('Group 2:', () => {
     ];
     expect(new Linq(parameters).firstOrDefault(x => x.ID === 30)).toBeUndefined();
     expect(new Linq(parameters).firstOrDefault(x => x.ID === 13)).toEqual({ ID: 13, Name: '清次郎' });
+  });
+
+  test('ForEach', () => {
+    const names = new Linq(['Bruce', 'Alfred', 'Tim', 'Richard']);
+    let test = '';
+    names.forEach((x, i) => (test += `${x} ${i} `));
+    expect(test).toBe('Bruce 0 Alfred 1 Tim 2 Richard 3 ');
   });
 
   test('GroupBy', () => {
