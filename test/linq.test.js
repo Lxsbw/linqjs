@@ -265,7 +265,7 @@ describe('Group 1:', () => {
   test('Except', () => {
     const numbers1 = new Linq([2.0, 2.1, 2.2, 2.3, 2.4, 2.5]);
     const numbers2 = new Linq([2.2, 2.3]);
-    expect(numbers1.except(numbers2).toArray()).toEqual([2, 2.1, 2.4, 2.5]);
+    expect(numbers1.except(numbers2).toArray()).toEqual([2, 2.1, 2.4, 2.5]); // 差集
   });
 });
 
@@ -334,6 +334,73 @@ describe('Group 2:', () => {
     ]);
   });
 
+  test('GroupJoin', () => {
+    const magnus = { Name: 'Hedlund, Magnus' };
+    const terry = { Name: 'Adams, Terry' };
+    const charlotte = { Name: 'Weiss, Charlotte' };
+
+    const barley = { Name: 'Barley', Owner: terry };
+    const boots = { Name: 'Boots', Owner: terry };
+    const whiskers = { Name: 'Whiskers', Owner: charlotte };
+    const daisy = { Name: 'Daisy', Owner: magnus };
+
+    const people = new Linq([magnus, terry, charlotte]);
+    const pets = new Linq([barley, boots, whiskers, daisy]);
+
+    // create a list where each element is an anonymous
+    // type that contains a person's name and
+    // a collection of names of the pets they own.
+    const query = people.groupJoin(
+      pets,
+      person => person,
+      pet => pet.Owner,
+      (person, petCollection) => ({
+        OwnerName: person.Name,
+        Pets: petCollection.select(pet => pet.Name),
+      })
+    );
+    const expected = ['Hedlund, Magnus: Daisy', 'Adams, Terry: Barley,Boots', 'Weiss, Charlotte: Whiskers'];
+    expect(query.select(obj => `${obj.OwnerName}: ${obj.Pets.toArray()}`).toArray()).toEqual(expected);
+  });
+
+  test('IndexOf', () => {
+    const fruits = new Linq(['apple', 'banana', 'mango', 'orange', 'passionfruit', 'grape']);
+
+    const barley = { Age: 8, Name: 'Barley', Vaccinated: true };
+    const boots = { Age: 4, Name: 'Boots', Vaccinated: false };
+    const whiskers = { Age: 1, Name: 'Whiskers', Vaccinated: false };
+    const pets = new Linq([barley, boots, whiskers]);
+
+    expect(fruits.indexOf('orange')).toBe(3);
+    expect(fruits.indexOf('strawberry')).toBeLessThanOrEqual(-1);
+    expect(pets.indexOf(boots)).toBe(1);
+  });
+
+  test('Insert', () => {
+    const pets = new Linq([
+      { Age: 10, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 6, Name: 'Whiskers' },
+    ]);
+
+    let newPet = { Age: 12, Name: 'Max' };
+
+    pets.insert(0, newPet);
+    pets.insert(pets.count(), newPet);
+
+    expect(pets.first()).toEqual(newPet);
+    expect(pets.last()).toEqual(newPet);
+    expect(() => pets.insert(-1, newPet)).toThrow(/Index is out of range./);
+    expect(() => pets.insert(pets.count() + 1, newPet)).toThrow(/Index is out of range./);
+  });
+
+  test('Intersect', () => {
+    const id1 = new Linq([44, 26, 92, 30, 71, 38]);
+    const id2 = new Linq([39, 59, 83, 47, 26, 4, 30]);
+    expect(id1.intersect(id2).toArray()).toEqual([26, 30]); // 交集
+    expect(id1.intersect(id2).sum(x => x)).toBe(56);
+  });
+
   test('Join', () => {
     const persons = [
       { CityID: 1, Name: 'ABC' },
@@ -371,6 +438,17 @@ describe('Group 2:', () => {
     ]);
   });
 
+  test('Last', () => {
+    expect(new Linq(['hey', 'hola', 'que', 'tal']).last()).toBe('tal');
+    expect(new Linq([1, 2, 3, 4, 5]).last(x => x > 2)).toBe(5);
+    expect(() => new Linq().last()).toThrow(/InvalidOperationException: The source sequence is empty./);
+  });
+
+  test('LastOrDefault', () => {
+    expect(new Linq(['hey', 'hola', 'que', 'tal']).lastOrDefault()).toBe('tal');
+    expect(new Linq().lastOrDefault()).toBeUndefined;
+  });
+
   test('Max', () => {
     const parameters = [
       { Age: 52, Name: '正一郎' },
@@ -391,6 +469,21 @@ describe('Group 2:', () => {
     ];
 
     expect(new Linq(parameters).min(x => x.Age)).toBe(18);
+  });
+
+  test('OfType', () => {
+    const pets = new Linq([
+      { Age: 8, Name: 'Barley', Vaccinated: true },
+      { Age: 1, Name: 'Whiskers', Vaccinated: false },
+    ]);
+    const anyArray = new Linq(['dogs', 'cats', 13, true]);
+
+    expect(anyArray.ofType(String).count()).toBe(2);
+    expect(anyArray.ofType(Number).count()).toBe(1);
+    expect(anyArray.ofType(Boolean).count()).toBe(1);
+    expect(anyArray.ofType(Function).count()).toBe(0);
+    // expect(pets.ofType(Dog).count()).toBe(1);
+    // expect(pets.ofType < Dog > Dog.First().Speak(), 'Bark');
   });
 
   test('OrderBy', () => {
@@ -485,6 +578,23 @@ describe('Group 2:', () => {
     expect(numbers).toEqual([0, 1, 2, 3, 4, 5, 7, 8, 9]);
     expect(numbers.length).toBe(9);
   });
+
+  test('RemoveAll', () => {
+    const dinosaurs = new Linq(['Compsognathus', 'Amargasaurus', 'Oviraptor', 'Velociraptor', 'Deinonychus', 'Dilophosaurus', 'Gallimimus', 'Triceratops']);
+    const lessDinosaurs = new Linq(['Compsognathus', 'Oviraptor', 'Velociraptor', 'Deinonychus', 'Gallimimus', 'Triceratops']);
+    expect(dinosaurs.removeAll(x => x.endsWith('saurus'))).toEqual(lessDinosaurs);
+  });
+
+  test('RemoveAt', () => {
+    const dinosaurs = new Linq(['Compsognathus', 'Amargasaurus', 'Oviraptor', 'Velociraptor', 'Deinonychus', 'Dilophosaurus', 'Gallimimus', 'Triceratops']);
+    const lessDinosaurs = new Linq(['Compsognathus', 'Amargasaurus', 'Oviraptor', 'Deinonychus', 'Dilophosaurus', 'Gallimimus', 'Triceratops']);
+    dinosaurs.removeAt(3);
+    expect(dinosaurs).toEqual(lessDinosaurs);
+  });
+
+  test('Reverse', () => {
+    expect(new Linq([1, 2, 3, 4, 5]).reverse().toArray()).toEqual([5, 4, 3, 2, 1]);
+  });
 });
 
 describe('Group 3:', () => {
@@ -543,10 +653,72 @@ describe('Group 3:', () => {
     expect(new Linq(numbers).sum(x => x.Age)).toBeCloseTo(1.6);
   });
 
+  test('SequenceEqual', () => {
+    const pet1 = { Age: 2, Name: 'Turbo' };
+    const pet2 = { Age: 8, Name: 'Peanut' };
+
+    // create three lists of pets.
+    const pets1 = new Linq([pet1, pet2]);
+    const pets2 = new Linq([pet1, pet2]);
+    const pets3 = new Linq([pet1]);
+    expect(pets1.sequenceEqual(pets2)).toBeTruthy();
+    expect(pets1.sequenceEqual(pets3)).toBeFalsy();
+  });
+
+  test('Single', () => {
+    const fruits1 = new Linq([]);
+    const fruits2 = new Linq(['orange']);
+    const fruits3 = new Linq(['orange', 'apple']);
+    const numbers1 = new Linq([1, 2, 3, 4, 5, 5]);
+
+    expect(fruits2.single()).toBe('orange');
+    expect(() => fruits1.single()).toThrow(/The collection does not contain exactly one element./);
+    expect(() => fruits3.single()).toThrow(/The collection does not contain exactly one element./);
+
+    expect(numbers1.single(x => x === 1)).toBe(1);
+    expect(() => numbers1.single(x => x === 5)).toThrow(/The collection does not contain exactly one element./);
+    expect(() => numbers1.single(x => x > 5)).toThrow(/The collection does not contain exactly one element./);
+  });
+
+  test('SingleOrDefault', () => {
+    const fruits1 = new Linq();
+    const fruits2 = new Linq(['orange']);
+    const fruits3 = new Linq(['orange', 'apple']);
+    const numbers1 = new Linq([1, 2, 3, 4, 5, 5]);
+
+    expect(fruits1.singleOrDefault()).toBeUndefined();
+    expect(fruits2.singleOrDefault()).toBe('orange');
+    expect(() => fruits3.singleOrDefault()).toThrow(/The collection does not contain exactly one element./);
+
+    expect(numbers1.singleOrDefault(x => x === 1)).toBe(1);
+    expect(numbers1.singleOrDefault(x => x > 5)).toBeUndefined();
+    expect(() => numbers1.singleOrDefault(x => x === 5)).toThrow(/The collection does not contain exactly one element./);
+  });
+
   test('Skip', () => {
     const texts = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     expect(new Linq(texts).skip(4).toArray()).toEqual(['Thu', 'Fri', 'Sat']);
+  });
+
+  test('SkipLast', () => {
+    const grades = new Linq([59, 82, 70, 56, 92, 98, 85]);
+    expect(
+      grades
+        .orderByDescending(x => x)
+        .skipLast(3)
+        .toArray()
+    ).toEqual([98, 92, 85, 82]);
+  });
+
+  test('SkipWhile', () => {
+    const grades = new Linq([59, 82, 70, 56, 92, 98, 85]);
+    expect(
+      grades
+        .orderByDescending(x => x)
+        .skipWhile(grade => grade >= 80)
+        .toArray()
+    ).toEqual([70, 59, 56]);
   });
 
   test('Take', () => {
@@ -557,6 +729,26 @@ describe('Group 3:', () => {
     expect(new Linq(numbers).take(3).toArray()).toEqual([0, 1, 2]);
     // 开始的4个
     expect(new Linq(texts).take(4).toArray()).toEqual(['Sun', 'Mon', 'Tue', 'Wed']);
+  });
+
+  test('TakeLast', () => {
+    const grades = new Linq([59, 82, 70, 56, 92, 98, 85]);
+    expect(
+      grades
+        .orderByDescending(x => x)
+        .takeLast(3)
+        .toArray()
+    ).toEqual([70, 59, 56]);
+  });
+
+  test('TakeWhile', () => {
+    const expected = ['apple', 'banana', 'mango'];
+    const fruits = new Linq(['apple', 'banana', 'mango', 'orange', 'passionfruit', 'grape']);
+    expect(fruits.takeWhile(fruit => fruit !== 'orange').toArray()).toEqual(expected);
+  });
+
+  test('ToArray', () => {
+    expect(new Linq([1, 2, 3, 4, 5]).toArray()).toEqual([1, 2, 3, 4, 5]);
   });
 
   test('ToDictionary', () => {
@@ -600,6 +792,57 @@ describe('Group 3:', () => {
     ]);
   });
 
+  test('ToList', () => {
+    expect(new Linq([1, 2, 3]).toList().toArray()).toEqual([1, 2, 3]);
+  });
+
+  test('ToLookup', () => {
+    // create a list of Packages
+    const packages = new Linq([
+      { Company: 'Coho Vineyard', TrackingNumber: 89453312, Weight: 25.2 },
+      { Company: 'Lucerne Publishing', TrackingNumber: 89112755, Weight: 18.7 },
+      { Company: 'Wingtip Toys', TrackingNumber: 299456122, Weight: 6.0 },
+      { Company: 'Contoso Pharmaceuticals', TrackingNumber: 670053128, Weight: 9.3 },
+      { Company: 'Wide World Importers', TrackingNumber: 4665518773, Weight: 33.8 },
+    ]);
+
+    // create a Lookup to organize the packages.
+    // use the first character of Company as the key value.
+    // select Company appended to TrackingNumber
+    // as the element values of the Lookup.
+    const lookup = packages.toLookup(
+      p => p.Company.substring(0, 1),
+      p => p.Company + ' ' + p.TrackingNumber
+    );
+    const result = [
+      { key: 'C', count: 2, elements: ['Coho Vineyard 89453312', 'Contoso Pharmaceuticals 670053128'] },
+      { key: 'L', count: 1, elements: ['Lucerne Publishing 89112755'] },
+      { key: 'W', count: 2, elements: ['Wingtip Toys 299456122', 'Wide World Importers 4665518773'] },
+    ];
+    expect(lookup).toEqual(result);
+  });
+
+  test('Union', () => {
+    const ints1 = new Linq([5, 3, 9, 7, 5, 9, 3, 7]);
+    const ints2 = new Linq([8, 3, 6, 4, 4, 9, 1, 0]);
+    expect(ints1.union(ints2).toArray()).toEqual([5, 3, 9, 7, 8, 6, 4, 1, 0]); // 并集
+
+    const result = [
+      { Name: 'apple', Code: 9 },
+      { Name: 'orange', Code: 4 },
+      { Name: 'lemon', Code: 12 },
+    ];
+    const store1 = new Linq([
+      { Name: 'apple', Code: 9 },
+      { Name: 'orange', Code: 4 },
+    ]);
+    const store2 = new Linq([
+      { Name: 'apple', Code: 9 },
+      { Name: 'lemon', Code: 12 },
+    ]);
+    expect(store1.union(store2).toArray()).toEqual(result);
+  });
+
   test('Where', () => {
     const dataA = [0, 1, 2, 3, 4];
     const dataB = [1.5, 1.3, 3.2];
@@ -615,5 +858,17 @@ describe('Group 3:', () => {
     expect(dataA_F).toEqual([0, 2, 4]);
     expect(dataB_F).toEqual([1.5, 1.3]);
     expect(dataC_F).toEqual(['正一郎', '清次郎', '誠三郎', '征史郎']);
+  });
+
+  test('Zip', () => {
+    const numbers = new Linq([1, 2, 3, 4]);
+    const words = new Linq(['one', 'two', 'three']);
+    expect(numbers.zip(words, (first, second) => `${first} ${second}`).toArray()).toEqual(['1 one', '2 two', '3 three']);
+
+    // larger second array
+    const expected = ['one 1', 'two 2', 'three 3'];
+    const numbers2 = new Linq([1, 2, 3, 4]);
+    const words2 = new Linq(['one', 'two', 'three']);
+    expect(words2.zip(numbers2, (first, second) => `${first} ${second}`).toArray()).toEqual(expected);
   });
 });
