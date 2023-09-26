@@ -480,7 +480,7 @@ class Linq {
       // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
         Key: this.select(key).elementAt(i),
-        Value: value ? this.select(value).elementAt(i) : v
+        Value: value ? this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -741,7 +741,7 @@ const Tools = {
       return result;
     }
     // throw new Error("Unable to copy param! Its type isn't supported.");
-  }
+  },
 };
 
 if (typeof module !== 'undefined') {

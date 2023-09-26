@@ -61,6 +61,7 @@ describe('Group 1:', () => {
     expect(fruits.any(x => x % 2 === 0)).toBeTruthy();
     expect(fruits.any(x => x >= 10)).toBeFalsy();
     expect(fruits.any(x => x < 5)).toBeTruthy();
+    expect(fruits.any()).toBeTruthy();
   });
 
   test('Average', () => {
@@ -474,6 +475,7 @@ describe('Group 2:', () => {
     ];
 
     expect(new Linq(parameters).max(x => x.Age)).toBe(52);
+    expect(new Linq([52, 28, 20, 18]).max()).toBe(52);
   });
 
   test('Min', () => {
@@ -485,6 +487,8 @@ describe('Group 2:', () => {
     ];
 
     expect(new Linq(parameters).min(x => x.Age)).toBe(18);
+    expect(new Linq([52, 28, 20, 18]).min()).toBe(18);
+
   });
 
   test('OfType', () => {
@@ -631,6 +635,7 @@ describe('Group 2:', () => {
   test('Remove', () => {
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     new Linq(numbers).remove(6);
+    new Linq(numbers).remove(16);
 
     expect(numbers).toEqual([0, 1, 2, 3, 4, 5, 7, 8, 9]);
     expect(numbers.length).toBe(9);
