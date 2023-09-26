@@ -730,13 +730,6 @@ const Tools = {
       }
       return result;
     }
-
-    // // Handle Mongoose Object
-    // if (obj.constructor.name === 'model' && typeof obj.toObject === 'function') {
-    //   result = obj.toObject({ getters: true, virtuals: true });
-    //   return result;
-    // }
-
     // Handle Object
     if (obj instanceof Object) {
       result = {};
@@ -747,7 +740,7 @@ const Tools = {
       }
       return result;
     }
-    throw new Error("Unable to copy param! Its type isn't supported.");
+    // throw new Error("Unable to copy param! Its type isn't supported.");
   }
 };
 

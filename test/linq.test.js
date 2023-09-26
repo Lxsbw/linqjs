@@ -169,12 +169,17 @@ describe('Group 1:', () => {
     const dataA = [0, 1, 3, 3, 2];
     const dataB = [1.5, 1.5, 1.5, 1.5];
     const dataC = ['征史郎', '征四郎', '征史郎', '正史郎'];
-
     const parameters = [
       { ID: 5, Rate: 0.0, Name: '正一郎' },
       { ID: 13, Rate: 0.1, Name: '清次郎' },
       { ID: 25, Rate: 0.0, Name: '正一郎' },
       { ID: 42, Rate: 0.3, Name: '征史郎' },
+    ];
+    const parametersSpecial = [
+      { ID: 5, Rate: 0.0, Name: '正一郎', date: new Date('2018-02-03'), regData: new RegExp('abc', 'g') },
+      { ID: 13, Rate: 0.1, Name: '清次郎', date: new Date('2018-02-04'), regData: new RegExp('123', 'g') },
+      { ID: 25, Rate: 0.0, Name: '正一郎', date: null, regData: null },
+      { ID: 42, Rate: 0.3, Name: '征史郎', date: new Date('2018-02-03'), regData: new RegExp('abc', 'g') },
     ];
 
     const dataA_D = new Linq(dataA).distinct().toArray();
@@ -184,11 +189,22 @@ describe('Group 1:', () => {
       .select(x => x.Name)
       .distinct()
       .toArray();
+    const dataC_F = new Linq(parametersSpecial)
+      .select(x => x.date)
+      .distinct()
+      .toArray();
+    const dataC_G = new Linq(parametersSpecial)
+      .select(x => x.regData)
+      .distinct()
+      .toArray();
 
     expect(dataA_D).toEqual([0, 1, 3, 2]);
     expect(dataB_D).toEqual([1.5]);
     expect(dataC_D).toEqual(['征史郎', '征四郎', '正史郎']);
     expect(dataC_E).toEqual(['正一郎', '清次郎', '征史郎']);
+
+    expect(dataC_F).toEqual([new Date('2018-02-03'), new Date('2018-02-04'), null]);
+    expect(dataC_G).toEqual([new RegExp('abc', 'g'), new RegExp('123', 'g'), null]);
   });
 
   test('DistinctBy', () => {
@@ -482,6 +498,7 @@ describe('Group 2:', () => {
     expect(anyArray.ofType(Number).count()).toBe(1);
     expect(anyArray.ofType(Boolean).count()).toBe(1);
     expect(anyArray.ofType(Function).count()).toBe(0);
+    expect(() => anyArray.ofType({})).toThrow();
     // expect(pets.ofType(Dog).count()).toBe(1);
     // expect(pets.ofType < Dog > Dog.First().Speak(), 'Bark');
   });
@@ -494,6 +511,21 @@ describe('Group 2:', () => {
       { ID: 5, Name: '征史郎' },
     ];
 
+    const special = [
+      { ID: 0, date: new Date(), regData: new RegExp('abc', 'g') },
+      { ID: 3, date: new Date('2018-02-03 12:10:11'), regData: new RegExp('abcd', 'g') },
+      { ID: 2, date: new Date('2018-02-03 12:10:11.110'), regData: new RegExp('1', 'g') },
+      { ID: 5, date: new Date('2023-02-03'), regData: new RegExp('2', 'g') },
+    ];
+
+    const specialType = [
+      { ID: 0, date: new Date(), regData: new RegExp() },
+      { ID: 3, date: new Date('2018-02-03 12:10:11') },
+      { ID: '我音', date: new Date('2018-02-03 12:10:11.110') },
+      { ID: '拼音', date: new Date('2023-02-03') },
+      { ID: '拼音', date: new Date('2023-02-03') },
+    ];
+
     const or = new Linq(parameters).orderBy(x => x.ID).toArray();
     expect(or).toEqual([
       { ID: 0, Name: '正一郎' },
@@ -501,6 +533,31 @@ describe('Group 2:', () => {
       { ID: 3, Name: '清次郎' },
       { ID: 5, Name: '征史郎' },
     ]);
+
+    expect(
+      new Linq(parameters)
+        .thenBy(x => x.ID)
+        .select(x => x.ID)
+        .toArray()
+    ).toEqual([0, 2, 3, 5]);
+    expect(
+      new Linq(parameters)
+        .thenByDescending(x => x.ID)
+        .select(x => x.ID)
+        .toArray()
+    ).toEqual([5, 3, 2, 0]);
+
+    const listId = new Linq(special)
+      .orderBy(x => x.date)
+      .select(x => x.ID)
+      .toArray();
+    expect(listId).toEqual([3, 2, 5, 0]);
+
+    const listIdType = new Linq(specialType)
+      .orderBy(x => x.ID)
+      .select(x => x.ID)
+      .toArray();
+    expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
   });
 
   test('OrderByDescending', () => {
