@@ -183,6 +183,15 @@ describe('Group 1:', () => {
       { ID: 42, Rate: 0.3, Name: '征史郎', date: new Date('2018-02-03'), regData: new RegExp('abc', 'g') },
     ];
 
+    const parametersObj = [
+      { ID: 5, Rate: 0.0, Infos: { Name: '正一郎' } },
+      { ID: 13, Rate: 0.1, Infos: { Name: '清次郎', Other: '1', SubInfo: [1, 2, 3] } },
+      { ID: 13, Rate: 0.1, Infos: { Name: '清次郎', Other: '1', SubInfo: [1, 2, 3] } },
+      { ID: 25, Rate: 0.0, Infos: { Name: '正一郎' } },
+      { ID: 42, Rate: 0.3, Infos: { Name: '征史郎' } },
+      { ID: 42, Rate: 0.3, Infos: new Date('2018-02-03') },
+    ];
+
     const dataA_D = new Linq(dataA).distinct().toArray();
     const dataB_D = new Linq(dataB).distinct().toArray();
     const dataC_D = new Linq(dataC).distinct().toArray();
@@ -198,6 +207,10 @@ describe('Group 1:', () => {
       .select(x => x.regData)
       .distinct()
       .toArray();
+    const dataC_H = new Linq(parametersObj)
+      .select(x => x.Infos)
+      .distinct()
+      .toArray();
 
     expect(dataA_D).toEqual([0, 1, 3, 2]);
     expect(dataB_D).toEqual([1.5]);
@@ -206,6 +219,7 @@ describe('Group 1:', () => {
 
     expect(dataC_F).toEqual([new Date('2018-02-03'), new Date('2018-02-04'), null]);
     expect(dataC_G).toEqual([new RegExp('abc', 'g'), new RegExp('123', 'g'), null]);
+    expect(dataC_H).toEqual([{ Name: '正一郎' }, { Name: '清次郎', Other: '1', SubInfo: [1, 2, 3] }, { Name: '征史郎' }, new Date('2018-02-03')]);
   });
 
   test('DistinctBy', () => {
@@ -215,6 +229,16 @@ describe('Group 1:', () => {
       { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
       { id: 3, name: 'three', category: 'vegetables', countries: ['Germany'] },
       { id: 4, name: 'four', category: 'fruits', countries: ['Japan'] },
+    ];
+
+    const data2 = [
+      { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+      { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+      { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
+      { id: 3, name: 'three', category: 'vegetables', countries: ['Germany'] },
+      { id: 4, name: 'four', category: 'fruits', countries: ['Japan'] },
+      { id: 4, name: 'four', category: 1, countries: ['Japan'] },
+      { id: 4, name: 'four', category: true, countries: ['Japan'] },
     ];
 
     // 去重
@@ -234,6 +258,14 @@ describe('Group 1:', () => {
       { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
       { id: 3, name: 'three', category: 'vegetables', countries: ['Germany'] },
       { id: 4, name: 'four', category: 'fruits', countries: ['Japan'] },
+    ]);
+
+    const result3 = new Linq(data2).distinctBy(x => x.category).toArray();
+    expect(result3).toEqual([
+      { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+      { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
+      { id: 4, name: 'four', category: 1, countries: ['Japan'] },
+      { id: 4, name: 'four', category: true, countries: ['Japan'] },
     ]);
   });
 
@@ -488,7 +520,6 @@ describe('Group 2:', () => {
 
     expect(new Linq(parameters).min(x => x.Age)).toBe(18);
     expect(new Linq([52, 28, 20, 18]).min()).toBe(18);
-
   });
 
   test('OfType', () => {
@@ -530,6 +561,15 @@ describe('Group 2:', () => {
       { ID: '拼音', date: new Date('2023-02-03') },
     ];
 
+    const specialTypeDesc = [
+      { ID: 0, date: new Date(), regData: new RegExp() },
+      { ID: 3, date: new Date('2018-02-03 12:10:11') },
+      { ID: '拼音', date: new Date('2023-02-03') },
+      { ID: '我音', date: new Date('2018-02-03 12:10:11.110') },
+      { ID: '拼音', date: new Date('2023-02-03') },
+      { ID: '我音', date: new Date('2018-02-03 12:10:11.120') },
+    ];
+
     const or = new Linq(parameters).orderBy(x => x.ID).toArray();
     expect(or).toEqual([
       { ID: 0, Name: '正一郎' },
@@ -562,6 +602,13 @@ describe('Group 2:', () => {
       .select(x => x.ID)
       .toArray();
     expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
+
+    const listIdTypeDesc = new Linq(specialTypeDesc)
+      .orderByDescending(x => x.ID)
+      .select(x => x.ID)
+      .toArray();
+    console.log('descending:', listIdTypeDesc);
+    expect(listIdTypeDesc).toEqual([3, 0, '我音', '我音', '拼音', '拼音']);
   });
 
   test('OrderByDescending', () => {
@@ -572,12 +619,26 @@ describe('Group 2:', () => {
       { ID: 5, Name: '征史郎' },
     ];
 
+    const parametersObj = [
+      { ID: 0, Infos: { Info: { Name: '正一郎' } } },
+      { ID: 3, Infos: { Info: { Name: '清次郎' } } },
+      { ID: 2, Infos: { Info: { Name: '誠三郎' } } },
+      { ID: 5, Infos: { Info: { Name: '征史郎' } } },
+    ];
+
     const or = new Linq(parameters).orderByDescending(x => x.ID).toArray();
+    const or2 = new Linq(parametersObj).orderByDescending(x => x.ID).toArray();
     expect(or).toEqual([
       { ID: 5, Name: '征史郎' },
       { ID: 3, Name: '清次郎' },
       { ID: 2, Name: '誠三郎' },
       { ID: 0, Name: '正一郎' },
+    ]);
+    expect(or2).toEqual([
+      { ID: 5, Infos: { Info: { Name: '征史郎' } } },
+      { ID: 3, Infos: { Info: { Name: '清次郎' } } },
+      { ID: 2, Infos: { Info: { Name: '誠三郎' } } },
+      { ID: 0, Infos: { Info: { Name: '正一郎' } } },
     ]);
   });
 
@@ -713,6 +774,7 @@ describe('Group 3:', () => {
 
     expect(new Linq(parameters).sum(x => x.Age)).toBeCloseTo(118);
     expect(new Linq(numbers).sum(x => x.Age)).toBeCloseTo(1.6);
+    expect(new Linq(['A', null]).sum(x => x)).toBeCloseTo(0);
   });
 
   test('SequenceEqual', () => {
@@ -852,6 +914,23 @@ describe('Group 3:', () => {
         Value: { ID: 4, Age: 18, Name: '征史郎' },
       },
     ]);
+
+    const people = new Linq([
+      { Age: 15, Name: 'Cathy' },
+      { Age: 25, Name: 'Alice' },
+      { Age: 50, Name: 'Bob' },
+    ]);
+    const dictionary3 = people.toDictionary(x => x.Name).toArray();
+    expect(dictionary3.find(x => x.Key === 'Bob').Value).toEqual({ Age: 50, Name: 'Bob' });
+    expect(dictionary3.find(x => x.Key === 'Bob').Value.Age).toBe(50);
+
+    const dictionary4 = people
+      .toDictionary(
+        x => x.Name,
+        y => y.Age
+      )
+      .toArray();
+    expect(dictionary4.find(x => x.Key === 'Alice').Value).toBe(25);
   });
 
   test('ToList', () => {
