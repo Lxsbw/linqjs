@@ -726,7 +726,9 @@ const Tools = {
     if (obj instanceof Array) {
       result = [];
       for (let i in obj) {
-        result.push(this.cloneDeep(obj[i]));
+        if (obj.hasOwnProperty(i)) {
+          result.push(this.cloneDeep(obj[i]));
+        }
       }
       return result;
     }

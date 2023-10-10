@@ -32,7 +32,6 @@
   "homepage": "https://github.com/Lxsbw/linqjs#README",
   "dependencies": {},
   "devDependencies": {
-    "coffeescript": "~2.7.0",
     "jest": "~29.7.0"
   }
 }

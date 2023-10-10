@@ -623,11 +623,20 @@ describe('Group 2:', () => {
       { ID: 0, Infos: { Info: { Name: '正一郎' } } },
       { ID: 3, Infos: { Info: { Name: '清次郎' } } },
       { ID: 2, Infos: { Info: { Name: '誠三郎' } } },
-      { ID: 5, Infos: { Info: { Name: '征史郎' } } },
     ];
+    let subObj = { ID: 5, Infos: { Info: { Name: '征史郎' } } };
+    // subObj.__proto__.pName = '原型链属性';
+    Object.defineProperty(subObj.__proto__, 'pName', {
+      value: '原型链属性',
+      enumerable: true,
+      configurable: true,
+    });
+    parametersObj.push(subObj);
+  
+    const or2 = new Linq(parametersObj).orderByDescending(x => x.ID).toArray();
+    delete subObj.__proto__.pName; // 用完删除，否则会有影响
 
     const or = new Linq(parameters).orderByDescending(x => x.ID).toArray();
-    const or2 = new Linq(parametersObj).orderByDescending(x => x.ID).toArray();
     expect(or).toEqual([
       { ID: 5, Name: '征史郎' },
       { ID: 3, Name: '清次郎' },
