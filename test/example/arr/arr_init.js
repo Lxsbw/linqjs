@@ -228,7 +228,8 @@
    * Copies the elements of the List<T> to a new array.
    */
   Linq.toArray = function () {
-    return this;
+    delete this.__proto__.__comparer;
+    return this.filter(x => !('function' === typeof x));
   };
 
   /**
@@ -239,7 +240,7 @@
       // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
         Key: this.select(key).elementAt(i),
-        Value: value ? this.select(value).elementAt(i) : v
+        Value: value ? this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, []);
@@ -250,6 +251,50 @@
    */
   Linq.where = function (predicate) {
     return this.filter(predicate);
+  };
+
+  /**
+   * Sorts the elements of a sequence in ascending order according to a key.
+   */
+  Linq.orderBy = function (keySelector, comparer = Tools.keyComparer(keySelector, false)) {
+    this.__proto__.__comparer = comparer;
+    var list = Tools.cloneDeep(this);
+    return list.sort(comparer);
+    // return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+  };
+
+  /**
+   * Sorts the elements of a sequence in descending order according to a key.
+   */
+  Linq.orderByDescending = function (keySelector, comparer = Tools.keyComparer(keySelector, true)) {
+    this.__proto__.__comparer = comparer;
+    var list = Tools.cloneDeep(this);
+    return list.sort(comparer);
+    // return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+  };
+
+  /**
+   * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
+   * @override
+   */
+  Linq.thenBy = function (keySelector) {
+    var list = Tools.cloneDeep(this);
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false));
+    return list.sort(this.__proto__.__comparer);
+    // return this.sort(Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false)));
+    // return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false)));
+  };
+
+  /**
+   * Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
+   * @override
+   */
+  Linq.thenByDescending = function (keySelector) {
+    var list = Tools.cloneDeep(this);
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true));
+    return list.sort(this.__proto__.__comparer);
+    // return this.sort(Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true)));
+    // return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true)));
   };
 
   Object.assign(Array.prototype, Linq);
@@ -438,5 +483,5 @@ const Tools = {
       return result;
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
-  }
+  },
 };
