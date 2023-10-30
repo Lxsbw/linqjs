@@ -9,7 +9,7 @@ let parameters = [
 
 // console.log('parameters:', parameters);
 
-let orderedParameters = parameters.orderByDescending(x => x.ID).toArray();
+let orderedParameters = parameters.orderByDescending(x => x.ID);
 
 // console.log('global:', global.structuredClone === structuredClone);
 

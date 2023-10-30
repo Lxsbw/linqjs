@@ -263,7 +263,8 @@
    */
   Linq.toArray = function () {
     delete this.__proto__.__comparer;
-    return this.filter(x => !('function' === typeof x));
+    // return this.filter(x => !('function' === typeof x));
+    return this;
   };
 
   /**

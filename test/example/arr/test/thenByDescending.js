@@ -12,18 +12,15 @@ persons = [
   { ID: 2, Age: 15, Name: 'F' },
 ];
 
-orderByID = persons.orderByDescending(x => x.ID).toArray();
+orderByID = persons.orderByDescending(x => x.ID);
 
-thenByAge = persons
-  .orderByDescending(x => x.ID)
-  .thenBy(x => x.Age)
-  .toArray();
+thenByAge = persons.orderByDescending(x => x.ID).thenBy(x => x.Age);
 
 thenByName = persons
   .orderByDescending(x => x.ID)
   .thenBy(x => x.Age)
-  .thenByDescending(x => x.Name)
-  .toArray();
+  .thenByDescending(x => x.Name);
+ 
 
 console.log('orderByID:', orderByID);
 console.log('thenByAge:', thenByAge);
@@ -31,7 +28,7 @@ console.log('thenByName:', thenByName);
 // console.log('persons:', persons);
 
 intArray = [1, 5, 8, 12, 15, 16];
-console.log('number:', intArray.orderByDescending(x => x).toArray());
+console.log('number:', intArray.orderByDescending(x => x));
 console.log('number:', intArray);
 
 const personsMul = [
@@ -48,8 +45,8 @@ const personsMul = [
   { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' }
 ];
 
-console.log(personsMul.orderByDescending(x=>x.ID).toArray())
-console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).toArray())
-console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).toArray())
-console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).toArray())
-console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).thenByDescending(x=>x.remark) .toArray())
+console.log(personsMul.orderByDescending(x=>x.ID))
+console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age))
+console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name))
+console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby))
+console.log(personsMul.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).thenByDescending(x=>x.remark))
