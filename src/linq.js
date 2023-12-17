@@ -746,11 +746,8 @@ const Tools = {
   },
 };
 
-if (typeof module !== 'undefined') {
-  if (typeof exports !== 'undefined') {
-    exports = module.exports = Linq;
-  }
-  exports.Linq = Linq;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Linq;
 } else {
   window.Linq = Linq;
 }
