@@ -814,7 +814,9 @@ var Tools = (function () {
     if (obj instanceof Array) {
       result = [];
       for (var i in obj) {
-        result.push(Tools.cloneDeep(obj[i]));
+        if (obj.hasOwnProperty(i)) {
+          result.push(Tools.cloneDeep(obj[i]));
+        }
       }
       return result;
     }
