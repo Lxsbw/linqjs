@@ -175,22 +175,41 @@ class Linq
     if (mapper is undefined)
       mapper = (val) -> val
 
-    initialValue = []
+    groupMap = new Map()
+    for element in @_elements
+      # 深度比较的哈希或字符串化函数来生成键
+      key = Tools.getHash(grouper(element))
+      mappedValue = mapper(element)
 
-    func = (ac, v) ->
-      key = grouper(v)
-      existingGroup = new Linq(ac).firstOrDefault((x) -> Tools.equal(x.key, key))
-      mappedValue = mapper(v)
+      if !groupMap.has(key)
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] })
 
-      if existingGroup
-        existingGroup.elements.push(mappedValue)
-        existingGroup.count++
-      else
-        existingMap = { key: key, count: 1, elements: [mappedValue] }
-        ac.push(existingMap)
-      return ac
+      group = groupMap.get(key)
+      group.elements.push(mappedValue)
+      group.count++
 
-    return @aggregate(func, initialValue)
+    return Array.from(groupMap.values())
+
+  # groupBy: (grouper, mapper) ->
+  #   if (mapper is undefined)
+  #     mapper = (val) -> val
+
+  #   initialValue = []
+
+  #   func = (ac, v) ->
+  #     key = grouper(v)
+  #     existingGroup = new Linq(ac).firstOrDefault((x) -> Tools.equal(x.key, key))
+  #     mappedValue = mapper(v)
+
+  #     if existingGroup
+  #       existingGroup.elements.push(mappedValue)
+  #       existingGroup.count++
+  #     else
+  #       existingMap = { key: key, count: 1, elements: [mappedValue] }
+  #       ac.push(existingMap)
+  #     return ac
+
+  #   return @aggregate(func, initialValue)
 
   ###
     Correlates the elements of two sequences based on equality of keys and groups the results.
@@ -593,7 +612,7 @@ Tools = {
       return 0
     { mult, place } = @calcMultiple(num1, num2)
     return Number(((num1 * mult + num2 * mult) / mult).toFixed(place))
-  
+
   ###
     Number calculate division
     To be improved
@@ -631,7 +650,7 @@ Tools = {
   cloneDeep: (obj) ->
     if typeof structuredClone is 'function'
       return structuredClone obj
-    
+
     # Handle the 3 simple types, and null or undefined
     return obj if null is obj || "object" isnt typeof obj
 
@@ -658,6 +677,30 @@ Tools = {
       return result
 
     throw new Error("Unable to copy param! Its type isn't supported.")
+
+  ###
+    Generate Hash
+  ###
+  getHash: (obj) ->
+    hashValue = ''
+
+    typeOf = (obj) ->
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+
+    generateHash = (value) ->
+      type = typeOf(value)
+      switch (type)
+        when 'object'
+          keys = Object.keys(value).sort() # 保证键的顺序一致
+          keys.forEach (key) ->
+            hashValue += "#{key}:#{generateHash(value[key])};"
+        when 'array'
+          value.forEach (item) ->
+            hashValue += "#{generateHash(item)},"
+        else
+          hashValue += value.toString()
+      return hashValue
+    return generateHash(obj)
 }
 
 module.exports = Linq
