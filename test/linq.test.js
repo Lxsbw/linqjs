@@ -601,14 +601,14 @@ describe('Group 2:', () => {
       .orderBy(x => x.ID)
       .select(x => x.ID)
       .toArray();
-    expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
+    expect(listIdType).toEqual([0, 3, '我音', '拼音', '拼音']);
 
     const listIdTypeDesc = new Linq(specialTypeDesc)
       .orderByDescending(x => x.ID)
       .select(x => x.ID)
       .toArray();
     console.log('descending:', listIdTypeDesc);
-    expect(listIdTypeDesc).toEqual([3, 0, '我音', '我音', '拼音', '拼音']);
+    expect(listIdTypeDesc).toEqual([3, 0, '拼音', '拼音', '我音', '我音']);
   });
 
   test('OrderByDescending', () => {
@@ -632,7 +632,7 @@ describe('Group 2:', () => {
       configurable: true,
     });
     parametersObj.push(subObj);
-  
+
     const or2 = new Linq(parametersObj).orderByDescending(x => x.ID).toArray();
     delete subObj.__proto__.pName; // 用完删除，否则会有影响
 

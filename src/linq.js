@@ -197,22 +197,39 @@ class Linq {
    * Groups the elements of a sequence according to a specified key selector function.
    */
   groupBy(grouper, mapper = val => val) {
-    const initialValue = [];
-    const func = function (ac, v) {
-      const key = grouper(v);
-      const existingGroup = new Linq(ac).firstOrDefault(x => Tools.equal(x.key, key));
-      const mappedValue = mapper(v);
-      if (existingGroup) {
-        existingGroup.elements.push(mappedValue);
-        existingGroup.count++;
-      } else {
-        const existingMap = { key: key, count: 1, elements: [mappedValue] };
-        ac.push(existingMap);
+    const groupMap = new Map();
+    for (let element of this._elements) {
+      // 深度比较的哈希或字符串化函数来生成键
+      const key = Tools.getHash(grouper(element));
+      const mappedValue = mapper(element);
+
+      if (!groupMap.has(key)) {
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] });
       }
-      return ac;
-    };
-    return this.aggregate(func, initialValue);
+
+      const group = groupMap.get(key);
+      group.elements.push(mappedValue);
+      group.count++;
+    }
+    return Array.from(groupMap.values());
   }
+  // groupBy(grouper, mapper = val => val) {
+  //   const initialValue = [];
+  //   const func = function (ac, v) {
+  //     const key = grouper(v);
+  //     const existingGroup = new Linq(ac).firstOrDefault(x => Tools.equal(x.key, key));
+  //     const mappedValue = mapper(v);
+  //     if (existingGroup) {
+  //       existingGroup.elements.push(mappedValue);
+  //       existingGroup.count++;
+  //     } else {
+  //       const existingMap = { key: key, count: 1, elements: [mappedValue] };
+  //       ac.push(existingMap);
+  //     }
+  //     return ac;
+  //   };
+  //   return this.aggregate(func, initialValue);
+  // }
 
   /**
    * Correlates the elements of two sequences based on equality of keys and groups the results.
@@ -744,13 +761,43 @@ const Tools = {
     }
     // throw new Error("Unable to copy param! Its type isn't supported.");
   },
+
+  /**
+   * Generate Hash
+   */
+  getHash(obj) {
+    let hashValue = '';
+
+    function typeOf(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    }
+
+    function generateHash(value) {
+      const type = typeOf(value);
+      switch (type) {
+        case 'object':
+          const keys = Object.keys(value).sort(); // 保证键的顺序一致
+          keys.forEach(key => {
+            hashValue += `${key}:${generateHash(value[key])};`;
+          });
+          break;
+        case 'array':
+          value.forEach(item => {
+            hashValue += `${generateHash(item)},`;
+          });
+          break;
+        default:
+          hashValue += value.toString();
+          break;
+      }
+      return hashValue;
+    }
+    return generateHash(obj);
+  },
 };
 
-if (typeof module !== 'undefined') {
-  if (typeof exports !== 'undefined') {
-    exports = module.exports = Linq;
-  }
-  exports.Linq = Linq;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Linq;
 } else {
   window.Linq = Linq;
 }

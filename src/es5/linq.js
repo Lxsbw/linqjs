@@ -1,6 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });
 
 /**
  * LINQ to JavaScript ES6 (Language Integrated Query)
@@ -555,7 +555,7 @@ var Linq = (function () {
       // dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
       dicc.add({
         Key: _this.select(key).elementAt(i),
-        Value: value ? _this.select(value).elementAt(i) : v
+        Value: value ? _this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -814,7 +814,9 @@ var Tools = (function () {
     if (obj instanceof Array) {
       result = [];
       for (var i in obj) {
-        result.push(Tools.cloneDeep(obj[i]));
+        if (obj.hasOwnProperty(i)) {
+          result.push(Tools.cloneDeep(obj[i]));
+        }
       }
       return result;
     }
@@ -830,15 +832,12 @@ var Tools = (function () {
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
   };
-  
+
   return Tools;
 })();
 
-if (typeof module !== 'undefined') {
-  if (typeof exports !== 'undefined') {
-    exports = module.exports = Linq;
-  }
-  exports.Linq = Linq;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Linq;
 } else {
   window.Linq = Linq;
 }
