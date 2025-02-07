@@ -754,10 +754,15 @@ var Tools = (function () {
 
   /**
    * Number calculate division
-   * To be improved
    */
   Tools.calcNumDiv = function (num1, num2) {
-    return num1 / num2;
+    if (!Tools.isNum(num1) || !Tools.isNum(num2)) return 0;
+    var _c = Tools.calcMultiple(num1, num2),
+      mult = _c.mult;
+    var val = (num1 * mult) / (num2 * mult);
+    var _cc = Tools.calcMultiple(num1, val),
+      place = _cc.place;
+    return Number(val.toFixed(place));
   };
 
   /**

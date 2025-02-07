@@ -614,7 +614,6 @@ Tools = {
 
   ###
     Number calculate division
-    To be improved
   ###
   calcNumDiv: (num1, num2) ->
     if (not @isNum num1) or (not @isNum num2)
