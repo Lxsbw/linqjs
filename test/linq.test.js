@@ -72,8 +72,22 @@ describe('Group 1:', () => {
       { Age: 0.8, Name: '征史郎' },
     ];
 
+    const numbers10 = [
+      { Age: 0, Name: '正一郎' },
+      { Age: 0.6, Name: '清次郎' },
+      { Age: 0.09, Name: '誠三郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+      { Age: 0, Name: '征史郎' },
+    ];
+
     // expect(new Linq(numbers).average(x => x.Age)).toBe(0.4);
     expect(new Linq(numbers).average(x => x.Age)).toBeCloseTo(0.4);
+    expect(new Linq(numbers10).average(x => x.Age)).toBeCloseTo(0.069);
   });
 
   test('Cast', () => {
@@ -601,14 +615,13 @@ describe('Group 2:', () => {
       .orderBy(x => x.ID)
       .select(x => x.ID)
       .toArray();
-    expect(listIdType).toEqual([0, 3, '我音', '拼音', '拼音']);
+    expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
 
     const listIdTypeDesc = new Linq(specialTypeDesc)
       .orderByDescending(x => x.ID)
       .select(x => x.ID)
       .toArray();
-    console.log('descending:', listIdTypeDesc);
-    expect(listIdTypeDesc).toEqual([3, 0, '拼音', '拼音', '我音', '我音']);
+    expect(listIdTypeDesc).toEqual([3, 0, '我音', '我音', '拼音', '拼音']);
   });
 
   test('OrderByDescending', () => {

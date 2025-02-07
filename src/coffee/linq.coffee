@@ -177,7 +177,6 @@ class Linq
 
     groupMap = new Map()
     for element in @_elements
-      # 深度比较的哈希或字符串化函数来生成键
       key = Tools.getHash(grouper(element))
       mappedValue = mapper(element)
 
@@ -618,7 +617,12 @@ Tools = {
     To be improved
   ###
   calcNumDiv: (num1, num2) ->
-    return num1 / num2
+    if (not @isNum num1) or (not @isNum num2)
+      return 0
+    { mult } = @calcMultiple(num1, num2)
+    val = (num1 * mult) / (num2 * mult)
+    { place } = this.calcMultiple(num1, val)
+    return Number(val.toFixed(place))
 
   ###
     Check number
@@ -691,7 +695,7 @@ Tools = {
       type = typeOf(value)
       switch (type)
         when 'object'
-          keys = Object.keys(value).sort() # 保证键的顺序一致
+          keys = Object.keys(value).sort()
           keys.forEach (key) ->
             hashValue += "#{key}:#{generateHash(value[key])};"
         when 'array'
