@@ -681,10 +681,13 @@ const Tools = {
 
   /**
    * Number calculate division
-   * To be improved
    */
   calcNumDiv(num1, num2) {
-    return num1 / num2;
+    if (!this.isNum(num1) || !this.isNum(num2)) return 0;
+    const { mult } = this.calcMultiple(num1, num2);
+    const val = (num1 * mult) / (num2 * mult);
+    const { place } = this.calcMultiple(num1, val);
+    return Number(val.toFixed(place));
   },
 
   /**
