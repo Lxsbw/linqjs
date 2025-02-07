@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee/linq')
+Linq =  require('../../../src/coffee/linq')
 
 parameters = [
   { Age: 52, Name: "正一郎" }
@@ -14,13 +14,28 @@ numbers = [
   { Age: 0.8, Name: '征史郎' }
 ]
 
+numbers10 = [
+  { Age: 0, Name: '正一郎' }
+  { Age: 0.6, Name: '清次郎' }
+  { Age: 0.09, Name: '誠三郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+  { Age: 0, Name: '征史郎' }
+]
+
 ageSum = new Linq(parameters).sum( (value) -> value.Age )
 ageSumByNum = new Linq(numbers).sum((x) -> x.Age)
 ageDivByNum = new Linq(numbers).average((x) -> x.Age)
+ageDivByNum10 = new Linq(numbers10).average((x) -> x.Age)
 
 console.log 'ageSum:', ageSum
 console.log 'ageSumByNum:', ageSumByNum
 console.log 'ageDivByNum:', ageDivByNum
+console.log 'ageDivByNum10:', ageDivByNum10
 
 # entity = new Linq(parameters)
 # console.log entity
