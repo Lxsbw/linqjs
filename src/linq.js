@@ -199,7 +199,6 @@ class Linq {
   groupBy(grouper, mapper = val => val) {
     const groupMap = new Map();
     for (let element of this._elements) {
-      // 深度比较的哈希或字符串化函数来生成键
       const key = Tools.getHash(grouper(element));
       const mappedValue = mapper(element);
 
@@ -779,7 +778,7 @@ const Tools = {
       const type = typeOf(value);
       switch (type) {
         case 'object':
-          const keys = Object.keys(value).sort(); // 保证键的顺序一致
+          const keys = Object.keys(value).sort();
           keys.forEach(key => {
             hashValue += `${key}:${generateHash(value[key])};`;
           });
