@@ -1,4 +1,4 @@
-let ageSum, Linq, parameters, numbers;
+let ageSum, ageSumByNum, ageDivByNum, ageDivByNum10, Linq, parameters, numbers, numbers10;
 
 Linq = require('../../src/linq');
 
