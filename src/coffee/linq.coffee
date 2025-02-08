@@ -188,7 +188,6 @@ class Linq
       group.count++
 
     return Array.from(groupMap.values())
-
   # groupBy: (grouper, mapper) ->
   #   if (mapper is undefined)
   #     mapper = (val) -> val
