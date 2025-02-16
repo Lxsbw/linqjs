@@ -788,8 +788,12 @@ const Tools = {
             hashValue += `${generateHash(item)},`;
           });
           break;
+        case 'null':
+          break;
+        case 'undefined':
+          break;
         default:
-          hashValue += value.toString();
+          hashValue += value ? value.toString() : '';
           break;
       }
       return hashValue;
