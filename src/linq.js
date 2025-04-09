@@ -684,9 +684,10 @@ const Tools = {
   calcNumDiv(num1, num2) {
     if (!this.isNum(num1) || !this.isNum(num2)) return 0;
     const { mult } = this.calcMultiple(num1, num2);
-    const val = (num1 * mult) / (num2 * mult);
-    const { place } = this.calcMultiple(num1, val);
-    return Number(val.toFixed(place));
+    return (num1 * mult) / (num2 * mult);
+    // const val = (num1 * mult) / (num2 * mult);
+    // const { place } = this.calcMultiple(num1, val);
+    // return Number(val.toFixed(place));
   },
 
   /**
@@ -706,8 +707,8 @@ const Tools = {
   /**
    * Check array
    */
-  isArray() {
-    return Array.isArray;
+  isArray(array) {
+    return Array.isArray(array);
   },
 
   /**
@@ -724,7 +725,7 @@ const Tools = {
   },
 
   /**
-   * build array reference
+   * build array new reference
    */
   arrayMap(array) {
     if (!this.isArray(array)) {

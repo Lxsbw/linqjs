@@ -303,7 +303,7 @@ class Linq
     if (comparer is undefined)
       comparer = Tools.keyComparer(keySelector, false)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer)
 
   ###
     Sorts the elements of a sequence in descending order according to a key.
@@ -312,7 +312,7 @@ class Linq
     if (comparer is undefined)
       comparer = Tools.keyComparer(keySelector, true)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in
@@ -618,9 +618,10 @@ Tools = {
     if (not @isNum num1) or (not @isNum num2)
       return 0
     { mult } = @calcMultiple(num1, num2)
-    val = (num1 * mult) / (num2 * mult)
-    { place } = this.calcMultiple(num1, val)
-    return Number(val.toFixed(place))
+    return (num1 * mult) / (num2 * mult)
+    # val = (num1 * mult) / (num2 * mult)
+    # { place } = this.calcMultiple(num1, val)
+    # return Number(val.toFixed(place))
 
   ###
     Check number
@@ -635,6 +636,12 @@ Tools = {
     return (typeof args is 'string') and (args.constructor is String)
 
   ###
+    Check array
+  ###
+  isArray: (array) ->
+    return Array.isArray(array)
+
+  ###
     Calculation multiple
   ###
   calcMultiple: (num1, num2) ->
@@ -645,6 +652,14 @@ Tools = {
     mult = Math.pow(10, Math.max(sq1, sq2))
     place = if sq1 >= sq2 then sq1 else sq2
     return { mult, place }
+
+  ###
+    build array new reference
+  ###
+  arrayMap: (array) ->
+    if not @isArray(array)
+      return array
+    return array.map (x) -> x
 
   ###
     Clone data
