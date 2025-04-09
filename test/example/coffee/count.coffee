@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee/linq')
+Linq = require '../../../src/coffee/linq'
 
 intArray    = [ 1, 5, 8, 12, 15, 16 ]
 stringList  = ["正一郎", "清次郎", "誠三郎", "征史郎" ]

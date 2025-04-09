@@ -1,4 +1,4 @@
-Linq = require '../../src/coffee/linq'
+Linq = require '../../../src/coffee/linq'
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
