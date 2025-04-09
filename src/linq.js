@@ -338,7 +338,7 @@ class Linq {
    */
   orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   }
 
   /**
@@ -346,7 +346,7 @@ class Linq {
    */
   orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   }
 
   /**
@@ -704,6 +704,13 @@ const Tools = {
   },
 
   /**
+   * Check array
+   */
+  isArray() {
+    return Array.isArray;
+  },
+
+  /**
    * Calculation multiple
    */
   calcMultiple(num1, num2) {
@@ -714,6 +721,16 @@ const Tools = {
     const mult = Math.pow(10, Math.max(sq1, sq2));
     const place = sq1 >= sq2 ? sq1 : sq2;
     return { mult, place };
+  },
+
+  /**
+   * build array reference
+   */
+  arrayMap(array) {
+    if (!this.isArray(array)) {
+      return array;
+    }
+    return array.map(x => x);
   },
 
   /**
