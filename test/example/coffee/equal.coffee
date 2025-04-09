@@ -1,4 +1,4 @@
-Linq = require '../../src/coffee/linq'
+Linq = require '../../../src/coffee/linq'
 
 obj1 = { A: '1', B: '2', C: '3'}
 obj2 = { A: '1', B: '2', C: '3', D: '4'}

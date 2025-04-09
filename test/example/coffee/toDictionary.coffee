@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee/linq')
+Linq = require '../../../src/coffee/linq'
 
 parameters = [
   { ID: 0, Age: 52, Name: "正一郎" }

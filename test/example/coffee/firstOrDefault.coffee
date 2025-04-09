@@ -1,4 +1,4 @@
-Linq =  require('../../src/coffee/linq')
+Linq = require '../../../src/coffee/linq'
 
 numbers = [ 1, 2, 3, 5, 7, 11 ]
 result  = new Linq(numbers).first()
