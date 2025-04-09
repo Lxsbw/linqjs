@@ -819,7 +819,7 @@ const Tools = {
           });
           break;
         case 'boolean':
-          hashValue += value.toString();
+          hashValue += `boolean:${value.toString()}`;
           break;
         case 'null':
           break;

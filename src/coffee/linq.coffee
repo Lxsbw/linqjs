@@ -725,7 +725,7 @@ Tools = {
           value.forEach (item) ->
             hashValue += "#{generateHash(item)},"
         when 'boolean'
-          hashValue += value.toString()
+          hashValue += "boolean:#{value.toString()}"
         when 'null'
           break
         when 'undefined'
