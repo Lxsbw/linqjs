@@ -7,6 +7,8 @@ data = [
   { id: 2, name: 'two', category: null, countries: ['Italy', 'Germany'] },
   { id: 2, name: 'two', category: undefined, countries: ['Italy', 'Germany'] },
   { id: 2, name: 'two', category: '', countries: ['Italy', 'Germany'] },
+  { id: 2, name: 'two', category: ' ', countries: ['Italy', 'Germany'] },
+  { id: 2, name: 'two', category: '  ', countries: ['Italy', 'Germany'] },
   { id: 2, name: 'two', category: true, countries: ['Italy', 'Germany'] },
   { id: 2, name: 'two', category: false, countries: ['Italy', 'Germany'] },
   { id: 2, name: 'two', countries: ['Italy', 'Germany'] },
