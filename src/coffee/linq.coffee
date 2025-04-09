@@ -181,7 +181,7 @@ class Linq
       mappedValue = mapper(element)
 
       if !groupMap.has(key)
-        groupMap.set(key, { key: grouper(element), count: 0, elements: [] })
+        groupMap.set(key, { key: Tools.getGroupValue(grouper(element)), count: 0, elements: [] })
 
       group = groupMap.get(key)
       group.elements.push(mappedValue)
@@ -624,9 +624,6 @@ Tools = {
       return 0
     { mult } = @calcMultiple(num1, num2)
     return (num1 * mult) / (num2 * mult)
-    # val = (num1 * mult) / (num2 * mult)
-    # { place } = this.calcMultiple(num1, val)
-    # return Number(val.toFixed(place))
 
   ###
     Check number
@@ -659,12 +656,20 @@ Tools = {
     return { mult, place }
 
   ###
-    build array new reference
+    Build array new reference
   ###
   arrayMap: (array) ->
     if not @isArray(array)
       return array
     return array.map (x) -> x
+
+  ###
+    Get group value
+  ###
+  getGroupValue: (val) ->
+    if null is val || undefined is val
+      return ''
+    return val
 
   ###
     Clone data
@@ -719,8 +724,14 @@ Tools = {
         when 'array'
           value.forEach (item) ->
             hashValue += "#{generateHash(item)},"
-        else
+        when 'boolean'
           hashValue += value.toString()
+        when 'null'
+          break
+        when 'undefined'
+          break
+        else
+          hashValue += if value then value.toString() else ''
       return hashValue
     return generateHash(obj)
 }

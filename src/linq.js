@@ -203,7 +203,7 @@ class Linq {
       const mappedValue = mapper(element);
 
       if (!groupMap.has(key)) {
-        groupMap.set(key, { key: grouper(element), count: 0, elements: [] });
+        groupMap.set(key, { key: Tools.getGroupValue(grouper(element)), count: 0, elements: [] });
       }
 
       const group = groupMap.get(key);
@@ -690,9 +690,6 @@ const Tools = {
     if (!this.isNum(num1) || !this.isNum(num2)) return 0;
     const { mult } = this.calcMultiple(num1, num2);
     return (num1 * mult) / (num2 * mult);
-    // const val = (num1 * mult) / (num2 * mult);
-    // const { place } = this.calcMultiple(num1, val);
-    // return Number(val.toFixed(place));
   },
 
   /**
@@ -730,13 +727,23 @@ const Tools = {
   },
 
   /**
-   * build array new reference
+   * Build array new reference
    */
   arrayMap(array) {
     if (!this.isArray(array)) {
       return array;
     }
     return array.map(x => x);
+  },
+
+  /**
+   * Get group value
+   */
+  getGroupValue(val) {
+    if (null === val || undefined === val) {
+      return '';
+    }
+    return val;
   },
 
   /**
@@ -810,6 +817,9 @@ const Tools = {
           value.forEach(item => {
             hashValue += `${generateHash(item)},`;
           });
+          break;
+        case 'boolean':
+          hashValue += value.toString();
           break;
         case 'null':
           break;

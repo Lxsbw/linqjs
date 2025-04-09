@@ -397,6 +397,44 @@ describe('Group 2:', () => {
     ]);
   });
 
+  test('groupByMini', () => {
+    const data = [
+      { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+      { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+      { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
+      // { id: 3, name: 'three', category: 'vegetables', countries: ['Germany'] },
+      // { id: 4, name: 'four', category: 'fruits', countries: ['Japan'] },
+      // { id: 5, name: 'five', category: 'fruits', countries: ['Japan', 'Italy'] }
+    ];
+    expect(new Linq(data).groupByMini(el => el.category)).toEqual([
+      {
+        key: 'fruits',
+        count: 2,
+        elements: [
+          { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+          { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+        ],
+      },
+      { key: 'vegetables', count: 1, elements: [{ id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }] },
+    ]);
+
+    expect(
+      new Linq(data).groupByMini(el => {
+        return { id: el.id, category: el.category };
+      })
+    ).toEqual([
+      {
+        key: { id: 1, category: 'fruits' },
+        count: 2,
+        elements: [
+          { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+          { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+        ],
+      },
+      { key: { id: 2, category: 'vegetables' }, count: 1, elements: [{ id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }] },
+    ]);
+  });
+
   test('GroupJoin', () => {
     const magnus = { Name: 'Hedlund, Magnus' };
     const terry = { Name: 'Adams, Terry' };
