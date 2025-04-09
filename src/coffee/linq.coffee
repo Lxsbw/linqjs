@@ -188,26 +188,31 @@ class Linq
       group.count++
 
     return Array.from(groupMap.values())
-  # groupBy: (grouper, mapper) ->
-  #   if (mapper is undefined)
-  #     mapper = (val) -> val
 
-  #   initialValue = []
+  ###
+    Groups the elements of a sequence according to a specified key selector function.
+    a little data.
+  ###
+  groupByMini: (grouper, mapper) ->
+    if (mapper is undefined)
+      mapper = (val) -> val
 
-  #   func = (ac, v) ->
-  #     key = grouper(v)
-  #     existingGroup = new Linq(ac).firstOrDefault((x) -> Tools.equal(x.key, key))
-  #     mappedValue = mapper(v)
+    initialValue = []
 
-  #     if existingGroup
-  #       existingGroup.elements.push(mappedValue)
-  #       existingGroup.count++
-  #     else
-  #       existingMap = { key: key, count: 1, elements: [mappedValue] }
-  #       ac.push(existingMap)
-  #     return ac
+    func = (ac, v) ->
+      key = grouper(v)
+      existingGroup = new Linq(ac).firstOrDefault((x) -> Tools.equal(x.key, key))
+      mappedValue = mapper(v)
 
-  #   return @aggregate(func, initialValue)
+      if existingGroup
+        existingGroup.elements.push(mappedValue)
+        existingGroup.count++
+      else
+        existingMap = { key: key, count: 1, elements: [mappedValue] }
+        ac.push(existingMap)
+      return ac
+
+    return @aggregate(func, initialValue)
 
   ###
     Correlates the elements of two sequences based on equality of keys and groups the results.

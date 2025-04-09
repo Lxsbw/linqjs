@@ -212,23 +212,28 @@ class Linq {
     }
     return Array.from(groupMap.values());
   }
-  // groupBy(grouper, mapper = val => val) {
-  //   const initialValue = [];
-  //   const func = function (ac, v) {
-  //     const key = grouper(v);
-  //     const existingGroup = new Linq(ac).firstOrDefault(x => Tools.equal(x.key, key));
-  //     const mappedValue = mapper(v);
-  //     if (existingGroup) {
-  //       existingGroup.elements.push(mappedValue);
-  //       existingGroup.count++;
-  //     } else {
-  //       const existingMap = { key: key, count: 1, elements: [mappedValue] };
-  //       ac.push(existingMap);
-  //     }
-  //     return ac;
-  //   };
-  //   return this.aggregate(func, initialValue);
-  // }
+
+  /**
+   * Groups the elements of a sequence according to a specified key selector function.
+   * a little data.
+   */
+  groupByMini(grouper, mapper = val => val) {
+    const initialValue = [];
+    const func = function (ac, v) {
+      const key = grouper(v);
+      const existingGroup = new Linq(ac).firstOrDefault(x => Tools.equal(x.key, key));
+      const mappedValue = mapper(v);
+      if (existingGroup) {
+        existingGroup.elements.push(mappedValue);
+        existingGroup.count++;
+      } else {
+        const existingMap = { key: key, count: 1, elements: [mappedValue] };
+        ac.push(existingMap);
+      }
+      return ac;
+    };
+    return this.aggregate(func, initialValue);
+  }
 
   /**
    * Correlates the elements of two sequences based on equality of keys and groups the results.
