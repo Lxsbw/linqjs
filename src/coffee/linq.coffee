@@ -181,7 +181,7 @@ class Linq
       mappedValue = mapper(element)
 
       if !groupMap.has(key)
-        groupMap.set(key, { key: Tools.getGroupValue(grouper(element)), count: 0, elements: [] })
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] })
 
       group = groupMap.get(key)
       group.elements.push(mappedValue)
@@ -727,8 +727,10 @@ Tools = {
         when 'boolean'
           hashValue += "boolean:#{value.toString()}"
         when 'null'
+          hashValue += 'null:'
           break
         when 'undefined'
+          hashValue += 'undefined:'
           break
         else
           hashValue += if value then value.toString() else ''

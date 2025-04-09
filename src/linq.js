@@ -203,7 +203,7 @@ class Linq {
       const mappedValue = mapper(element);
 
       if (!groupMap.has(key)) {
-        groupMap.set(key, { key: Tools.getGroupValue(grouper(element)), count: 0, elements: [] });
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] });
       }
 
       const group = groupMap.get(key);
@@ -822,8 +822,10 @@ const Tools = {
           hashValue += `boolean:${value.toString()}`;
           break;
         case 'null':
+          hashValue += 'null:';
           break;
         case 'undefined':
+          hashValue += 'undefined:';
           break;
         default:
           hashValue += value ? value.toString() : '';
