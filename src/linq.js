@@ -819,13 +819,13 @@ const Tools = {
           });
           break;
         case 'boolean':
-          hashValue += `boolean:${value.toString()}`;
+          hashValue += `boolean<>_<>_<>${value.toString()}`;
           break;
         case 'null':
-          hashValue += 'null:';
+          hashValue += 'null<>_<>_<>';
           break;
         case 'undefined':
-          hashValue += 'undefined:';
+          hashValue += 'undefined<>_<>_<>';
           break;
         default:
           hashValue += value ? value.toString() : '';
