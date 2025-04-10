@@ -197,6 +197,27 @@ class Linq {
    * Groups the elements of a sequence according to a specified key selector function.
    */
   groupBy(grouper, mapper = val => val) {
+    const groupMap = new Map();
+    for (let element of this._elements) {
+      const key = Tools.getHash(grouper(element));
+      const mappedValue = mapper(element);
+
+      if (!groupMap.has(key)) {
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] });
+      }
+
+      const group = groupMap.get(key);
+      group.elements.push(mappedValue);
+      group.count++;
+    }
+    return Array.from(groupMap.values());
+  }
+
+  /**
+   * Groups the elements of a sequence according to a specified key selector function.
+   * a little data.
+   */
+  groupByMini(grouper, mapper = val => val) {
     const initialValue = [];
     const func = function (ac, v) {
       const key = grouper(v);
@@ -322,7 +343,7 @@ class Linq {
    */
   orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   }
 
   /**
@@ -330,7 +351,7 @@ class Linq {
    */
   orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   }
 
   /**
@@ -480,7 +501,7 @@ class Linq {
       // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
         Key: this.select(key).elementAt(i),
-        Value: value ? this.select(value).elementAt(i) : v
+        Value: value ? this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -664,10 +685,11 @@ const Tools = {
 
   /**
    * Number calculate division
-   * To be improved
    */
   calcNumDiv(num1, num2) {
-    return num1 / num2;
+    if (!this.isNum(num1) || !this.isNum(num2)) return 0;
+    const { mult } = this.calcMultiple(num1, num2);
+    return (num1 * mult) / (num2 * mult);
   },
 
   /**
@@ -685,6 +707,13 @@ const Tools = {
   },
 
   /**
+   * Check array
+   */
+  isArray(array) {
+    return Array.isArray(array);
+  },
+
+  /**
    * Calculation multiple
    */
   calcMultiple(num1, num2) {
@@ -695,6 +724,26 @@ const Tools = {
     const mult = Math.pow(10, Math.max(sq1, sq2));
     const place = sq1 >= sq2 ? sq1 : sq2;
     return { mult, place };
+  },
+
+  /**
+   * Build array new reference
+   */
+  arrayMap(array) {
+    if (!this.isArray(array)) {
+      return array;
+    }
+    return array.map(x => x);
+  },
+
+  /**
+   * Get group value
+   */
+  getGroupValue(val) {
+    if (null === val || undefined === val) {
+      return '';
+    }
+    return val;
   },
 
   /**
@@ -726,17 +775,12 @@ const Tools = {
     if (obj instanceof Array) {
       result = [];
       for (let i in obj) {
-        result.push(this.cloneDeep(obj[i]));
+        if (obj.hasOwnProperty(i)) {
+          result.push(this.cloneDeep(obj[i]));
+        }
       }
       return result;
     }
-
-    // // Handle Mongoose Object
-    // if (obj.constructor.name === 'model' && typeof obj.toObject === 'function') {
-    //   result = obj.toObject({ getters: true, virtuals: true });
-    //   return result;
-    // }
-
     // Handle Object
     if (obj instanceof Object) {
       result = {};
@@ -747,15 +791,54 @@ const Tools = {
       }
       return result;
     }
-    throw new Error("Unable to copy param! Its type isn't supported.");
-  }
+    // throw new Error("Unable to copy param! Its type isn't supported.");
+  },
+
+  /**
+   * Generate Hash
+   */
+  getHash(obj) {
+    let hashValue = '';
+
+    function typeOf(obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    }
+
+    function generateHash(value) {
+      const type = typeOf(value);
+      switch (type) {
+        case 'object':
+          const keys = Object.keys(value).sort();
+          keys.forEach(key => {
+            hashValue += `${key}:${generateHash(value[key])};`;
+          });
+          break;
+        case 'array':
+          value.forEach(item => {
+            hashValue += `${generateHash(item)},`;
+          });
+          break;
+        case 'boolean':
+          hashValue += `boolean<>_<>_<>${value.toString()}`;
+          break;
+        case 'null':
+          hashValue += 'null<>_<>_<>';
+          break;
+        case 'undefined':
+          hashValue += 'undefined<>_<>_<>';
+          break;
+        default:
+          hashValue += value ? value.toString() : '';
+          break;
+      }
+      return hashValue;
+    }
+    return generateHash(obj);
+  },
 };
 
-if (typeof module !== 'undefined') {
-  if (typeof exports !== 'undefined') {
-    exports = module.exports = Linq;
-  }
-  exports.Linq = Linq;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Linq;
 } else {
   window.Linq = Linq;
 }

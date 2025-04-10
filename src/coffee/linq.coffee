@@ -175,6 +175,28 @@ class Linq
     if (mapper is undefined)
       mapper = (val) -> val
 
+    groupMap = new Map()
+    for element in @_elements
+      key = Tools.getHash(grouper(element))
+      mappedValue = mapper(element)
+
+      if !groupMap.has(key)
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] })
+
+      group = groupMap.get(key)
+      group.elements.push(mappedValue)
+      group.count++
+
+    return Array.from(groupMap.values())
+
+  ###
+    Groups the elements of a sequence according to a specified key selector function.
+    a little data.
+  ###
+  groupByMini: (grouper, mapper) ->
+    if (mapper is undefined)
+      mapper = (val) -> val
+
     initialValue = []
 
     func = (ac, v) ->
@@ -286,7 +308,7 @@ class Linq
     if (comparer is undefined)
       comparer = Tools.keyComparer(keySelector, false)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer)
 
   ###
     Sorts the elements of a sequence in descending order according to a key.
@@ -295,7 +317,7 @@ class Linq
     if (comparer is undefined)
       comparer = Tools.keyComparer(keySelector, true)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in
@@ -593,13 +615,15 @@ Tools = {
       return 0
     { mult, place } = @calcMultiple(num1, num2)
     return Number(((num1 * mult + num2 * mult) / mult).toFixed(place))
-  
+
   ###
     Number calculate division
-    To be improved
   ###
   calcNumDiv: (num1, num2) ->
-    return num1 / num2
+    if (not @isNum num1) or (not @isNum num2)
+      return 0
+    { mult } = @calcMultiple(num1, num2)
+    return (num1 * mult) / (num2 * mult)
 
   ###
     Check number
@@ -614,6 +638,12 @@ Tools = {
     return (typeof args is 'string') and (args.constructor is String)
 
   ###
+    Check array
+  ###
+  isArray: (array) ->
+    return Array.isArray(array)
+
+  ###
     Calculation multiple
   ###
   calcMultiple: (num1, num2) ->
@@ -626,12 +656,28 @@ Tools = {
     return { mult, place }
 
   ###
+    Build array new reference
+  ###
+  arrayMap: (array) ->
+    if not @isArray(array)
+      return array
+    return array.map (x) -> x
+
+  ###
+    Get group value
+  ###
+  getGroupValue: (val) ->
+    if null is val || undefined is val
+      return ''
+    return val
+
+  ###
     Clone data
   ###
   cloneDeep: (obj) ->
     if typeof structuredClone is 'function'
       return structuredClone obj
-    
+
     # Handle the 3 simple types, and null or undefined
     return obj if null is obj || "object" isnt typeof obj
 
@@ -658,6 +704,36 @@ Tools = {
       return result
 
     throw new Error("Unable to copy param! Its type isn't supported.")
+
+  ###
+    Generate Hash
+  ###
+  getHash: (obj) ->
+    hashValue = ''
+
+    typeOf = (obj) ->
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+
+    generateHash = (value) ->
+      type = typeOf(value)
+      switch (type)
+        when 'object'
+          keys = Object.keys(value).sort()
+          keys.forEach (key) ->
+            hashValue += "#{key}:#{generateHash(value[key])};"
+        when 'array'
+          value.forEach (item) ->
+            hashValue += "#{generateHash(item)},"
+        when 'boolean'
+          hashValue += "boolean<>_<>_<>#{value.toString()}"
+        when 'null'
+          hashValue += 'null<>_<>_<>'
+        when 'undefined'
+          hashValue += 'undefined<>_<>_<>'
+        else
+          hashValue += if value then value.toString() else ''
+      return hashValue
+    return generateHash(obj)
 }
 
 module.exports = Linq

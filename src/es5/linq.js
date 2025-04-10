@@ -1,6 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });
 
 /**
  * LINQ to JavaScript ES6 (Language Integrated Query)
@@ -222,24 +222,44 @@ var Linq = (function () {
         return val;
       };
     }
-    var initialValue = [];
-    var func = function (ac, v) {
-      var key = grouper(v);
-      var existingGroup = new Linq(ac).firstOrDefault(function (x) {
-        return Tools.equal(x.key, key);
-      });
-      var mappedValue = mapper(v);
-      if (existingGroup) {
-        existingGroup.elements.push(mappedValue);
-        existingGroup.count++;
-      } else {
-        var existingMap = { key: key, count: 1, elements: [mappedValue] };
-        ac.push(existingMap);
+    var groupMap = new Map();
+    for (var _i = 0, _a = this._elements; _i < _a.length; _i++) {
+      var element = _a[_i];
+      var key = Tools.getHash(grouper(element));
+      var mappedValue = mapper(element);
+      if (!groupMap.has(key)) {
+        groupMap.set(key, { key: grouper(element), count: 0, elements: [] });
       }
-      return ac;
-    };
-    return this.aggregate(func, initialValue);
+      var group = groupMap.get(key);
+      group.elements.push(mappedValue);
+      group.count++;
+    }
+    return Array.from(groupMap.values());
   };
+  // Linq.prototype.groupBy = function (grouper, mapper) {
+  //   if (mapper === void 0) {
+  //     mapper = function (val) {
+  //       return val;
+  //     };
+  //   }
+  //   var initialValue = [];
+  //   var func = function (ac, v) {
+  //     var key = grouper(v);
+  //     var existingGroup = new Linq(ac).firstOrDefault(function (x) {
+  //       return Tools.equal(x.key, key);
+  //     });
+  //     var mappedValue = mapper(v);
+  //     if (existingGroup) {
+  //       existingGroup.elements.push(mappedValue);
+  //       existingGroup.count++;
+  //     } else {
+  //       var existingMap = { key: key, count: 1, elements: [mappedValue] };
+  //       ac.push(existingMap);
+  //     }
+  //     return ac;
+  //   };
+  //   return this.aggregate(func, initialValue);
+  // };
 
   /**
    * Correlates the elements of two sequences based on equality of keys and groups the results.
@@ -555,7 +575,7 @@ var Linq = (function () {
       // dicc[_this.select(key).elementAt(i).toString()] = value ? _this.select(value).elementAt(i) : v;
       dicc.add({
         Key: _this.select(key).elementAt(i),
-        Value: value ? _this.select(value).elementAt(i) : v
+        Value: value ? _this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -754,10 +774,13 @@ var Tools = (function () {
 
   /**
    * Number calculate division
-   * To be improved
    */
   Tools.calcNumDiv = function (num1, num2) {
-    return num1 / num2;
+    if (!Tools.isNum(num1) || !Tools.isNum(num2)) return 0;
+    var mult = Tools.calcMultiple(num1, num2).mult;
+    var val = (num1 * mult) / (num2 * mult);
+    var place = Tools.calcMultiple(num1, val).place;
+    return Number(val.toFixed(place));
   };
 
   /**
@@ -814,7 +837,9 @@ var Tools = (function () {
     if (obj instanceof Array) {
       result = [];
       for (var i in obj) {
-        result.push(Tools.cloneDeep(obj[i]));
+        if (obj.hasOwnProperty(i)) {
+          result.push(Tools.cloneDeep(obj[i]));
+        }
       }
       return result;
     }
@@ -830,15 +855,43 @@ var Tools = (function () {
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
   };
-  
+
+  /**
+   * Generate Hash
+   */
+  Tools.getHash = function (obj) {
+    var hashValue = '';
+    var typeOf = function (obj) {
+      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    };
+    var generateHash = function (value) {
+      var type = typeOf(value);
+      switch (type) {
+        case 'object':
+          var keys = Object.keys(value).sort();
+          keys.forEach(function (key) {
+            hashValue += ''.concat(key, ':').concat(generateHash(value[key]), ';');
+          });
+          break;
+        case 'array':
+          value.forEach(function (item) {
+            hashValue += ''.concat(generateHash(item), ',');
+          });
+          break;
+        default:
+          hashValue += value.toString();
+          break;
+      }
+      return hashValue;
+    };
+    return generateHash(obj);
+  };
+
   return Tools;
 })();
 
-if (typeof module !== 'undefined') {
-  if (typeof exports !== 'undefined') {
-    exports = module.exports = Linq;
-  }
-  exports.Linq = Linq;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  module.exports = Linq;
 } else {
   window.Linq = Linq;
 }
