@@ -728,10 +728,8 @@ Tools = {
           hashValue += "boolean<>_<>_<>#{value.toString()}"
         when 'null'
           hashValue += 'null<>_<>_<>'
-          break
         when 'undefined'
           hashValue += 'undefined<>_<>_<>'
-          break
         else
           hashValue += if value then value.toString() else ''
       return hashValue
