@@ -236,30 +236,35 @@ var Linq = (function () {
     }
     return Array.from(groupMap.values());
   };
-  // Linq.prototype.groupBy = function (grouper, mapper) {
-  //   if (mapper === void 0) {
-  //     mapper = function (val) {
-  //       return val;
-  //     };
-  //   }
-  //   var initialValue = [];
-  //   var func = function (ac, v) {
-  //     var key = grouper(v);
-  //     var existingGroup = new Linq(ac).firstOrDefault(function (x) {
-  //       return Tools.equal(x.key, key);
-  //     });
-  //     var mappedValue = mapper(v);
-  //     if (existingGroup) {
-  //       existingGroup.elements.push(mappedValue);
-  //       existingGroup.count++;
-  //     } else {
-  //       var existingMap = { key: key, count: 1, elements: [mappedValue] };
-  //       ac.push(existingMap);
-  //     }
-  //     return ac;
-  //   };
-  //   return this.aggregate(func, initialValue);
-  // };
+
+  /**
+   * Groups the elements of a sequence according to a specified key selector function.
+   * a little data.
+   */
+  Linq.prototype.groupByMini = function (grouper, mapper) {
+    if (mapper === void 0) {
+      mapper = function (val) {
+        return val;
+      };
+    }
+    var initialValue = [];
+    var func = function (ac, v) {
+      var key = grouper(v);
+      var existingGroup = new Linq(ac).firstOrDefault(function (x) {
+        return Tools.equal(x.key, key);
+      });
+      var mappedValue = mapper(v);
+      if (existingGroup) {
+        existingGroup.elements.push(mappedValue);
+        existingGroup.count++;
+      } else {
+        var existingMap = { key: key, count: 1, elements: [mappedValue] };
+        ac.push(existingMap);
+      }
+      return ac;
+    };
+    return this.aggregate(func, initialValue);
+  };
 
   /**
    * Correlates the elements of two sequences based on equality of keys and groups the results.
@@ -394,7 +399,7 @@ var Linq = (function () {
       comparer = Tools.keyComparer(keySelector, false);
     }
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   };
 
   /**
@@ -405,7 +410,7 @@ var Linq = (function () {
       comparer = Tools.keyComparer(keySelector, true);
     }
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.cloneDeep(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer);
   };
 
   /**
@@ -778,9 +783,7 @@ var Tools = (function () {
   Tools.calcNumDiv = function (num1, num2) {
     if (!Tools.isNum(num1) || !Tools.isNum(num2)) return 0;
     var mult = Tools.calcMultiple(num1, num2).mult;
-    var val = (num1 * mult) / (num2 * mult);
-    var place = Tools.calcMultiple(num1, val).place;
-    return Number(val.toFixed(place));
+    return (num1 * mult) / (num2 * mult);
   };
 
   /**
@@ -798,6 +801,13 @@ var Tools = (function () {
   };
 
   /**
+   * Check array
+   */
+  Tools.isArray = function (array) {
+    return Array.isArray(array);
+  };
+
+  /**
    * Calculation multiple
    */
   Tools.calcMultiple = function (num1, num2) {
@@ -808,6 +818,18 @@ var Tools = (function () {
     var mult = Math.pow(10, Math.max(sq1, sq2));
     var place = sq1 >= sq2 ? sq1 : sq2;
     return { mult: mult, place: place };
+  };
+
+  /**
+   * Build array new reference
+   */
+  Tools.arrayMap = function (array) {
+    if (!_a.isArray(array)) {
+      return array;
+    }
+    return array.map(function (x) {
+      return x;
+    });
   };
 
   /**
@@ -878,8 +900,17 @@ var Tools = (function () {
             hashValue += ''.concat(generateHash(item), ',');
           });
           break;
+        case 'boolean':
+          hashValue += 'boolean<>_<>_<>'.concat(value.toString());
+          break;
+        case 'null':
+          hashValue += 'null<>_<>_<>';
+          break;
+        case 'undefined':
+          hashValue += 'undefined<>_<>_<>';
+          break;
         default:
-          hashValue += value.toString();
+          hashValue += value ? value.toString() : '';
           break;
       }
       return hashValue;
