@@ -649,13 +649,13 @@ describe('Group 2:', () => {
       .toArray();
     expect(listId).toEqual([3, 2, 5, 0]);
 
-    const listIdType = new Linq(specialType)
+    const listIdType = new Linq(specialType, 'zh-CN')
       .orderBy(x => x.ID)
       .select(x => x.ID)
       .toArray();
     expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
 
-    const listIdTypeDesc = new Linq(specialTypeDesc)
+    const listIdTypeDesc = new Linq(specialTypeDesc, 'zh-CN')
       .orderByDescending(x => x.ID)
       .select(x => x.ID)
       .toArray();
