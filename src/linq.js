@@ -9,7 +9,7 @@ class Linq {
    */
   constructor(elements = [], locales = null) {
     this._elements = elements;
-    this.locales = locales;
+    this._locales = locales;
   }
 
   /**
@@ -342,17 +342,17 @@ class Linq {
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false, this.locales)) {
+  orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false, this._locales)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer, this.locales);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   }
 
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true, this.locales)) {
+  orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true, this._locales)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer, this.locales);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   }
 
   /**
@@ -569,7 +569,7 @@ class OrderedList extends Linq {
    * @override
    */
   thenBy(keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false, this.locales)), this.locales);
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false, this._locales)), this._locales);
   }
 
   /**
@@ -577,7 +577,7 @@ class OrderedList extends Linq {
    * @override
    */
   thenByDescending(keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true, this.locales)), this.locales);
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true, this._locales)), this._locales);
   }
 }
 
