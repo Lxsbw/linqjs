@@ -30,10 +30,12 @@ parameters = [
   { Code: 'P', Name: '佩珊' },
 ];
 
-orderedParameters = new Linq(parameters).orderBy(x => x.Name).toArray();
+console.log(new Linq(parameters).orderBy(x => x.Name).toArray());
+console.log();
+console.log(orderedParameters = new Linq(parameters, 'zh-CN').orderBy(x => x.Name).toArray());
 
 // console.log('parameters:', parameters);
-console.log('orderedParameters:', orderedParameters);
+// console.log('orderedParameters:', orderedParameters);
 
 
 
