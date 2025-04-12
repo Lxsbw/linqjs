@@ -29,6 +29,8 @@ parameters = [
   { Code: 'P', Name: '佩珊' },
 ]
 
-orderedParameters = new Linq(parameters).orderBy( (value) -> value.Name ).toArray()
+console.log new Linq(parameters).orderBy((value) -> value.Name).toArray()
+console.log ''
+console.log new Linq(parameters, 'zh-CN').orderBy((value) -> value.Name).toArray()
 
-console.log 'orderedParameters:', orderedParameters
+# console.log 'orderedParameters:', orderedParameters
