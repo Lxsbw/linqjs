@@ -595,12 +595,20 @@ Tools = {
 
     # string comparer
     _stringComparer = (sortKeyA, sortKeyB) ->
-      if (sortKeyA.localeCompare(sortKeyB, locales) > 0)
-        return if !descending then 1 else -1
-      else if (sortKeyB.localeCompare(sortKeyA, locales) > 0)
-        return if !descending then -1 else 1
+      if locales
+        if (sortKeyA.localeCompare(sortKeyB, locales) > 0)
+          return if !descending then 1 else -1
+        else if (sortKeyB.localeCompare(sortKeyA, locales) > 0)
+          return if !descending then -1 else 1
+        else
+          return 0
       else
-        return 0
+        if (sortKeyA.localeCompare(sortKeyB) > 0)
+          return if !descending then 1 else -1
+        else if (sortKeyB.localeCompare(sortKeyA) > 0)
+          return if !descending then -1 else 1
+        else
+          return 0
 
     return (a, b) =>
       sortKeyA = _keySelector(a)
