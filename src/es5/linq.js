@@ -9,11 +9,15 @@ var Linq = (function () {
   /**
    * Defaults the elements of the list
    */
-  function Linq(elements) {
+  function Linq(elements, locales) {
     if (elements === void 0) {
       elements = [];
     }
+    if (locales === void 0) {
+      locales = null;
+    }
     this._elements = elements;
+    this._locales = locales;
   }
 
   /**
@@ -396,10 +400,10 @@ var Linq = (function () {
    */
   Linq.prototype.orderBy = function (keySelector, comparer) {
     if (comparer === void 0) {
-      comparer = Tools.keyComparer(keySelector, false);
+      comparer = Tools.keyComparer(keySelector, false, this._locales);
     }
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   };
 
   /**
@@ -407,10 +411,10 @@ var Linq = (function () {
    */
   Linq.prototype.orderByDescending = function (keySelector, comparer) {
     if (comparer === void 0) {
-      comparer = Tools.keyComparer(keySelector, true);
+      comparer = Tools.keyComparer(keySelector, true, this._locales);
     }
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   };
 
   /**
@@ -638,8 +642,8 @@ var Linq = (function () {
  * calling its toDictionary, toLookup, toList or toArray methods
  */
 var OrderedList = (function (_super) {
-  function OrderedList(elements, _comparer) {
-    var _this = _super.call(this, elements) || this;
+  function OrderedList(elements, _comparer, locales) {
+    var _this = _super.call(this, elements, locales) || this;
     _this._comparer = _comparer;
     _this._elements.sort(_this._comparer);
     return _this;
@@ -653,7 +657,7 @@ var OrderedList = (function (_super) {
    * @override
    */
   OrderedList.prototype.thenBy = function (keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false, this._locales)), this._locales);
   };
 
   /**
@@ -661,7 +665,7 @@ var OrderedList = (function (_super) {
    * @override
    */
   OrderedList.prototype.thenByDescending = function (keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true, this._locales)), this._locales);
   };
 
   return OrderedList;
@@ -735,7 +739,7 @@ var Tools = (function () {
   /**
    * Key comparer
    */
-  Tools.keyComparer = function (_keySelector, descending) {
+  Tools.keyComparer = function (_keySelector, descending, locales) {
     // common comparer
     var _comparer = function (sortKeyA, sortKeyB) {
       if (sortKeyA > sortKeyB) {
@@ -748,12 +752,22 @@ var Tools = (function () {
     };
     // string comparer
     var _stringComparer = function (sortKeyA, sortKeyB) {
-      if (sortKeyA.localeCompare(sortKeyB) > 0) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-        return !descending ? -1 : 1;
+      if (locales) {
+        if (sortKeyA.localeCompare(sortKeyB, locales) > 0) {
+          return !descending ? 1 : -1;
+        } else if (sortKeyB.localeCompare(sortKeyA, locales) > 0) {
+          return !descending ? -1 : 1;
+        } else {
+          return 0;
+        }
       } else {
-        return 0;
+        if (sortKeyA.localeCompare(sortKeyB) > 0) {
+          return !descending ? 1 : -1;
+        } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
+          return !descending ? -1 : 1;
+        } else {
+          return 0;
+        }
       }
     };
     return function (a, b) {

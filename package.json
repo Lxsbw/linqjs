@@ -1,6 +1,6 @@
 {
   "name": "linq-to-javascript",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Linq + JavaScript",
   "main": "src/linq.js",
   "types": "src/linq.d.ts",
@@ -11,7 +11,7 @@
   "scripts": {
     "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
     "buildes": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
-    "cbuild": "coffee -o ./build/clinq.js -c -b ./src/coffee/linq.coffee",
+    "cbuild": "coffee -o ./build/coffee_to_linq.js -c -b ./src/coffee/linq.coffee",
     "test": "jest",
     "testc": "jest --coverage"
   },
