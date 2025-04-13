@@ -414,7 +414,7 @@ describe('Group 2:', () => {
       list.push(ent);
     }
     let ent = JSON.parse(JSON.stringify(dataMany));
-    ent.id = "200000";
+    ent.id = '200000';
     list.push(ent);
 
     expect(new Linq(list).count()).toBe(200001);
