@@ -395,6 +395,30 @@ describe('Group 2:', () => {
       },
       { key: { id: 2, category: 'vegetables' }, count: 1, elements: [{ id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }] },
     ]);
+
+    const dataMany = {
+      ZWMS_WERKS: '1000',
+      ZWMS_MATNR: '02312SCU-NFA01',
+      ZWMS_KCLX: '02',
+      ZWMS_KCSL: 7,
+      ZWMS_ZYSL: 2,
+      ZWMS_LGORT: 'BJ41',
+      ZWMS_NUMBE: 'Z2000156365',
+      ZWMS_CONTAC: '1Y01032503120R',
+      ZWMS_KCBJ: 'Z',
+    };
+    let list = [];
+    for (let index = 0; index < 200000; index++) {
+      let ent = JSON.parse(JSON.stringify(dataMany));
+      ent.id = (index + 1).toString();
+      list.push(ent);
+    }
+    let ent = JSON.parse(JSON.stringify(dataMany));
+    ent.id = "200000";
+    list.push(ent);
+
+    expect(new Linq(list).count()).toBe(200001);
+    expect(new Linq(list).groupBy(el => el.id).length).toBe(200000);
   });
 
   test('groupByMini', () => {
@@ -649,13 +673,13 @@ describe('Group 2:', () => {
       .toArray();
     expect(listId).toEqual([3, 2, 5, 0]);
 
-    const listIdType = new Linq(specialType)
+    const listIdType = new Linq(specialType, 'zh-CN')
       .orderBy(x => x.ID)
       .select(x => x.ID)
       .toArray();
     expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
 
-    const listIdTypeDesc = new Linq(specialTypeDesc)
+    const listIdTypeDesc = new Linq(specialTypeDesc, 'zh-CN')
       .orderByDescending(x => x.ID)
       .select(x => x.ID)
       .toArray();
@@ -750,6 +774,64 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B' },
       { ID: 1, Age: 30, Name: 'D' },
       { ID: 0, Age: 30, Name: 'A' },
+    ]);
+  });
+
+  test('OrderByLocalSort', () => {
+    const parameters = [
+      { Code: 'S', Name: '诗涵' },
+      { Code: 'F', Name: '芳菲' },
+      // { Code: 'U', Name: '悠悦' },
+      { Code: 'H', Name: '慧琳' },
+      { Code: 'E', Name: '恩琪' },
+      { Code: 'R', Name: '睿萱' },
+      { Code: 'B', Name: '碧琳' },
+      { Code: 'C', Name: '采薇' },
+      { Code: 'T', Name: '天翊' },
+      { Code: 'G', Name: '冠宇' },
+      { Code: 'Q', Name: '绮梦' },
+      { Code: 'M', Name: '梦琪' },
+      // { Code: 'V', Name: '薇雅' },
+      { Code: 'Z', Name: '梓涵' },
+      { Code: 'A', Name: '安雅' },
+      // { Code: 'I', Name: '依诺' },
+      { Code: 'Y', Name: '雅琴' },
+      { Code: 'W', Name: '婉婷' },
+      { Code: 'L', Name: '乐瑶' },
+      { Code: 'K', Name: '可昕' },
+      { Code: 'X', Name: '晓妍' },
+      { Code: 'J', Name: '佳颖' },
+      { Code: 'N', Name: '娜菲' },
+      { Code: 'D', Name: '丹妮' },
+      { Code: 'O', Name: '欧雅' },
+      { Code: 'P', Name: '佩珊' },
+    ];
+
+    const listName = new Linq(parameters, 'zh-CN').orderBy(x => x.Name).toArray();
+    expect(listName).toEqual([
+      { Code: 'A', Name: '安雅' },
+      { Code: 'B', Name: '碧琳' },
+      { Code: 'C', Name: '采薇' },
+      { Code: 'D', Name: '丹妮' },
+      { Code: 'E', Name: '恩琪' },
+      { Code: 'F', Name: '芳菲' },
+      { Code: 'G', Name: '冠宇' },
+      { Code: 'H', Name: '慧琳' },
+      { Code: 'J', Name: '佳颖' },
+      { Code: 'K', Name: '可昕' },
+      { Code: 'L', Name: '乐瑶' },
+      { Code: 'M', Name: '梦琪' },
+      { Code: 'N', Name: '娜菲' },
+      { Code: 'O', Name: '欧雅' },
+      { Code: 'P', Name: '佩珊' },
+      { Code: 'Q', Name: '绮梦' },
+      { Code: 'R', Name: '睿萱' },
+      { Code: 'S', Name: '诗涵' },
+      { Code: 'T', Name: '天翊' },
+      { Code: 'W', Name: '婉婷' },
+      { Code: 'X', Name: '晓妍' },
+      { Code: 'Y', Name: '雅琴' },
+      { Code: 'Z', Name: '梓涵' },
     ]);
   });
 
