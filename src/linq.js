@@ -7,8 +7,9 @@ class Linq {
   /**
    * Defaults the elements of the list
    */
-  constructor(elements = []) {
+  constructor(elements = [], locales = null) {
     this._elements = elements;
+    this._locales = locales;
   }
 
   /**
@@ -341,17 +342,17 @@ class Linq {
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false)) {
+  orderBy(keySelector, comparer = Tools.keyComparer(keySelector, false, this._locales)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   }
 
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true)) {
+  orderByDescending(keySelector, comparer = Tools.keyComparer(keySelector, true, this._locales)) {
     // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer);
+    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
   }
 
   /**
@@ -557,8 +558,8 @@ class Linq {
  * calling its toDictionary, toLookup, toList or toArray methods
  */
 class OrderedList extends Linq {
-  constructor(elements, _comparer) {
-    super(elements);
+  constructor(elements, _comparer, locales) {
+    super(elements, locales);
     this._comparer = _comparer;
     this._elements.sort(this._comparer);
   }
@@ -568,7 +569,7 @@ class OrderedList extends Linq {
    * @override
    */
   thenBy(keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, false, this._locales)), this._locales);
   }
 
   /**
@@ -576,7 +577,7 @@ class OrderedList extends Linq {
    * @override
    */
   thenByDescending(keySelector) {
-    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true)));
+    return new OrderedList(this._elements, Tools.composeComparers(this._comparer, Tools.keyComparer(keySelector, true, this._locales)), this._locales);
   }
 }
 
@@ -641,7 +642,7 @@ const Tools = {
   /**
    * Key comparer
    */
-  keyComparer(_keySelector, descending) {
+  keyComparer(_keySelector, descending, locales) {
     // common comparer
     const _comparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA > sortKeyB) {
@@ -654,12 +655,22 @@ const Tools = {
     };
     // string comparer
     const _stringComparer = (sortKeyA, sortKeyB) => {
-      if (sortKeyA.localeCompare(sortKeyB) > 0) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-        return !descending ? -1 : 1;
+      if (locales) {
+        if (sortKeyA.localeCompare(sortKeyB, locales) > 0) {
+          return !descending ? 1 : -1;
+        } else if (sortKeyB.localeCompare(sortKeyA, locales) > 0) {
+          return !descending ? -1 : 1;
+        } else {
+          return 0;
+        }
       } else {
-        return 0;
+        if (sortKeyA.localeCompare(sortKeyB) > 0) {
+          return !descending ? 1 : -1;
+        } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
+          return !descending ? -1 : 1;
+        } else {
+          return 0;
+        }
       }
     };
 

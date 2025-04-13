@@ -5,9 +5,9 @@ class Linq
   ###
     Defaults the elements of the list
   ###
-  constructor: (elements) ->
-    elements = [] if not elements
+  constructor: (elements = [], locales = null) ->
     @_elements = elements
+    @_locales = locales
 
   ###
     Adds an object to the end of the List<T>.
@@ -306,18 +306,18 @@ class Linq
   ###
   orderBy: (keySelector, comparer) ->
     if (comparer is undefined)
-      comparer = Tools.keyComparer(keySelector, false)
+      comparer = Tools.keyComparer(keySelector, false, @_locales)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer, @_locales)
 
   ###
     Sorts the elements of a sequence in descending order according to a key.
   ###
   orderByDescending: (keySelector, comparer) ->
     if (comparer is undefined)
-      comparer = Tools.keyComparer(keySelector, true)
+      comparer = Tools.keyComparer(keySelector, true, @_locales)
     # tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(@_elements), comparer)
+    return new OrderedList(Tools.arrayMap(@_elements), comparer, @_locales)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in
@@ -505,8 +505,8 @@ class Linq
   calling its toDictionary, toLookup, toList or toArray methods
 ###
 class OrderedList extends Linq
-  constructor: (elements, @_comparer) ->
-    super(elements)
+  constructor: (elements, @_comparer, locales) ->
+    super(elements, locales)
     @_elements.sort(@_comparer)
 
   ###
@@ -516,7 +516,8 @@ class OrderedList extends Linq
   thenBy: (keySelector) ->
     return new OrderedList(
       @_elements,
-      Tools.composeComparers @_comparer, Tools.keyComparer(keySelector, false))
+      Tools.composeComparers(@_comparer, Tools.keyComparer(keySelector, false), @_locales),
+      @_locales)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in descending order, according to a key.
@@ -525,7 +526,8 @@ class OrderedList extends Linq
   thenByDescending: (keySelector) ->
     return new OrderedList(
       @_elements,
-      Tools.composeComparers @_comparer, Tools.keyComparer(keySelector, true))
+      Tools.composeComparers(@_comparer, Tools.keyComparer(keySelector, true), @_locales),
+      @_locales)
 
 ###
   Tool method
@@ -581,7 +583,7 @@ Tools = {
   ###
     Key comparer
   ###
-  keyComparer: (_keySelector, descending) ->
+  keyComparer: (_keySelector, descending, locales) ->
     # common comparer
     _comparer = (sortKeyA, sortKeyB) ->
       if (sortKeyA > sortKeyB)
@@ -593,12 +595,20 @@ Tools = {
 
     # string comparer
     _stringComparer = (sortKeyA, sortKeyB) ->
-      if (sortKeyA.localeCompare(sortKeyB) > 0)
-        return if !descending then 1 else -1
-      else if (sortKeyB.localeCompare(sortKeyA) > 0)
-        return if !descending then -1 else 1
+      if locales
+        if (sortKeyA.localeCompare(sortKeyB, locales) > 0)
+          return if !descending then 1 else -1
+        else if (sortKeyB.localeCompare(sortKeyA, locales) > 0)
+          return if !descending then -1 else 1
+        else
+          return 0
       else
-        return 0
+        if (sortKeyA.localeCompare(sortKeyB) > 0)
+          return if !descending then 1 else -1
+        else if (sortKeyB.localeCompare(sortKeyA) > 0)
+          return if !descending then -1 else 1
+        else
+          return 0
 
     return (a, b) =>
       sortKeyA = _keySelector(a)

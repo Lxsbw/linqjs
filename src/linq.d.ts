@@ -6,10 +6,11 @@ declare type PredicateType<T> = (value?: T, index?: number, list?: T[]) => boole
 
 declare class Linq<T> {
   protected _elements: T[];
+  protected _locales: string | string[];
   /**
    * Defaults the elements of the list
    */
-  constructor(elements?: T[]);
+  constructor(elements?: T[], locales?: string | string[]);
   /**
    * Adds an object to the end of the Linq<T>.
    */
