@@ -32,7 +32,7 @@ parameters = [
 
 console.log(new Linq(parameters).orderBy(x => x.Name).toArray());
 console.log();
-console.log(orderedParameters = new Linq(parameters, 'zh-CN').orderBy(x => x.Name).toArray());
+console.log(new Linq(parameters, 'zh-CN').orderBy(x => x.Name).toArray());
 
 // console.log('parameters:', parameters);
 // console.log('orderedParameters:', orderedParameters);
