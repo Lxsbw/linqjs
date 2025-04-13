@@ -38,7 +38,7 @@ console.time('groupBy');
 
 result = new Linq(list).groupBy(el => el.id);
 
-// console.log('result:', result);
+console.log('result:', result);
 console.log('list:', list.length);
 console.log('result:', result.length);
 
