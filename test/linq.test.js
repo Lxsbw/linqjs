@@ -1,6 +1,35 @@
 const Linq = require('../src/linq');
 
 describe('Group 1:', () => {
+  test('Iterator', () => {
+    const pets = new Linq([
+      { Age: 10, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 6, Name: 'Bissy' },
+    ]);
+    for (const pet of pets) {
+      expect(pet.Name.startsWith('B')).toBeTruthy();
+    }
+  });
+
+  test('Spread', () => {
+    const pets = new Linq([
+      { Age: 10, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 6, Name: 'Bissy' },
+    ]);
+    const petsCopy = [...pets];
+    for (const pet of petsCopy) {
+      expect(pet.Name.startsWith('B')).toBeTruthy();
+    }
+  });
+
+  test('toStringTag', () => {
+    const pets = new Linq([]);
+    expect(pets.toString() === '[object List]').toBeTruthy();
+    expect(`${pets}` === '[object List]').toBeTruthy();
+  });
+
   test('Add', () => {
     const list = new Linq([]);
 
