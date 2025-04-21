@@ -41,3 +41,17 @@ while true
   { value, done } = iterator.next()
   break if done
   console.log 'Item:', value
+
+
+# Linq实现了 Symbol.iterator：
+# 这就让 pets 可以用于：
+# 	•	for ... from pets
+# 	•	[...pets]
+# 	•	Array.from(pets)
+# 	•	new Set(pets)
+# 等 ES6 支持的 iterable 场景。
+
+
+# 这段 CoffeeScript 写法完全没问题，前提是你：
+# 	1.	使用 CoffeeScript 2.x 或更新版本（支持 ...spread 和 Symbol.iterator）
+# 	2.	正确实现了迭代器接口（你已经做到了）
