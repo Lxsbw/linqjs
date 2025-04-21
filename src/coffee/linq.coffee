@@ -10,6 +10,18 @@ class Linq
     @_locales = locales
 
   ###
+    Make the List iterable and Spreadable
+  ###
+  [Symbol.iterator]: ->
+    yield element for element in @_elements
+
+  ###
+    property represents the Object name
+  ###
+  Object.defineProperty @::, Symbol.toStringTag,
+    get: -> 'List'
+
+  ###
     Adds an object to the end of the List<T>.
   ###
   add: (element) ->
@@ -745,5 +757,12 @@ Tools = {
       return hashValue
     return generateHash(obj)
 }
+
+# ###
+#   property represents the Object name
+# ###
+# Object.defineProperty Linq::, Symbol.toStringTag,
+#   get: ->
+#     'List'
 
 module.exports = Linq
