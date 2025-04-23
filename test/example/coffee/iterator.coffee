@@ -5,13 +5,27 @@ pets = new Linq([
   { Age: 4, Name: 'Boots' },
   { Age: 6, Name: 'Bissy' },
 ])
+console.log '=============================== for ... from ========================'
 for pet from pets
   console.log('pet:', pet)
 
 console.log()
+console.log '=============================== [...pets] ========================'
 petsCopy = [...pets]
 for pet in petsCopy
   console.log('petsCopy:', pet)
+
+console.log()
+console.log '=============================== Array.from() ========================'
+petsFrom = Array.from(pets)
+for pet in petsFrom
+  console.log('petsFrom:', pet)
+
+console.log()
+console.log '=============================== new Set() ========================'
+petsSet = new Set(pets)
+console.log('petsSet:', petsSet)
+
 
 # console.log()
 # pets.elementAt(1).Name = 'Boots2'
