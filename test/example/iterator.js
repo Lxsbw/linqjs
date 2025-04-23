@@ -6,17 +6,32 @@ const pets = new Linq([
   { Age: 6, Name: 'Bissy' },
 ]);
 
+console.log('=============================== for ... from ========================');
 for (const pet of pets) {
   console.log('pet:', pet);
 }
 
 console.log();
+console.log('=============================== [...pets] ========================');
 const petsCopy = [...pets];
 for (const pet of petsCopy) {
   console.log('petsCopy:', pet);
 }
-console.log();
 
+console.log();
+console.log('=============================== Array.from() ========================');
+const petsFrom = Array.from(pets);
+for (const pet of petsFrom) {
+  console.log('petsFrom:', pet);
+}
+
+console.log();
+console.log('=============================== new Set() ========================');
+const petsSet = new Set(pets);
+console.log('petsSet:', petsSet);
+
+
+console.log();
 const petsss = new Linq([]);
 console.log(petsss.toString() === '[object List]');
 console.log(`${petsss}` === '[object List]');
