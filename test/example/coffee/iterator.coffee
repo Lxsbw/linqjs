@@ -55,6 +55,7 @@ while true
   { value, done } = iterator.next()
   break if done
   console.log 'Item:', value
+console.log()
 
 
 # Linq实现了 Symbol.iterator：
@@ -69,3 +70,48 @@ while true
 # 这段 CoffeeScript 写法完全没问题，前提是你：
 # 	1.	使用 CoffeeScript 2.x 或更新版本（支持 ...spread 和 Symbol.iterator）
 # 	2.	正确实现了迭代器接口（你已经做到了）
+
+console.log '=============================== coffee ========================'
+
+arr = [10, 1, 9, 2, 8, 3, 7, 4, 6, 5]
+
+for item from arr
+  console.log 'item:', item
+
+console.log()
+for item in arr
+  console.log 'item:', item
+
+console.log()
+for item of arr
+  console.log 'item:', item
+
+console.log()
+for key, value of arr
+  console.log 'item key:', key
+  console.log 'item value:', value
+
+console.log '=============================== coffee ========================'
+
+arrObj = [
+  { Age: 10, Name: 'Barley' },
+  { Age: 4, Name: 'Boots' },
+  { Age: 6, Name: 'Bissy' },
+  { Age: 1, Name: 'bella' },
+]
+
+for item from arrObj
+  console.log 'item:', item
+
+console.log()
+for item in arrObj
+  console.log 'item:', item
+
+console.log()
+for item of arrObj
+  console.log 'item:', item
+
+console.log()
+for key, value of arrObj
+  console.log 'item key:', key
+  console.log 'item value:', value
