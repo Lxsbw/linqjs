@@ -425,6 +425,62 @@ describe('Group 2:', () => {
       { key: { id: 2, category: 'vegetables' }, count: 1, elements: [{ id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }] },
     ]);
 
+    const dataManyType = [
+      { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+      { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+      { id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: null, countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: undefined, countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: '', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: ' ', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: '  ', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: true, countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: false, countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: 'true', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: 'false', countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: [1, 2], countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: [2, 1], countries: ['Italy', 'Germany'] },
+      { id: 2, name: 'two', category: [1, 2], countries: ['Italy', 'Germany'] },
+    ];
+    expect(new Linq(dataManyType).groupBy(el => el.category)).toEqual([
+      {
+        key: 'fruits',
+        count: 2,
+        elements: [
+          { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },
+          { id: 1, name: 'one', category: 'fruits', countries: ['Italy', 'Austria'] },
+        ],
+      },
+      { key: 'vegetables', count: 1, elements: [{ id: 2, name: 'two', category: 'vegetables', countries: ['Italy', 'Germany'] }] },
+
+      { key: null, count: 1, elements: [{ id: 2, name: 'two', category: null, countries: ['Italy', 'Germany'] }] },
+      {
+        key: undefined,
+        count: 2,
+        elements: [
+          { id: 2, name: 'two', category: undefined, countries: ['Italy', 'Germany'] },
+          { id: 2, name: 'two', countries: ['Italy', 'Germany'] },
+        ],
+      },
+      { key: '', count: 1, elements: [{ id: 2, name: 'two', category: '', countries: ['Italy', 'Germany'] }] },
+      { key: ' ', count: 1, elements: [{ id: 2, name: 'two', category: ' ', countries: ['Italy', 'Germany'] }] },
+      { key: '  ', count: 1, elements: [{ id: 2, name: 'two', category: '  ', countries: ['Italy', 'Germany'] }] },
+      { key: true, count: 1, elements: [{ id: 2, name: 'two', category: true, countries: ['Italy', 'Germany'] }] },
+      { key: false, count: 1, elements: [{ id: 2, name: 'two', category: false, countries: ['Italy', 'Germany'] }] },
+      { key: 'true', count: 1, elements: [{ id: 2, name: 'two', category: 'true', countries: ['Italy', 'Germany'] }] },
+      { key: 'false', count: 1, elements: [{ id: 2, name: 'two', category: 'false', countries: ['Italy', 'Germany'] }] },
+      {
+        key: [1, 2],
+        count: 2,
+        elements: [
+          { id: 2, name: 'two', category: [1, 2], countries: ['Italy', 'Germany'] },
+          { id: 2, name: 'two', category: [1, 2], countries: ['Italy', 'Germany'] },
+        ],
+      },
+      { key: [2, 1], count: 1, elements: [{ id: 2, name: 'two', category: [2, 1], countries: ['Italy', 'Germany'] }] },
+    ]);
+
     const dataMany = {
       ZWMS_WERKS: '1000',
       ZWMS_MATNR: '02312SCU-NFA01',
@@ -740,6 +796,9 @@ describe('Group 2:', () => {
     const or2 = new Linq(parametersObj).orderByDescending(x => x.ID).toArray();
     delete subObj.__proto__.pName; // 用完删除，否则会有影响
 
+    const noArray = new Linq('noarray string').orderBy(x => x).toArray();
+    expect(noArray).toEqual('noarray string');
+
     const or = new Linq(parameters).orderByDescending(x => x.ID).toArray();
     expect(or).toEqual([
       { ID: 5, Name: '征史郎' },
@@ -816,6 +875,7 @@ describe('Group 2:', () => {
       { Code: 'R', Name: '睿萱' },
       { Code: 'B', Name: '碧琳' },
       { Code: 'C', Name: '采薇' },
+      { Code: 'C', Name: '采薇' },
       { Code: 'T', Name: '天翊' },
       { Code: 'G', Name: '冠宇' },
       { Code: 'Q', Name: '绮梦' },
@@ -841,6 +901,7 @@ describe('Group 2:', () => {
       { Code: 'A', Name: '安雅' },
       { Code: 'B', Name: '碧琳' },
       { Code: 'C', Name: '采薇' },
+      { Code: 'C', Name: '采薇' },
       { Code: 'D', Name: '丹妮' },
       { Code: 'E', Name: '恩琪' },
       { Code: 'F', Name: '芳菲' },
@@ -862,6 +923,8 @@ describe('Group 2:', () => {
       { Code: 'Y', Name: '雅琴' },
       { Code: 'Z', Name: '梓涵' },
     ]);
+
+    expect(new Linq(parameters).orderBy(x => x.Name).count()).toBe(24);
   });
 
   test('Remove', () => {
