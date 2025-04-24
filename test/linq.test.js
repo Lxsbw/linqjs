@@ -1274,8 +1274,9 @@ describe('Group 3:', () => {
 
     const toolObj = new Linq();
 
-    expect(toolObj.cloneDeep(numbers)).toEqual([1, 2, 3, 4]);
-    expect(toolObj.cloneDeep(numbers) === numbers).toBeFalsy();
+    const cloneNums = toolObj.cloneDeep(numbers);
+    expect(cloneNums).toEqual([1, 2, 3, 4]);
+    expect(cloneNums === numbers).toBeFalsy();
 
     const special = [
       { ID: 0, date: new Date(), regData: new RegExp('abc', 'g') },

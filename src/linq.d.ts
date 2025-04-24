@@ -154,11 +154,13 @@ declare class Linq<T> {
     /**
      * Returns the maximum value in a generic sequence.
      */
-    max(selector?: (element: T, index: number) => number): number;
+    max(selector?: (value: T, index: number, array: T[]) => number): number;
+    // max(selector?: (element: T, index: number) => number): number;
     /**
      * Returns the minimum value in a generic sequence.
      */
-    min(selector?: (element: T, index: number) => number): number;
+    min(selector?: (value: T, index: number, array: T[]) => number): number;
+    // min(selector?: (element: T, index: number) => number): number;
     /**
      * Filters the elements of a sequence based on a specified type.
      */
