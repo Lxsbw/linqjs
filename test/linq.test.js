@@ -24,6 +24,28 @@ describe('Group 1:', () => {
     }
   });
 
+  test('ArrayFrom', () => {
+    const pets = new Linq([
+      { Age: 10, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 6, Name: 'Bissy' },
+    ]);
+    const petsFrom = Array.from(pets);
+    for (const pet of petsFrom) {
+      expect(pet.Name.startsWith('B')).toBeTruthy();
+    }
+  });
+
+  test('toSet', () => {
+    const pets = new Linq([
+      { Age: 10, Name: 'Barley' },
+      { Age: 4, Name: 'Boots' },
+      { Age: 6, Name: 'Bissy' },
+    ]);
+    const petsSet = new Set(pets);
+    expect(petsSet.size).toBe(3);
+  });
+
   test('toStringTag', () => {
     const pets = new Linq([]);
     expect(pets.toString() === '[object List]').toBeTruthy();
