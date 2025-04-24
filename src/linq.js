@@ -8,7 +8,6 @@ class Linq {
    * Defaults the elements of the list
    */
   constructor(elements = [], locales = null) {
-    // this._elements = [...elements];
     this._elements = elements;
     this._locales = locales;
   }
@@ -320,7 +319,8 @@ class Linq {
    */
   max(selector) {
     const identity = x => x;
-    return Math.max(...this.select(selector || identity).toList());
+    return Math.max(...this._elements.map(selector || identity));
+    // return Math.max(...this.select(selector || identity).toList());
   }
 
   /**
@@ -328,7 +328,8 @@ class Linq {
    */
   min(selector) {
     const identity = x => x;
-    return Math.min(...this.select(selector || identity).toList());
+    return Math.min(...this._elements.map(selector || identity));
+    // return Math.min(...this.select(selector || identity).toList());
   }
 
   /**
@@ -566,6 +567,13 @@ class Linq {
   // equals(param1, param2) {
   //   return Tools.equal(param1, param2);
   // }
+
+  /**
+   * clone deep object.
+   */
+  cloneDeep(param) {
+    return Tools.cloneDeep(param);
+  }
 }
 
 /**
@@ -578,15 +586,17 @@ class OrderedList extends Linq {
   constructor(elements, _comparer, locales) {
     super(elements, locales);
     this._comparer = _comparer;
-    this._elements.sort(this._comparer);
+    if (Tools.isArray(this._elements)) {
+      this._elements.sort(this._comparer);
+    }
   }
 
   /**
-   * Allows you to get the parent List out of the OrderedList
+   * Allows you to get the parent Linq out of the OrderedList
    * @override
-   * @returns and ordered list turned into a regular List<T>
+   * @returns and ordered list turned into a regular Linq<T>
    */
-  ToList() {
+  toList() {
     return new Linq(this._elements);
   }
 
@@ -771,16 +781,6 @@ const Tools = {
       return array;
     }
     return array.map(x => x);
-  },
-
-  /**
-   * Get group value
-   */
-  getGroupValue(val) {
-    if (null === val || undefined === val) {
-      return '';
-    }
-    return val;
   },
 
   /**
