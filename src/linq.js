@@ -567,6 +567,13 @@ class Linq {
   // equals(param1, param2) {
   //   return Tools.equal(param1, param2);
   // }
+
+  /**
+   * clone deep object.
+   */
+  cloneDeep(param) {
+    return Tools.cloneDeep(param);
+  }
 }
 
 /**
@@ -584,14 +591,14 @@ class OrderedList extends Linq {
     }
   }
 
-  // /**
-  //  * Allows you to get the parent List out of the OrderedList
-  //  * @override
-  //  * @returns and ordered list turned into a regular List<T>
-  //  */
-  // ToList() {
-  //   return new Linq(this._elements);
-  // }
+  /**
+   * Allows you to get the parent Linq out of the OrderedList
+   * @override
+   * @returns and ordered list turned into a regular Linq<T>
+   */
+  toList() {
+    return new Linq(this._elements);
+  }
 
   /**
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.

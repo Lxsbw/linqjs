@@ -1268,4 +1268,22 @@ describe('Group 3:', () => {
     const words2 = new Linq(['one', 'two', 'three']);
     expect(words2.zip(numbers2, (first, second) => `${first} ${second}`).toArray()).toEqual(expected);
   });
+
+  test('cloneDeep', () => {
+    const numbers = [1, 2, 3, 4];
+
+    const toolObj = new Linq();
+
+    expect(toolObj.cloneDeep(numbers)).toEqual([1, 2, 3, 4]);
+    expect(toolObj.cloneDeep(numbers) === numbers).toBeFalsy();
+
+    const special = [
+      { ID: 0, date: new Date(), regData: new RegExp('abc', 'g') },
+      { ID: 3, date: new Date('2018-02-03 12:10:11'), regData: new RegExp('abcd', 'g') },
+      { ID: 2, date: new Date('2018-02-03 12:10:11.110'), regData: new RegExp('1', 'g') },
+      { ID: 5, date: new Date('2023-02-03'), regData: new RegExp('2', 'g') },
+    ];
+
+    expect(toolObj.cloneDeep(special).map(x => x.ID)).toEqual([0, 3, 2, 5]);
+  });
 });
