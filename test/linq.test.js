@@ -373,7 +373,7 @@ describe('Group 1:', () => {
     const b = new Linq([2, 1, 0, -1, -2]);
     expect(a.elementAtOrDefault(0)).toBe('hey');
     expect(b.elementAtOrDefault(2)).toBe(0);
-    expect(a.elementAtOrDefault(4)).toBeUndefined;
+    expect(a.elementAtOrDefault(4)).toBeUndefined();
   });
 
   test('Except', () => {
@@ -678,7 +678,7 @@ describe('Group 2:', () => {
 
   test('LastOrDefault', () => {
     expect(new Linq(['hey', 'hola', 'que', 'tal']).lastOrDefault()).toBe('tal');
-    expect(new Linq().lastOrDefault()).toBeUndefined;
+    expect(new Linq().lastOrDefault()).toBeUndefined();
   });
 
   test('Max', () => {
