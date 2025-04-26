@@ -352,7 +352,7 @@ describe 'Group 1:', () ->
     b = new Linq([2, 1, 0, -1, -2])
     expect(a.elementAtOrDefault(0)).toBe('hey')
     expect(b.elementAtOrDefault(2)).toBe(0)
-    expect(a.elementAtOrDefault(4)).toBe(null)
+    expect(a.elementAtOrDefault(4)).toBeNull()
     # expect(a.elementAtOrDefault(4)).toBeUndefined()
 
   test 'Except', () ->
