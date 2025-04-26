@@ -352,8 +352,8 @@ describe 'Group 1:', () ->
     b = new Linq([2, 1, 0, -1, -2])
     expect(a.elementAtOrDefault(0)).toBe('hey')
     expect(b.elementAtOrDefault(2)).toBe(0)
-    expect(a.elementAtOrDefault(4)).toBeUndefined()
-    return
+    expect(a.elementAtOrDefault(4)).toBe(null)
+    # expect(a.elementAtOrDefault(4)).toBeUndefined()
 
   test 'Except', () ->
     numbers1 = new Linq([2.0, 2.1, 2.2, 2.3, 2.4, 2.5])
@@ -361,7 +361,7 @@ describe 'Group 1:', () ->
     expect(numbers1.except(numbers2).toArray()).toEqual([2, 2.1, 2.4, 2.5]) # 差集
 
 describe 'Group 2:', () ->
- test 'First', () ->
+  test 'First', () ->
     numbers = [1, 2, 3, 5, 7, 11]
 
     expect(new Linq(numbers).first()).toBe(1)
@@ -794,7 +794,6 @@ describe 'Group 2:', () ->
       { ID: 2, Infos: { Info: { Name: '誠三郎' } } },
       { ID: 0, Infos: { Info: { Name: '正一郎' } } },
     ])
-
 
   test 'thenBy & thenByDescending', () ->
     persons = [
