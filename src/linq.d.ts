@@ -8,6 +8,14 @@ declare class Linq<T> {
   protected _elements: T[];
   protected _locales: string | string[];
   /**
+   * Make the List iterable and Spreadable
+   */
+  [Symbol.iterator](): Generator<T, void, unknown>;
+  /**
+   * property represents the Object name
+   */
+  get [Symbol.toStringTag](): string;
+  /**
    * Defaults the elements of the list
    */
   constructor(elements?: T[], locales?: string | string[]);
@@ -38,14 +46,12 @@ declare class Linq<T> {
   /**
    * Determines whether a sequence contains any elements.
    */
-  any(): boolean;
-  any(predicate: PredicateType<T>): boolean;
+  any(predicate?: PredicateType<T>): boolean;
   /**
    * Computes the average of a sequence of number values that are obtained by invoking
    * a transform function on each element of the input sequence.
    */
-  average(): number;
-  average(transform: (value?: T, index?: number, list?: T[]) => any): number;
+  average(transform?: (value?: T, index?: number, list?: T[]) => any): number;
   /**
    * Casts the elements of a sequence to the specified type.
    */
@@ -65,8 +71,7 @@ declare class Linq<T> {
   /**
    * Returns the number of elements in a sequence.
    */
-  count(): number;
-  count(predicate: PredicateType<T>): number;
+  count(predicate?: PredicateType<T>): number;
   /**
    * Returns the elements of the specified sequence or the type parameter's default value
    * in a singleton collection if the sequence is empty.
@@ -83,8 +88,7 @@ declare class Linq<T> {
   /**
    * Returns distinct elements from a sequence by using the default equality comparer to compare values and this.select method.
    */
-  distinctMap<TOut>(): Linq<T | TOut>;
-  distinctMap<TOut>(selector: (element: T, index: number) => TOut): Linq<T | TOut>;
+  distinctMap<TOut>(selector?: (element: T, index: number) => TOut): Linq<T | TOut>;
   /**
    * Returns the element at a specified index in a sequence.
    */
@@ -100,13 +104,11 @@ declare class Linq<T> {
   /**
    * Returns the first element of a sequence.
    */
-  first(): T;
-  first(predicate: PredicateType<T>): T;
+  first(predicate?: PredicateType<T>): T;
   /**
    * Returns the first element of a sequence, or a default value if the sequence contains no elements.
    */
-  firstOrDefault(): T;
-  firstOrDefault(predicate: PredicateType<T>): T;
+  firstOrDefault(predicate?: PredicateType<T>): T;
   /**
    * Performs the specified action on each element of the Linq<T>.
    */
@@ -144,23 +146,21 @@ declare class Linq<T> {
   /**
    * Returns the last element of a sequence.
    */
-  last(): T;
-  last(predicate: PredicateType<T>): T;
+  last(predicate?: PredicateType<T>): T;
   /**
    * Returns the last element of a sequence, or a default value if the sequence contains no elements.
    */
-  lastOrDefault(): T;
-  lastOrDefault(predicate: PredicateType<T>): T;
+  lastOrDefault(predicate?: PredicateType<T>): T;
   /**
    * Returns the maximum value in a generic sequence.
    */
-  max(): number;
-  max(selector: (value: T, index: number, array: T[]) => number): number;
+  max(selector?: (value: T, index: number, array: T[]) => number): number;
+  // max(selector?: (element: T, index: number) => number): number;
   /**
    * Returns the minimum value in a generic sequence.
    */
-  min(): number;
-  min(selector: (value: T, index: number, array: T[]) => number): number;
+  min(selector?: (value: T, index: number, array: T[]) => number): number;
+  // min(selector?: (element: T, index: number) => number): number;
   /**
    * Filters the elements of a sequence based on a specified type.
    */
@@ -234,8 +234,7 @@ declare class Linq<T> {
    * Computes the sum of the sequence of number values that are obtained by invoking
    * a transform function on each element of the input sequence.
    */
-  sum(): number;
-  sum(transform: (value?: T, index?: number, list?: T[]) => number): number;
+  sum(transform?: (value?: T, index?: number, list?: T[]) => number): number;
   /**
    * Returns a specified number of contiguous elements from the start of a sequence.
    */
@@ -255,13 +254,9 @@ declare class Linq<T> {
   /**
    * Creates a Dictionary<TKey, TValue> from a Linq<T> according to a specified key selector function.
    */
-  toDictionary<TKey>(key: (key: T) => TKey): Linq<{
-    Key: TKey;
-    Value: T;
-  }>;
   toDictionary<TKey, TValue>(
     key: (key: T) => TKey,
-    value: (value: T) => TValue
+    value?: (value: T) => TValue
   ): Linq<{
     Key: TKey;
     Value: T | TValue;
@@ -286,6 +281,10 @@ declare class Linq<T> {
    * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
    */
   zip<U, TOut>(list: Linq<U>, result: (first: T, second: U) => TOut): Linq<TOut>;
+  /**
+   * clone deep object.
+   */
+  cloneDeep<T, Y>(param: any): T | Y;
 }
 
 export { Linq };

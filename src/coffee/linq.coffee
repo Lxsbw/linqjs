@@ -10,6 +10,18 @@ class Linq
     @_locales = locales
 
   ###
+    Make the List iterable and Spreadable
+  ###
+  [Symbol.iterator]: ->
+    yield element for element in @_elements
+
+  ###
+    property represents the Object name
+  ###
+  Object.defineProperty @::, Symbol.toStringTag,
+    get: -> 'List'
+
+  ###
     Adds an object to the end of the List<T>.
   ###
   add: (element) ->
@@ -138,7 +150,7 @@ class Linq
     Returns the element at a specified index in a sequence or a default value if the index is out of range.
   ###
   elementAtOrDefault: (index) ->
-    return if index < @count() && index >= 0 then @_elements[index] else undefined
+    return if index < @count() && index >= 0 then @_elements[index] else null
 
   ###
     Produces the set difference of two sequences by using the default equality comparer to compare values.
@@ -268,15 +280,15 @@ class Linq
     Returns the maximum value in a generic sequence.
   ###
   max: (selector) ->
-    id = (x) -> x
-    return Math.max.apply(Math, @_elements.map(selector || id))
+    identity = (x) -> x
+    return Math.max.apply(Math, @_elements.map(selector || identity))
 
   ###
     Returns the minimum value in a generic sequence.
   ###
   min: (selector) ->
-    id = (x) -> x
-    return Math.min.apply(Math, @_elements.map(selector || id))
+    identity = (x) -> x
+    return Math.min.apply(Math, @_elements.map(selector || identity))
 
   ###
     Filters the elements of a sequence based on a specified type.
@@ -498,6 +510,12 @@ class Linq
   # equals: (param1, param2) ->
   #   return Tools.equal(param1, param2)
 
+  ###
+    clone deep object.
+  ###
+  cloneDeep: (param) ->
+    return Tools.cloneDeep(param)
+
 ###
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
   The immediate return value is an object that stores all the information that is required to perform the action.
@@ -507,7 +525,8 @@ class Linq
 class OrderedList extends Linq
   constructor: (elements, @_comparer, locales) ->
     super(elements, locales)
-    @_elements.sort(@_comparer)
+    if Tools.isArray(@_elements)
+      @_elements.sort(@_comparer)
 
   ###
     Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
@@ -674,14 +693,6 @@ Tools = {
     return array.map (x) -> x
 
   ###
-    Get group value
-  ###
-  getGroupValue: (val) ->
-    if null is val || undefined is val
-      return ''
-    return val
-
-  ###
     Clone data
   ###
   cloneDeep: (obj) ->
@@ -745,5 +756,12 @@ Tools = {
       return hashValue
     return generateHash(obj)
 }
+
+# ###
+#   property represents the Object name
+# ###
+# Object.defineProperty Linq::, Symbol.toStringTag,
+#   get: ->
+#     'List'
 
 module.exports = Linq

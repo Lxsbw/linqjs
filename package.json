@@ -1,6 +1,6 @@
 {
   "name": "linq-to-js",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Linq + JavaScript",
   "main": "src/linq.js",
   "types": "src/linq.d.ts",
@@ -13,7 +13,8 @@
     "buildes": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
     "cbuild": "coffee -o ./build/coffee_to_linq.js -c -b ./src/coffee/linq.coffee",
     "test": "jest",
-    "testc": "jest --coverage"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
   "homepage": "https://github.com/Lxsbw/linqjs#README",
   "dependencies": {},
   "devDependencies": {
+    "@types/jest": "~29.5.14",
     "coffeescript": "~2.7.0",
     "jest": "~29.7.0",
     "uglify-js": "~3.19.3"

@@ -13,6 +13,22 @@ class Linq {
   }
 
   /**
+   * Make the List iterable and Spreadable
+   */
+  *[Symbol.iterator]() {
+    for (let element of this._elements) {
+      yield element;
+    }
+  }
+
+  /**
+   * property represents the Object name
+   */
+  get [Symbol.toStringTag]() {
+    return 'List'; // Expected output: "[object List]"
+  }
+
+  /**
    * Adds an object to the end of the List<T>.
    */
   add(element) {
@@ -116,7 +132,7 @@ class Linq {
    * Returns distinct elements from a sequence by using the default equality comparer to compare values.
    */
   distinct() {
-    return this.where((value, index, iter) => (Tools.isObject(value) ? iter.findIndex(obj => Tools.equal(obj, value)) : iter.indexOf(value)) === index);
+    return this.where((value, index, iter) => (Tools.isObject(value) ? iter && iter.findIndex(obj => Tools.equal(obj, value)) : iter && iter.indexOf(value)) === index);
   }
 
   /**
@@ -159,7 +175,7 @@ class Linq {
    * Returns the element at a specified index in a sequence or a default value if the index is out of range.
    */
   elementAtOrDefault(index) {
-    return index < this.count() && index >= 0 ? this._elements[index] : undefined;
+    return index < this.count() && index >= 0 ? this._elements[index] : null;
   }
 
   /**
@@ -302,16 +318,18 @@ class Linq {
    * Returns the maximum value in a generic sequence.
    */
   max(selector) {
-    const id = x => x;
-    return Math.max(...this._elements.map(selector || id));
+    const identity = x => x;
+    return Math.max(...this._elements.map(selector || identity));
+    // return Math.max(...this.select(selector || identity).toList());
   }
 
   /**
    * Returns the minimum value in a generic sequence.
    */
   min(selector) {
-    const id = x => x;
-    return Math.min(...this._elements.map(selector || id));
+    const identity = x => x;
+    return Math.min(...this._elements.map(selector || identity));
+    // return Math.min(...this.select(selector || identity).toList());
   }
 
   /**
@@ -502,7 +520,7 @@ class Linq {
       // dicc[this.select(key).elementAt(i).toString()] = value ? this.select(value).elementAt(i) : v;
       dicc.add({
         Key: this.select(key).elementAt(i),
-        Value: value ? this.select(value).elementAt(i) : v,
+        Value: !!value ? this.select(value).elementAt(i) : v,
       });
       return dicc;
     }, new Linq());
@@ -549,6 +567,13 @@ class Linq {
   // equals(param1, param2) {
   //   return Tools.equal(param1, param2);
   // }
+
+  /**
+   * clone deep object.
+   */
+  cloneDeep(param) {
+    return Tools.cloneDeep(param);
+  }
 }
 
 /**
@@ -561,8 +586,19 @@ class OrderedList extends Linq {
   constructor(elements, _comparer, locales) {
     super(elements, locales);
     this._comparer = _comparer;
-    this._elements.sort(this._comparer);
+    if (Tools.isArray(this._elements)) {
+      this._elements.sort(this._comparer);
+    }
   }
+
+  /**
+   * Allows you to get the parent Linq out of the OrderedList
+   * @override
+   * @returns and ordered list turned into a regular Linq<T>
+   */
+  // toList() {
+  //   return new Linq(this._elements);
+  // }
 
   /**
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
@@ -745,16 +781,6 @@ const Tools = {
       return array;
     }
     return array.map(x => x);
-  },
-
-  /**
-   * Get group value
-   */
-  getGroupValue(val) {
-    if (null === val || undefined === val) {
-      return '';
-    }
-    return val;
   },
 
   /**
