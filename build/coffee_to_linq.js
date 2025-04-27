@@ -7,693 +7,728 @@
   */
 var Linq, OrderedList, Tools;
 
-Linq = class Linq {
-  /*
-    Defaults the elements of the list
-  */
-  constructor(elements = [], locales = null) {
-    this._elements = elements;
-    this._locales = locales;
-  }
-
-  /*
-    Adds an object to the end of the List<T>.
-  */
-  add(element) {
-    return this._elements.push(element);
-  }
-
-  /*
-    Appends an object to the end of the List<T>.
-  */
-  append(element) {
-    return this.add(element);
-  }
-
-  /*
-    Add an object to the start of the List<T>.
-  */
-  prepend(element) {
-    return this._elements.unshift(element);
-  }
-
-  /*
-    Adds the elements of the specified collection to the end of the List<T>.
-  */
-  addRange(elements) {
-    _a;
-    var _a;
-    return (_a = this._elements).push.apply(_a, elements);
-  }
-
-  /*
-    Applies an accumulator function over a sequence.
-  */
-  aggregate(accumulator, initialValue) {
-    return this._elements.reduce(accumulator, initialValue);
-  }
-
-  /*
-    Determines whether all elements of a sequence satisfy a condition.
-  */
-  all(predicate) {
-    return this._elements.every(predicate);
-  }
-
-  /*
-    Determines whether a sequence contains any elements.
-  */
-  any(predicate) {
-    if (predicate) {
-      return this._elements.some(predicate);
-    } else {
-      return this._elements.length > 0;
+Linq = (function() {
+  class Linq {
+    /*
+      Defaults the elements of the list
+    */
+    constructor(elements = [], locales = null) {
+      this._elements = elements;
+      this._locales = locales;
     }
-  }
 
-  /*
-    Computes the average of a sequence of number values that are obtained by invoking
-    a transform function on each element of the input sequence.
-  */
-  average(transform) {
-    return Tools.calcNumDiv(this.sum(transform), this.count());
-  }
-
-  /*
-    Casts the elements of a sequence to the specified type.
-  */
-  cast() {
-    return new Linq(this._elements);
-  }
-
-  /*
-    Removes all elements from the List<T>.
-  */
-  clear() {
-    return this._elements.length = 0;
-  }
-
-  /*
-    Concatenates two sequences.
-  */
-  concat(list) {
-    return new Linq(this._elements.concat(list.toArray()));
-  }
-
-  /*
-    Determines whether an element is in the List<T>.
-  */
-  contains(element) {
-    return this.any(function(x) {
-      return x === element;
-    });
-  }
-
-  /*
-    Returns the number of elements in a sequence.
-  */
-  count(predicate) {
-    if (predicate) {
-      return this.where(predicate).count();
-    } else {
-      return this._elements.length;
-    }
-  }
-
-  /*
-    Returns the elements of the specified sequence or the type parameter's default value
-    in a singleton collection if the sequence is empty.
-  */
-  defaultIfEmpty(defaultValue) {
-    if (this.count()) {
-      return this;
-    } else {
-      return new Linq([defaultValue]);
-    }
-  }
-
-  /*
-    Returns distinct elements from a sequence by using the default equality comparer to compare values.
-  */
-  distinct() {
-    return this.where(function(value, index, iter) {
-      return (Tools.isObject(value) ? iter.findIndex(function(obj) {
-        return Tools.equal(obj, value);
-      }) : iter.indexOf(value)) === index;
-    });
-  }
-
-  /*
-    Returns distinct elements from a sequence according to specified key selector.
-  */
-  distinctBy(keySelector) {
-    var func, groups;
-    groups = this.groupBy(keySelector);
-    func = function(res, key) {
-      var curr;
-      curr = new Linq(groups).firstOrDefault(function(x) {
-        return Tools.equal(x.key, key);
-      });
-      res.add(curr.elements[0]);
-      return res;
-    };
-    return new Linq(groups).select(function(x) {
-      return x.key;
-    }).toArray().reduce(func, new Linq());
-  }
-
-  /*
-    Returns distinct elements from a sequence by using the default equality comparer to compare values and this select method.
-  */
-  distinctMap(predicate) {
-    if (predicate) {
-      return this.select(predicate).distinct();
-    } else {
-      return this.distinct();
-    }
-  }
-
-  /*
-    Returns the element at a specified index in a sequence.
-  */
-  elementAt(index) {
-    if (index < this.count() && index >= 0) {
-      return this._elements[index];
-    } else {
-      throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.');
-    }
-  }
-
-  /*
-    Returns the element at a specified index in a sequence or a default value if the index is out of range.
-  */
-  elementAtOrDefault(index) {
-    if (index < this.count() && index >= 0) {
-      return this._elements[index];
-    } else {
-      return void 0;
-    }
-  }
-
-  /*
-    Produces the set difference of two sequences by using the default equality comparer to compare values.
-  */
-  except(source) {
-    return this.where(function(x) {
-      return !source.contains(x);
-    });
-  }
-
-  /*
-    Returns the first element of a sequence.
-  */
-  first(predicate) {
-    if (this.count()) {
-      if (predicate) {
-        return this.where(predicate).first();
-      } else {
-        return this._elements[0];
+    /*
+      Make the List iterable and Spreadable
+    */
+    * [Symbol.iterator]() {
+      var element, j, len, ref, results;
+      ref = this._elements;
+      results = [];
+      for (j = 0, len = ref.length; j < len; j++) {
+        element = ref[j];
+        results.push((yield element));
       }
-    } else {
-      throw new Error('InvalidOperationException: The source sequence is empty.');
+      return results;
     }
-  }
 
-  /*
-    Returns the first element of a sequence, or a default value if the sequence contains no elements.
-  */
-  firstOrDefault(predicate) {
-    if (this.count(predicate)) {
-      return this.first(predicate);
-    } else {
-      return void 0;
+    /*
+      Adds an object to the end of the List<T>.
+    */
+    add(element) {
+      return this._elements.push(element);
     }
-  }
 
-  /*
-    Performs the specified action on each element of the List<T>.
-  */
-  forEach(action) {
-    return this._elements.forEach(action);
-  }
+    /*
+      Appends an object to the end of the List<T>.
+    */
+    append(element) {
+      return this.add(element);
+    }
 
-  /*
-    Groups the elements of a sequence according to a specified key selector function.
-  */
-  groupBy(grouper, mapper) {
-    var element, group, groupMap, j, key, len, mappedValue, ref;
-    if (mapper === void 0) {
-      mapper = function(val) {
-        return val;
+    /*
+      Add an object to the start of the List<T>.
+    */
+    prepend(element) {
+      return this._elements.unshift(element);
+    }
+
+    /*
+      Adds the elements of the specified collection to the end of the List<T>.
+    */
+    addRange(elements) {
+      _a;
+      var _a;
+      return (_a = this._elements).push.apply(_a, elements);
+    }
+
+    /*
+      Applies an accumulator function over a sequence.
+    */
+    aggregate(accumulator, initialValue) {
+      return this._elements.reduce(accumulator, initialValue);
+    }
+
+    /*
+      Determines whether all elements of a sequence satisfy a condition.
+    */
+    all(predicate) {
+      return this._elements.every(predicate);
+    }
+
+    /*
+      Determines whether a sequence contains any elements.
+    */
+    any(predicate) {
+      if (predicate) {
+        return this._elements.some(predicate);
+      } else {
+        return this._elements.length > 0;
+      }
+    }
+
+    /*
+      Computes the average of a sequence of number values that are obtained by invoking
+      a transform function on each element of the input sequence.
+    */
+    average(transform) {
+      return Tools.calcNumDiv(this.sum(transform), this.count());
+    }
+
+    /*
+      Casts the elements of a sequence to the specified type.
+    */
+    cast() {
+      return new Linq(this._elements);
+    }
+
+    /*
+      Removes all elements from the List<T>.
+    */
+    clear() {
+      return this._elements.length = 0;
+    }
+
+    /*
+      Concatenates two sequences.
+    */
+    concat(list) {
+      return new Linq(this._elements.concat(list.toArray()));
+    }
+
+    /*
+      Determines whether an element is in the List<T>.
+    */
+    contains(element) {
+      return this.any(function(x) {
+        return x === element;
+      });
+    }
+
+    /*
+      Returns the number of elements in a sequence.
+    */
+    count(predicate) {
+      if (predicate) {
+        return this.where(predicate).count();
+      } else {
+        return this._elements.length;
+      }
+    }
+
+    /*
+      Returns the elements of the specified sequence or the type parameter's default value
+      in a singleton collection if the sequence is empty.
+    */
+    defaultIfEmpty(defaultValue) {
+      if (this.count()) {
+        return this;
+      } else {
+        return new Linq([defaultValue]);
+      }
+    }
+
+    /*
+      Returns distinct elements from a sequence by using the default equality comparer to compare values.
+    */
+    distinct() {
+      return this.where(function(value, index, iter) {
+        return (Tools.isObject(value) ? iter.findIndex(function(obj) {
+          return Tools.equal(obj, value);
+        }) : iter.indexOf(value)) === index;
+      });
+    }
+
+    /*
+      Returns distinct elements from a sequence according to specified key selector.
+    */
+    distinctBy(keySelector) {
+      var func, groups;
+      groups = this.groupBy(keySelector);
+      func = function(res, key) {
+        var curr;
+        curr = new Linq(groups).firstOrDefault(function(x) {
+          return Tools.equal(x.key, key);
+        });
+        res.add(curr.elements[0]);
+        return res;
       };
+      return new Linq(groups).select(function(x) {
+        return x.key;
+      }).toArray().reduce(func, new Linq());
     }
-    groupMap = new Map();
-    ref = this._elements;
-    for (j = 0, len = ref.length; j < len; j++) {
-      element = ref[j];
-      key = Tools.getHash(grouper(element));
-      mappedValue = mapper(element);
-      if (!groupMap.has(key)) {
-        groupMap.set(key, {
-          key: grouper(element),
-          count: 0,
-          elements: []
+
+    /*
+      Returns distinct elements from a sequence by using the default equality comparer to compare values and this select method.
+    */
+    distinctMap(predicate) {
+      if (predicate) {
+        return this.select(predicate).distinct();
+      } else {
+        return this.distinct();
+      }
+    }
+
+    /*
+      Returns the element at a specified index in a sequence.
+    */
+    elementAt(index) {
+      if (index < this.count() && index >= 0) {
+        return this._elements[index];
+      } else {
+        throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.');
+      }
+    }
+
+    /*
+      Returns the element at a specified index in a sequence or a default value if the index is out of range.
+    */
+    elementAtOrDefault(index) {
+      if (index < this.count() && index >= 0) {
+        return this._elements[index];
+      } else {
+        return null;
+      }
+    }
+
+    /*
+      Produces the set difference of two sequences by using the default equality comparer to compare values.
+    */
+    except(source) {
+      return this.where(function(x) {
+        return !source.contains(x);
+      });
+    }
+
+    /*
+      Returns the first element of a sequence.
+    */
+    first(predicate) {
+      if (this.count()) {
+        if (predicate) {
+          return this.where(predicate).first();
+        } else {
+          return this._elements[0];
+        }
+      } else {
+        throw new Error('InvalidOperationException: The source sequence is empty.');
+      }
+    }
+
+    /*
+      Returns the first element of a sequence, or a default value if the sequence contains no elements.
+    */
+    firstOrDefault(predicate) {
+      if (this.count(predicate)) {
+        return this.first(predicate);
+      } else {
+        return void 0;
+      }
+    }
+
+    /*
+      Performs the specified action on each element of the List<T>.
+    */
+    forEach(action) {
+      return this._elements.forEach(action);
+    }
+
+    /*
+      Groups the elements of a sequence according to a specified key selector function.
+    */
+    groupBy(grouper, mapper) {
+      var element, group, groupMap, j, key, len, mappedValue, ref;
+      if (mapper === void 0) {
+        mapper = function(val) {
+          return val;
+        };
+      }
+      groupMap = new Map();
+      ref = this._elements;
+      for (j = 0, len = ref.length; j < len; j++) {
+        element = ref[j];
+        key = Tools.getHash(grouper(element));
+        mappedValue = mapper(element);
+        if (!groupMap.has(key)) {
+          groupMap.set(key, {
+            key: grouper(element),
+            count: 0,
+            elements: []
+          });
+        }
+        group = groupMap.get(key);
+        group.elements.push(mappedValue);
+        group.count++;
+      }
+      return Array.from(groupMap.values());
+    }
+
+    /*
+      Groups the elements of a sequence according to a specified key selector function.
+      a little data.
+    */
+    groupByMini(grouper, mapper) {
+      var func, initialValue;
+      if (mapper === void 0) {
+        mapper = function(val) {
+          return val;
+        };
+      }
+      initialValue = [];
+      func = function(ac, v) {
+        var existingGroup, existingMap, key, mappedValue;
+        key = grouper(v);
+        existingGroup = new Linq(ac).firstOrDefault(function(x) {
+          return Tools.equal(x.key, key);
+        });
+        mappedValue = mapper(v);
+        if (existingGroup) {
+          existingGroup.elements.push(mappedValue);
+          existingGroup.count++;
+        } else {
+          existingMap = {
+            key: key,
+            count: 1,
+            elements: [mappedValue]
+          };
+          ac.push(existingMap);
+        }
+        return ac;
+      };
+      return this.aggregate(func, initialValue);
+    }
+
+    /*
+      Correlates the elements of two sequences based on equality of keys and groups the results.
+      The default equality comparer is used to compare keys.
+    */
+    groupJoin(list, key1, key2, result) {
+      return this.select(function(x) {
+        return result(x, list.where(function(z) {
+          return key1(x) === key2(z);
+        }));
+      });
+    }
+
+    /*
+      Returns the index of the first occurence of an element in the List.
+    */
+    indexOf(element) {
+      return this._elements.indexOf(element);
+    }
+
+    /*
+      Inserts an element into the List<T> at the specified index.
+    */
+    insert(index, element) {
+      if (index < 0 || index > this._elements.length) {
+        throw new Error('Index is out of range.');
+      }
+      return this._elements.splice(index, 0, element);
+    }
+
+    /*
+      Produces the set intersection of two sequences by using the default equality comparer to compare values.
+    */
+    intersect(source) {
+      return this.where(function(x) {
+        return source.contains(x);
+      });
+    }
+
+    /*
+      Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
+    */
+    join(list, key1, key2, result) {
+      return this.selectMany(function(x) {
+        return list.where(function(y) {
+          return key2(y) === key1(x);
+        }).select(function(z) {
+          return result(x, z);
+        });
+      });
+    }
+
+    /*
+      Returns the last element of a sequence.
+    */
+    last(predicate) {
+      if (this.count()) {
+        if (predicate) {
+          return this.where(predicate).last();
+        } else {
+          return this._elements[this.count() - 1];
+        }
+      } else {
+        throw Error('InvalidOperationException: The source sequence is empty.');
+      }
+    }
+
+    /*
+      Returns the last element of a sequence, or a default value if the sequence contains no elements.
+    */
+    lastOrDefault(predicate) {
+      if (this.count(predicate)) {
+        return this.last(predicate);
+      } else {
+        return void 0;
+      }
+    }
+
+    /*
+      Returns the maximum value in a generic sequence.
+    */
+    max(selector) {
+      var identity;
+      identity = function(x) {
+        return x;
+      };
+      return Math.max.apply(Math, this._elements.map(selector || identity));
+    }
+
+    /*
+      Returns the minimum value in a generic sequence.
+    */
+    min(selector) {
+      var identity;
+      identity = function(x) {
+        return x;
+      };
+      return Math.min.apply(Math, this._elements.map(selector || identity));
+    }
+
+    /*
+      Filters the elements of a sequence based on a specified type.
+    */
+    ofType(type) {
+      typeName;
+      var typeName;
+      switch (type) {
+        case Number:
+          typeName = typeof 0;
+          break;
+        case String:
+          typeName = typeof '';
+          break;
+        case Boolean:
+          typeName = typeof true;
+          break;
+        case Function:
+          typeName = typeof function() {}; // tslint:disable-line no-empty
+          break;
+        default:
+          typeName = null;
+          break;
+      }
+      if (typeName === null) {
+        return this.where(function(x) {
+          return x instanceof type;
+        }).cast();
+      } else {
+        return this.where(function(x) {
+          return typeof x === typeName;
+        }).cast();
+      }
+    }
+
+    /*
+      Sorts the elements of a sequence in ascending order according to a key.
+    */
+    orderBy(keySelector, comparer) {
+      if (comparer === void 0) {
+        comparer = Tools.keyComparer(keySelector, false, this._locales);
+      }
+      // tslint:disable-next-line: no-use-before-declare
+      return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
+    }
+
+    /*
+      Sorts the elements of a sequence in descending order according to a key.
+    */
+    orderByDescending(keySelector, comparer) {
+      if (comparer === void 0) {
+        comparer = Tools.keyComparer(keySelector, true, this._locales);
+      }
+      // tslint:disable-next-line: no-use-before-declare
+      return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
+    }
+
+    /*
+      Performs a subsequent ordering of the elements in a sequence in
+      ascending order according to a key.
+    */
+    thenBy(keySelector) {
+      return this.orderBy(keySelector);
+    }
+
+    /*
+      Performs a subsequent ordering of the elements in a sequence in
+      descending order, according to a key.
+    */
+    thenByDescending(keySelector) {
+      return this.orderByDescending(keySelector);
+    }
+
+    /*
+      Removes the first occurrence of a specific object from the List<T>.
+    */
+    remove(element) {
+      if (this.indexOf(element) !== -1) {
+        this.removeAt(this.indexOf(element));
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /*
+      Removes all the elements that match the conditions defined by the specified predicate.
+    */
+    removeAll(predicate) {
+      return this.where(Tools.negate(predicate));
+    }
+
+    /*
+      Removes the element at the specified index of the List<T>.
+    */
+    removeAt(index) {
+      return this._elements.splice(index, 1);
+    }
+
+    /*
+      Reverses the order of the elements in the entire List<T>.
+    */
+    reverse() {
+      return new Linq(this._elements.reverse());
+    }
+
+    /*
+      Projects each element of a sequence into a new form.
+    */
+    select(selector) {
+      return new Linq(this._elements.map(selector));
+    }
+
+    /*
+      Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+    */
+    selectMany(selector) {
+      return this.aggregate(((ac, _, i) => {
+        ac.addRange(this.select(selector).elementAt(i).toArray());
+        return ac;
+      }), new Linq());
+    }
+
+    /*
+      Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
+    */
+    sequenceEqual(list) {
+      return this.all(function(e) {
+        return list.contains(e);
+      });
+    }
+
+    /*
+      Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+    */
+    single(predicate) {
+      if (this.count(predicate) !== 1) {
+        throw new Error('The collection does not contain exactly one element.');
+      } else {
+        return this.first(predicate);
+      }
+    }
+
+    /*
+      Returns the only element of a sequence, or a default value if the sequence is empty;
+      this method throws an exception if there is more than one element in the sequence.
+    */
+    singleOrDefault(predicate) {
+      if (this.count(predicate)) {
+        return this.single(predicate);
+      } else {
+        return void 0;
+      }
+    }
+
+    /*
+      Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+    */
+    skip(amount) {
+      return new Linq(this._elements.slice(Math.max(0, amount)));
+    }
+
+    /*
+      Omit the last specified number of elements in a sequence and then returns the remaining elements.
+    */
+    skipLast(amount) {
+      return new Linq(this._elements.slice(0, -Math.max(0, amount)));
+    }
+
+    /*
+      Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+    */
+    skipWhile(predicate) {
+      return this.skip(this.aggregate((ac) => {
+        if (predicate(this.elementAt(ac))) {
+          return ++ac;
+        } else {
+          return ac;
+        }
+      }, 0));
+    }
+
+    /*
+      Computes the sum of the sequence of number values that are obtained by invoking
+      a transform function on each element of the input sequence.
+    */
+    sum(transform) {
+      if (transform) {
+        return this.select(transform).sum();
+      } else {
+        return this.aggregate((function(ac, v) {
+          return (ac = Tools.calcNum(ac, +v));
+        }), 0);
+      }
+    }
+
+    /*
+      Returns a specified number of contiguous elements from the start of a sequence.
+    */
+    take(amount) {
+      return new Linq(this._elements.slice(0, Math.max(0, amount)));
+    }
+
+    /*
+      Returns a specified number of contiguous elements from the end of a sequence.
+    */
+    takeLast(amount) {
+      return new Linq(this._elements.slice(-Math.max(0, amount)));
+    }
+
+    /*
+      Returns elements from a sequence as long as a specified condition is true.
+    */
+    takeWhile(predicate) {
+      return this.take(this.aggregate((ac) => {
+        if (predicate(this.elementAt(ac))) {
+          return ++ac;
+        } else {
+          return ac;
+        }
+      }, 0));
+    }
+
+    /*
+      Copies the elements of the List<T> to a new array.
+    */
+    toArray() {
+      return this._elements;
+    }
+
+    /*
+      Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+    */
+    toDictionary(key, value) {
+      return this.aggregate((dicc, v, i) => {
+        // dicc[@select(key).elementAt(i).toString()] = if value then @select(value).elementAt(i) else v
+        dicc.add({
+          Key: this.select(key).elementAt(i),
+          Value: value ? this.select(value).elementAt(i) : v
+        });
+        return dicc;
+      }, new Linq());
+    }
+
+    /*
+      Creates a List<T> from an Enumerable.List<T>.
+    */
+    toList() {
+      return this;
+    }
+
+    /*
+      Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
+    */
+    toLookup(keySelector, elementSelector) {
+      return this.groupBy(keySelector, elementSelector);
+    }
+
+    /*
+      Produces the set union of two sequences by using the default equality comparer.
+    */
+    union(list) {
+      return this.concat(list).distinct();
+    }
+
+    /*
+      Filters a sequence of values based on a predicate.
+    */
+    where(predicate) {
+      return new Linq(this._elements.filter(predicate));
+    }
+
+    /*
+      Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+    */
+    zip(list, result) {
+      if (list.count() < this.count()) {
+        return list.select((x, y) => {
+          return result(this.elementAt(y), x);
+        });
+      } else {
+        return this.select(function(x, y) {
+          return result(x, list.elementAt(y));
         });
       }
-      group = groupMap.get(key);
-      group.elements.push(mappedValue);
-      group.count++;
     }
-    return Array.from(groupMap.values());
-  }
 
-  /*
-    Groups the elements of a sequence according to a specified key selector function.
-    a little data.
-  */
-  groupByMini(grouper, mapper) {
-    var func, initialValue;
-    if (mapper === void 0) {
-      mapper = function(val) {
-        return val;
-      };
+    /*
+      Determine if two objects are equal.
+    */
+    // equals: (param1, param2) ->
+    //   return Tools.equal(param1, param2)
+    /*
+      clone deep object.
+    */
+    cloneDeep(param) {
+      return Tools.cloneDeep(param);
     }
-    initialValue = [];
-    func = function(ac, v) {
-      var existingGroup, existingMap, key, mappedValue;
-      key = grouper(v);
-      existingGroup = new Linq(ac).firstOrDefault(function(x) {
-        return Tools.equal(x.key, key);
-      });
-      mappedValue = mapper(v);
-      if (existingGroup) {
-        existingGroup.elements.push(mappedValue);
-        existingGroup.count++;
-      } else {
-        existingMap = {
-          key: key,
-          count: 1,
-          elements: [mappedValue]
-        };
-        ac.push(existingMap);
-      }
-      return ac;
-    };
-    return this.aggregate(func, initialValue);
-  }
+
+  };
 
   /*
-    Correlates the elements of two sequences based on equality of keys and groups the results.
-    The default equality comparer is used to compare keys.
+    property represents the Object name
   */
-  groupJoin(list, key1, key2, result) {
-    return this.select(function(x) {
-      return result(x, list.where(function(z) {
-        return key1(x) === key2(z);
-      }));
-    });
-  }
-
-  /*
-    Returns the index of the first occurence of an element in the List.
-  */
-  indexOf(element) {
-    return this._elements.indexOf(element);
-  }
-
-  /*
-    Inserts an element into the List<T> at the specified index.
-  */
-  insert(index, element) {
-    if (index < 0 || index > this._elements.length) {
-      throw new Error('Index is out of range.');
+  Object.defineProperty(Linq.prototype, Symbol.toStringTag, {
+    get: function() {
+      return 'List';
     }
-    return this._elements.splice(index, 0, element);
-  }
+  });
 
-  /*
-    Produces the set intersection of two sequences by using the default equality comparer to compare values.
-  */
-  intersect(source) {
-    return this.where(function(x) {
-      return source.contains(x);
-    });
-  }
+  return Linq;
 
-  /*
-    Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
-  */
-  join(list, key1, key2, result) {
-    return this.selectMany(function(x) {
-      return list.where(function(y) {
-        return key2(y) === key1(x);
-      }).select(function(z) {
-        return result(x, z);
-      });
-    });
-  }
+}).call(this);
 
-  /*
-    Returns the last element of a sequence.
-  */
-  last(predicate) {
-    if (this.count()) {
-      if (predicate) {
-        return this.where(predicate).last();
-      } else {
-        return this._elements[this.count() - 1];
-      }
-    } else {
-      throw Error('InvalidOperationException: The source sequence is empty.');
-    }
-  }
-
-  /*
-    Returns the last element of a sequence, or a default value if the sequence contains no elements.
-  */
-  lastOrDefault(predicate) {
-    if (this.count(predicate)) {
-      return this.last(predicate);
-    } else {
-      return void 0;
-    }
-  }
-
-  /*
-    Returns the maximum value in a generic sequence.
-  */
-  max(selector) {
-    var id;
-    id = function(x) {
-      return x;
-    };
-    return Math.max.apply(Math, this._elements.map(selector || id));
-  }
-
-  /*
-    Returns the minimum value in a generic sequence.
-  */
-  min(selector) {
-    var id;
-    id = function(x) {
-      return x;
-    };
-    return Math.min.apply(Math, this._elements.map(selector || id));
-  }
-
-  /*
-    Filters the elements of a sequence based on a specified type.
-  */
-  ofType(type) {
-    typeName;
-    var typeName;
-    switch (type) {
-      case Number:
-        typeName = typeof 0;
-        break;
-      case String:
-        typeName = typeof '';
-        break;
-      case Boolean:
-        typeName = typeof true;
-        break;
-      case Function:
-        typeName = typeof function() {}; // tslint:disable-line no-empty
-        break;
-      default:
-        typeName = null;
-        break;
-    }
-    if (typeName === null) {
-      return this.where(function(x) {
-        return x instanceof type;
-      }).cast();
-    } else {
-      return this.where(function(x) {
-        return typeof x === typeName;
-      }).cast();
-    }
-  }
-
-  /*
-    Sorts the elements of a sequence in ascending order according to a key.
-  */
-  orderBy(keySelector, comparer) {
-    if (comparer === void 0) {
-      comparer = Tools.keyComparer(keySelector, false, this._locales);
-    }
-    // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
-  }
-
-  /*
-    Sorts the elements of a sequence in descending order according to a key.
-  */
-  orderByDescending(keySelector, comparer) {
-    if (comparer === void 0) {
-      comparer = Tools.keyComparer(keySelector, true, this._locales);
-    }
-    // tslint:disable-next-line: no-use-before-declare
-    return new OrderedList(Tools.arrayMap(this._elements), comparer, this._locales);
-  }
-
-  /*
-    Performs a subsequent ordering of the elements in a sequence in
-    ascending order according to a key.
-  */
-  thenBy(keySelector) {
-    return this.orderBy(keySelector);
-  }
-
-  /*
-    Performs a subsequent ordering of the elements in a sequence in
-    descending order, according to a key.
-  */
-  thenByDescending(keySelector) {
-    return this.orderByDescending(keySelector);
-  }
-
-  /*
-    Removes the first occurrence of a specific object from the List<T>.
-  */
-  remove(element) {
-    if (this.indexOf(element) !== -1) {
-      this.removeAt(this.indexOf(element));
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /*
-    Removes all the elements that match the conditions defined by the specified predicate.
-  */
-  removeAll(predicate) {
-    return this.where(Tools.negate(predicate));
-  }
-
-  /*
-    Removes the element at the specified index of the List<T>.
-  */
-  removeAt(index) {
-    return this._elements.splice(index, 1);
-  }
-
-  /*
-    Reverses the order of the elements in the entire List<T>.
-  */
-  reverse() {
-    return new Linq(this._elements.reverse());
-  }
-
-  /*
-    Projects each element of a sequence into a new form.
-  */
-  select(selector) {
-    return new Linq(this._elements.map(selector));
-  }
-
-  /*
-    Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
-  */
-  selectMany(selector) {
-    return this.aggregate(((ac, _, i) => {
-      ac.addRange(this.select(selector).elementAt(i).toArray());
-      return ac;
-    }), new Linq());
-  }
-
-  /*
-    Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
-  */
-  sequenceEqual(list) {
-    return this.all(function(e) {
-      return list.contains(e);
-    });
-  }
-
-  /*
-    Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
-  */
-  single(predicate) {
-    if (this.count(predicate) !== 1) {
-      throw new Error('The collection does not contain exactly one element.');
-    } else {
-      return this.first(predicate);
-    }
-  }
-
-  /*
-    Returns the only element of a sequence, or a default value if the sequence is empty;
-    this method throws an exception if there is more than one element in the sequence.
-  */
-  singleOrDefault(predicate) {
-    if (this.count(predicate)) {
-      return this.single(predicate);
-    } else {
-      return void 0;
-    }
-  }
-
-  /*
-    Bypasses a specified number of elements in a sequence and then returns the remaining elements.
-  */
-  skip(amount) {
-    return new Linq(this._elements.slice(Math.max(0, amount)));
-  }
-
-  /*
-    Omit the last specified number of elements in a sequence and then returns the remaining elements.
-  */
-  skipLast(amount) {
-    return new Linq(this._elements.slice(0, -Math.max(0, amount)));
-  }
-
-  /*
-    Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
-  */
-  skipWhile(predicate) {
-    return this.skip(this.aggregate((ac) => {
-      if (predicate(this.elementAt(ac))) {
-        return ++ac;
-      } else {
-        return ac;
-      }
-    }, 0));
-  }
-
-  /*
-    Computes the sum of the sequence of number values that are obtained by invoking
-    a transform function on each element of the input sequence.
-  */
-  sum(transform) {
-    if (transform) {
-      return this.select(transform).sum();
-    } else {
-      return this.aggregate((function(ac, v) {
-        return (ac = Tools.calcNum(ac, +v));
-      }), 0);
-    }
-  }
-
-  /*
-    Returns a specified number of contiguous elements from the start of a sequence.
-  */
-  take(amount) {
-    return new Linq(this._elements.slice(0, Math.max(0, amount)));
-  }
-
-  /*
-    Returns a specified number of contiguous elements from the end of a sequence.
-  */
-  takeLast(amount) {
-    return new Linq(this._elements.slice(-Math.max(0, amount)));
-  }
-
-  /*
-    Returns elements from a sequence as long as a specified condition is true.
-  */
-  takeWhile(predicate) {
-    return this.take(this.aggregate((ac) => {
-      if (predicate(this.elementAt(ac))) {
-        return ++ac;
-      } else {
-        return ac;
-      }
-    }, 0));
-  }
-
-  /*
-    Copies the elements of the List<T> to a new array.
-  */
-  toArray() {
-    return this._elements;
-  }
-
-  /*
-    Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
-  */
-  toDictionary(key, value) {
-    return this.aggregate((dicc, v, i) => {
-      // dicc[@select(key).elementAt(i).toString()] = if value then @select(value).elementAt(i) else v
-      dicc.add({
-        Key: this.select(key).elementAt(i),
-        Value: value ? this.select(value).elementAt(i) : v
-      });
-      return dicc;
-    }, new Linq());
-  }
-
-  /*
-    Creates a List<T> from an Enumerable.List<T>.
-  */
-  toList() {
-    return this;
-  }
-
-  /*
-    Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
-  */
-  toLookup(keySelector, elementSelector) {
-    return this.groupBy(keySelector, elementSelector);
-  }
-
-  /*
-    Produces the set union of two sequences by using the default equality comparer.
-  */
-  union(list) {
-    return this.concat(list).distinct();
-  }
-
-  /*
-    Filters a sequence of values based on a predicate.
-  */
-  where(predicate) {
-    return new Linq(this._elements.filter(predicate));
-  }
-
-  /*
-    Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
-  */
-  zip(list, result) {
-    if (list.count() < this.count()) {
-      return list.select((x, y) => {
-        return result(this.elementAt(y), x);
-      });
-    } else {
-      return this.select(function(x, y) {
-        return result(x, list.elementAt(y));
-      });
-    }
-  }
-
-};
-
-/*
-  Determine if two objects are equal.
-*/
-// equals: (param1, param2) ->
-//   return Tools.equal(param1, param2)
 /*
   Represents a sorted sequence. The methods of this class are implemented by using deferred execution.
   The immediate return value is an object that stores all the information that is required to perform the action.
@@ -704,7 +739,9 @@ OrderedList = class OrderedList extends Linq {
   constructor(elements, _comparer1, locales) {
     super(elements, locales);
     this._comparer = _comparer1;
-    this._elements.sort(this._comparer);
+    if (Tools.isArray(this._elements)) {
+      this._elements.sort(this._comparer);
+    }
   }
 
   /*
@@ -929,15 +966,6 @@ Tools = {
     });
   },
   /*
-    Get group value
-  */
-  getGroupValue: function(val) {
-    if (null === val || void 0 === val) {
-      return '';
-    }
-    return val;
-  },
-  /*
     Clone data
   */
   cloneDeep: function(obj) {
@@ -1028,4 +1056,10 @@ Tools = {
   }
 };
 
+// ###
+//   property represents the Object name
+// ###
+// Object.defineProperty Linq::, Symbol.toStringTag,
+//   get: ->
+//     'List'
 module.exports = Linq;
