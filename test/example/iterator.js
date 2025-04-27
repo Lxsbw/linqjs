@@ -6,7 +6,7 @@ const pets = new Linq([
   { Age: 6, Name: 'Bissy' },
 ]);
 
-console.log('=============================== for ... from ========================');
+console.log('=============================== for...of ========================');
 for (const pet of pets) {
   console.log('pet:', pet);
 }

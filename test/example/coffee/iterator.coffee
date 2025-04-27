@@ -5,7 +5,7 @@ pets = new Linq([
   { Age: 4, Name: 'Boots' },
   { Age: 6, Name: 'Bissy' },
 ])
-console.log '=============================== for ... from ========================'
+console.log '=============================== for...from ========================'
 for pet from pets
   console.log('pet:', pet)
 
