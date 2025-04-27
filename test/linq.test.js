@@ -136,9 +136,16 @@ describe('Group 1:', () => {
       { Age: 0, Name: '征史郎' },
     ];
 
+    const numbersQi = [
+      { Age: 0.2, Name: '正一郎' },
+      { Age: 0.3, Name: '清次郎' },
+      { Age: 0.5, Name: '誠三郎' },
+    ];
+
     // expect(new Linq(numbers).average(x => x.Age)).toBe(0.4);
     expect(new Linq(numbers).average(x => x.Age)).toBeCloseTo(0.4);
     expect(new Linq(numbers10).average(x => x.Age)).toBeCloseTo(0.069);
+    expect(new Linq(numbersQi).average(x => x.Age)).toBeCloseTo(0.333, 3);
   });
 
   test('Cast', () => {
