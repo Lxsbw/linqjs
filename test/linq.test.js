@@ -136,9 +136,16 @@ describe('Group 1:', () => {
       { Age: 0, Name: '征史郎' },
     ];
 
+    const numbersQi = [
+      { Age: 0.2, Name: '正一郎' },
+      { Age: 0.3, Name: '清次郎' },
+      { Age: 0.5, Name: '誠三郎' },
+    ];
+
     // expect(new Linq(numbers).average(x => x.Age)).toBe(0.4);
     expect(new Linq(numbers).average(x => x.Age)).toBeCloseTo(0.4);
     expect(new Linq(numbers10).average(x => x.Age)).toBeCloseTo(0.069);
+    expect(new Linq(numbersQi).average(x => x.Age)).toBeCloseTo(0.333, 3);
   });
 
   test('Cast', () => {
@@ -373,7 +380,8 @@ describe('Group 1:', () => {
     const b = new Linq([2, 1, 0, -1, -2]);
     expect(a.elementAtOrDefault(0)).toBe('hey');
     expect(b.elementAtOrDefault(2)).toBe(0);
-    expect(a.elementAtOrDefault(4)).toBeUndefined;
+    expect(a.elementAtOrDefault(4)).toBeNull();
+    // expect(a.elementAtOrDefault(4)).toBeUndefined();
   });
 
   test('Except', () => {
@@ -678,7 +686,7 @@ describe('Group 2:', () => {
 
   test('LastOrDefault', () => {
     expect(new Linq(['hey', 'hola', 'que', 'tal']).lastOrDefault()).toBe('tal');
-    expect(new Linq().lastOrDefault()).toBeUndefined;
+    expect(new Linq().lastOrDefault()).toBeUndefined();
   });
 
   test('Max', () => {

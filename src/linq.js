@@ -596,9 +596,9 @@ class OrderedList extends Linq {
    * @override
    * @returns and ordered list turned into a regular Linq<T>
    */
-  toList() {
-    return new Linq(this._elements);
-  }
+  // toList() {
+  //   return new Linq(this._elements);
+  // }
 
   /**
    * Performs a subsequent ordering of the elements in a sequence in ascending order according to a key.
