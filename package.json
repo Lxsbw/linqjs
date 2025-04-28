@@ -9,9 +9,9 @@
     "src/*.d.ts"
   ],
   "scripts": {
-    "build": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
-    "buildes": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
-    "cbuild": "coffee -o ./build/coffee_to_linq.js -c -b ./src/coffee/linq.coffee",
+    "build:mini": "uglifyjs ./src/linq.js --output ./build/linq.min.js --compress --mangle",
+    "build:es5:mini": "uglifyjs ./src/es5/linq.js --output ./build/linq.es5.min.js --compress --mangle",
+    "build:coffee": "coffee -o ./build/coffee_to_linq.js -c -b ./src/coffee/linq.coffee",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
