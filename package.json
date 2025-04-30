@@ -14,7 +14,8 @@
     "build:coffee": "coffee -o ./build/coffee_to_linq.js -c -b ./src/coffee/linq.coffee",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --clearCache && jest --coverage"
+    "test:clear": "jest --clearCache",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",

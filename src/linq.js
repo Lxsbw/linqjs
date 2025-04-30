@@ -879,9 +879,3 @@ if (typeof window !== 'undefined' && window !== undefined) {
 } else {
   module.exports = Linq;
 }
-
-// if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-//   module.exports = Linq;
-// } else {
-//   window.Linq = Linq;
-// }
