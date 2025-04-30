@@ -2,33 +2,22 @@
  * @jest-environment jsdom
  */
 
-const fs = require('fs');
-const path = require('path');
-
-describe('Group 4:', () => {
+describe('Linq Browser Environment', () => {
   beforeAll(() => {
-    jest.resetModules();
-    // 读取被测代码并注入到window环境
-    const linqCode = fs.readFileSync(path.resolve(__dirname, '../src/linq.js'), 'utf8');
-    window.eval(linqCode);
+    require('../src/linq'); // 直接引入模块
   });
 
-  test('should assign Linq to window', () => {
-    // console.log('window.Linq:', window.Linq);
-    expect(window.Linq).toBeDefined(); // 验证window.Linq存在
+  test('Linq 应挂载到 window', () => {
+    // 由于已经通过 require 执行过代码，这里可以直接检查 window 对象
+    expect(Linq).toBeDefined();
+    expect(window.Linq).toBeDefined();
+    expect(new window.Linq()).toBeInstanceOf(window.Linq);
+    expect(new Linq()).toBeInstanceOf(window.Linq);
   });
 
-  test('window对象存在', () => {
-    expect(window).toBeDefined();
-    expect(document).toBeDefined();
-  });
-
-  test('Add', () => {
-    const list = new Linq([]);
-
-    list.add('hey');
-    console.log('window.list:', list);
-
-    expect(list.first()).toBe('hey');
+  test('add 方法添加元素', () => {
+    const linq = new Linq([1]); // 使用直接引入的 Linq 类
+    linq.add(2);
+    expect(linq.toArray()).toEqual([1, 2]);
   });
 });

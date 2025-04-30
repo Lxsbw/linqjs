@@ -36,7 +36,7 @@
     "@types/jest": "~29.5.14",
     "coffeescript": "~2.7.0",
     "jest": "~29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
+    "jest-environment-jsdom": "~29.7.0",
     "uglify-js": "~3.19.3"
   }
 }
