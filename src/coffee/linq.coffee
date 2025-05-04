@@ -10,7 +10,7 @@ class Linq
     @_locales = locales
 
   ###
-    Make the List iterable and Spreadable
+    Make the Linq iterable and Spreadable
   ###
   [Symbol.iterator]: ->
     yield element for element in @_elements
@@ -22,25 +22,25 @@ class Linq
     get: -> 'List'
 
   ###
-    Adds an object to the end of the List<T>.
+    Adds an object to the end of the Linq<T>.
   ###
   add: (element) ->
     @_elements.push(element)
 
   ###
-    Appends an object to the end of the List<T>.
+    Appends an object to the end of the Linq<T>.
   ###
   append: (element) ->
     @add(element)
 
   ###
-    Add an object to the start of the List<T>.
+    Add an object to the start of the Linq<T>.
   ###
   prepend: (element) ->
     @_elements.unshift(element)
 
   ###
-    Adds the elements of the specified collection to the end of the List<T>.
+    Adds the elements of the specified collection to the end of the Linq<T>.
   ###
   addRange: (elements) ->
     _a
@@ -78,7 +78,7 @@ class Linq
     return new Linq(@_elements)
 
   ###
-    Removes all elements from the List<T>.
+    Removes all elements from the Linq<T>.
   ###
   clear: () ->
     @_elements.length = 0
@@ -90,7 +90,7 @@ class Linq
     return new Linq(@_elements.concat(list.toArray()))
 
   ###
-    Determines whether an element is in the List<T>.
+    Determines whether an element is in the Linq<T>.
   ###
   contains: (element) ->
     return @any (x) -> x is element
@@ -175,7 +175,7 @@ class Linq
     return if @count(predicate) then @first(predicate) else undefined
 
   ###
-    Performs the specified action on each element of the List<T>.
+    Performs the specified action on each element of the Linq<T>.
   ###
   forEach: (action) ->
     return @_elements.forEach(action)
@@ -235,13 +235,13 @@ class Linq
       return result x, list.where((z) -> key1(x) is key2(z))
 
   ###
-    Returns the index of the first occurence of an element in the List.
+    Returns the index of the first occurence of an element in the Linq.
   ###
   indexOf: (element) ->
     return @_elements.indexOf(element)
 
   ###
-    Inserts an element into the List<T> at the specified index.
+    Inserts an element into the Linq<T> at the specified index.
   ###
   insert: (index, element) ->
     if (index < 0 || index > @_elements.length)
@@ -346,7 +346,7 @@ class Linq
     return @orderByDescending(keySelector)
 
   ###
-    Removes the first occurrence of a specific object from the List<T>.
+    Removes the first occurrence of a specific object from the Linq<T>.
   ###
   remove: (element) ->
     return if @indexOf(element) isnt -1 then (@removeAt(@indexOf(element)); true) else false
@@ -358,13 +358,13 @@ class Linq
     return @where Tools.negate(predicate)
 
   ###
-    Removes the element at the specified index of the List<T>.
+    Removes the element at the specified index of the Linq<T>.
   ###
   removeAt: (index) ->
     @_elements.splice(index, 1)
 
   ###
-    Reverses the order of the elements in the entire List<T>.
+    Reverses the order of the elements in the entire Linq<T>.
   ###
   reverse: () ->
     return new Linq(@_elements.reverse())
@@ -376,7 +376,7 @@ class Linq
     return new Linq(@_elements.map(selector))
 
   ###
-    Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+    Projects each element of a sequence to a Linq<any> and flattens the resulting sequences into one sequence.
   ###
   selectMany: (selector) ->
     return @aggregate(((ac, _, i) =>
@@ -456,13 +456,13 @@ class Linq
       , 0))
 
   ###
-    Copies the elements of the List<T> to a new array.
+    Copies the elements of the Linq<T> to a new array.
   ###
   toArray: () ->
     return @_elements
 
   ###
-    Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+    Creates a Dictionary<TKey, TValue> from a Linq<T> according to a specified key selector function.
   ###
   toDictionary: (key, value) ->
     return @aggregate((dicc, v, i) =>
@@ -475,7 +475,7 @@ class Linq
     , new Linq())
 
   ###
-    Creates a List<T> from an Enumerable.List<T>.
+    Creates a Linq<T> from an Enumerable.Linq<T>.
   ###
   toList: () ->
     return @

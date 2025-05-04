@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 const Linq = require('../src/linq');
 
 describe('Group 1:', () => {
