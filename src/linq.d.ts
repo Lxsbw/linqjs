@@ -287,4 +287,4 @@ declare class Linq<T> {
   cloneDeep<T, Y>(param: any): T | Y;
 }
 
-export { Linq };
+export default Linq;

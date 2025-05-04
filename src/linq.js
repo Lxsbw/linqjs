@@ -878,4 +878,5 @@ if (typeof window !== 'undefined' && window !== undefined) {
   window.Linq = Linq;
 } else {
   module.exports = Linq;
+  module.exports.default = Linq;
 }
