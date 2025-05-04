@@ -935,8 +935,9 @@ var Tools = (function () {
   return Tools;
 })();
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Linq;
-} else {
+if (typeof window !== 'undefined' && window !== undefined) {
   window.Linq = Linq;
+} else {
+  module.exports = Linq;
+  module.exports.default = Linq;
 }
