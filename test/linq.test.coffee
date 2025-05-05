@@ -44,8 +44,8 @@ describe 'Group 1:', () ->
 
   test 'toStringTag', () ->
     pets = new Linq []
-    expect(pets.toString() is '[object List]').toBeTruthy()
-    expect("#{pets}" is '[object List]').toBeTruthy()
+    expect(pets.toString() is '[object Linq]').toBeTruthy()
+    expect("#{pets}" is '[object Linq]').toBeTruthy()
 
   test 'Add', () ->
     list = new Linq []

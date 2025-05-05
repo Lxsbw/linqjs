@@ -286,7 +286,7 @@ var Linq = (function () {
   };
 
   /**
-   * Returns the index of the first occurence of an element in the List.
+   * Returns the index of the first occurence of an element in the Linq.
    */
   Linq.prototype.indexOf = function (element) {
     return this._elements.indexOf(element);
@@ -467,7 +467,7 @@ var Linq = (function () {
   };
 
   /**
-   * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+   * Projects each element of a sequence to a Linq<any> and flattens the resulting sequences into one sequence.
    */
   Linq.prototype.selectMany = function (selector) {
     var _this = this;
@@ -576,7 +576,7 @@ var Linq = (function () {
   };
 
   /**
-   * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+   * Creates a Dictionary<TKey, TValue> from a Linq<T> according to a specified key selector function.
    */
   Linq.prototype.toDictionary = function (key, value) {
     var _this = this;
@@ -935,8 +935,9 @@ var Tools = (function () {
   return Tools;
 })();
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Linq;
-} else {
+if (typeof window !== 'undefined' && window !== undefined) {
   window.Linq = Linq;
+} else {
+  module.exports = Linq;
+  module.exports.default = Linq;
 }

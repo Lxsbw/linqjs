@@ -13,7 +13,7 @@ class Linq {
   }
 
   /**
-   * Make the List iterable and Spreadable
+   * Make the Linq iterable and Spreadable
    */
   *[Symbol.iterator]() {
     for (let element of this._elements) {
@@ -25,32 +25,32 @@ class Linq {
    * property represents the Object name
    */
   get [Symbol.toStringTag]() {
-    return 'List'; // Expected output: "[object List]"
+    return 'Linq'; // Expected output: "[object Linq]"
   }
 
   /**
-   * Adds an object to the end of the List<T>.
+   * Adds an object to the end of the Linq<T>.
    */
   add(element) {
     this._elements.push(element);
   }
 
   /**
-   * Appends an object to the end of the List<T>.
+   * Appends an object to the end of the Linq<T>.
    */
   append(element) {
     this.add(element);
   }
 
   /**
-   * Add an object to the start of the List<T>.
+   * Add an object to the start of the Linq<T>.
    */
   prepend(element) {
     this._elements.unshift(element);
   }
 
   /**
-   * Adds the elements of the specified collection to the end of the List<T>.
+   * Adds the elements of the specified collection to the end of the Linq<T>.
    */
   addRange(elements) {
     this._elements.push(...elements);
@@ -93,7 +93,7 @@ class Linq {
   }
 
   /**
-   * Removes all elements from the List<T>.
+   * Removes all elements from the Linq<T>.
    */
   clear() {
     this._elements.length = 0;
@@ -107,7 +107,7 @@ class Linq {
   }
 
   /**
-   * Determines whether an element is in the List<T>.
+   * Determines whether an element is in the Linq<T>.
    */
   contains(element) {
     return this.any(x => x === element);
@@ -204,7 +204,7 @@ class Linq {
   }
 
   /**
-   * Performs the specified action on each element of the List<T>.
+   * Performs the specified action on each element of the Linq<T>.
    */
   forEach(action) {
     return this._elements.forEach(action);
@@ -266,14 +266,14 @@ class Linq {
   }
 
   /**
-   * Returns the index of the first occurence of an element in the List.
+   * Returns the index of the first occurence of an element in the Linq.
    */
   indexOf(element) {
     return this._elements.indexOf(element);
   }
 
   /**
-   * Inserts an element into the List<T> at the specified index.
+   * Inserts an element into the Linq<T> at the specified index.
    */
   insert(index, element) {
     if (index < 0 || index > this._elements.length) {
@@ -388,7 +388,7 @@ class Linq {
   }
 
   /**
-   * Removes the first occurrence of a specific object from the List<T>.
+   * Removes the first occurrence of a specific object from the Linq<T>.
    */
   remove(element) {
     return this.indexOf(element) !== -1 ? (this.removeAt(this.indexOf(element)), true) : false;
@@ -402,14 +402,14 @@ class Linq {
   }
 
   /**
-   * Removes the element at the specified index of the List<T>.
+   * Removes the element at the specified index of the Linq<T>.
    */
   removeAt(index) {
     this._elements.splice(index, 1);
   }
 
   /**
-   * Reverses the order of the elements in the entire List<T>.
+   * Reverses the order of the elements in the entire Linq<T>.
    */
   reverse() {
     return new Linq(this._elements.reverse());
@@ -423,7 +423,7 @@ class Linq {
   }
 
   /**
-   * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+   * Projects each element of a sequence to a Linq<any> and flattens the resulting sequences into one sequence.
    */
   selectMany(selector) {
     return this.aggregate((ac, _, i) => (ac.addRange(this.select(selector).elementAt(i).toArray()), ac), new Linq());
@@ -506,14 +506,14 @@ class Linq {
   }
 
   /**
-   * Copies the elements of the List<T> to a new array.
+   * Copies the elements of the Linq<T> to a new array.
    */
   toArray() {
     return this._elements;
   }
 
   /**
-   * Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+   * Creates a Dictionary<TKey, TValue> from a Linq<T> according to a specified key selector function.
    */
   toDictionary(key, value) {
     return this.aggregate((dicc, v, i) => {
@@ -527,7 +527,7 @@ class Linq {
   }
 
   /**
-   * Creates a List<T> from an Enumerable.List<T>.
+   * Creates a Linq<T> from an Enumerable.Linq<T>.
    */
   toList() {
     return this;
@@ -874,8 +874,9 @@ const Tools = {
   },
 };
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-  module.exports = Linq;
-} else {
+if (typeof window !== 'undefined' && window !== undefined) {
   window.Linq = Linq;
+} else {
+  module.exports = Linq;
+  module.exports.default = Linq;
 }

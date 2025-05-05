@@ -8,7 +8,7 @@ declare class Linq<T> {
   protected _elements: T[];
   protected _locales: string | string[];
   /**
-   * Make the List iterable and Spreadable
+   * Make the Linq iterable and Spreadable
    */
   [Symbol.iterator](): Generator<T, void, unknown>;
   /**
@@ -128,7 +128,7 @@ declare class Linq<T> {
    */
   groupJoin<U, R>(list: Linq<U>, key1: (k: T) => any, key2: (k: U) => any, result: (first: T, second: Linq<U>) => R): Linq<R>;
   /**
-   * Returns the index of the first occurence of an element in the List.
+   * Returns the index of the first occurence of an element in the Linq.
    */
   indexOf(element: T): number;
   /**
@@ -202,7 +202,7 @@ declare class Linq<T> {
    */
   select<TOut>(selector: (element: T, index: number) => TOut): Linq<TOut>;
   /**
-   * Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+   * Projects each element of a sequence to a Linq<any> and flattens the resulting sequences into one sequence.
    */
   selectMany<TOut extends Linq<any>>(selector: (element: T, index: number) => TOut): TOut;
   /**
@@ -287,4 +287,4 @@ declare class Linq<T> {
   cloneDeep<T, Y>(param: any): T | Y;
 }
 
-export { Linq };
+export default Linq;
