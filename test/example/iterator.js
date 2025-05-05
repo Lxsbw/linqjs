@@ -33,5 +33,5 @@ console.log('petsSet:', petsSet);
 
 console.log();
 const petsss = new Linq([]);
-console.log(petsss.toString() === '[object List]');
-console.log(`${petsss}` === '[object List]');
+console.log(petsss.toString() === '[object Linq]');
+console.log(`${petsss}` === '[object Linq]');

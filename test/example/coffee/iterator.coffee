@@ -36,12 +36,12 @@ console.log('petsSet:', petsSet)
 
 console.log()
 petsss = new Linq([])
-console.log(petsss.toString() is '[object List]')
-console.log("#{petsss}" is '[object List]')
+console.log(petsss.toString() is '[object Linq]')
+console.log("#{petsss}" is '[object Linq]')
 
 console.log()
 list = new Linq [1, 2, 3]
-console.log Object.prototype.toString.call list  # 输出: [object List]
+console.log Object.prototype.toString.call list  # 输出: [object Linq]
 for item in list                # 无效
   console.log "Item:", item
 
