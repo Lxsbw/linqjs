@@ -721,7 +721,7 @@ Linq = (function() {
   */
   Object.defineProperty(Linq.prototype, Symbol.toStringTag, {
     get: function() {
-      return 'List';
+      return 'Linq';
     }
   });
 
@@ -1061,5 +1061,5 @@ Tools = {
 // ###
 // Object.defineProperty Linq::, Symbol.toStringTag,
 //   get: ->
-//     'List'
+//     'Linq'
 module.exports = Linq;
