@@ -19,7 +19,7 @@ class Linq
     property represents the Object name
   ###
   Object.defineProperty @::, Symbol.toStringTag,
-    get: -> 'List'
+    get: -> 'Linq'
 
   ###
     Adds an object to the end of the Linq<T>.
@@ -762,6 +762,6 @@ Tools = {
 # ###
 # Object.defineProperty Linq::, Symbol.toStringTag,
 #   get: ->
-#     'List'
+#     'Linq'
 
 module.exports = Linq
