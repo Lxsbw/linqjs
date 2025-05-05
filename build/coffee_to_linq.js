@@ -18,7 +18,7 @@ Linq = (function() {
     }
 
     /*
-      Make the List iterable and Spreadable
+      Make the Linq iterable and Spreadable
     */
     * [Symbol.iterator]() {
       var element, j, len, ref, results;
@@ -32,28 +32,28 @@ Linq = (function() {
     }
 
     /*
-      Adds an object to the end of the List<T>.
+      Adds an object to the end of the Linq<T>.
     */
     add(element) {
       return this._elements.push(element);
     }
 
     /*
-      Appends an object to the end of the List<T>.
+      Appends an object to the end of the Linq<T>.
     */
     append(element) {
       return this.add(element);
     }
 
     /*
-      Add an object to the start of the List<T>.
+      Add an object to the start of the Linq<T>.
     */
     prepend(element) {
       return this._elements.unshift(element);
     }
 
     /*
-      Adds the elements of the specified collection to the end of the List<T>.
+      Adds the elements of the specified collection to the end of the Linq<T>.
     */
     addRange(elements) {
       _a;
@@ -102,7 +102,7 @@ Linq = (function() {
     }
 
     /*
-      Removes all elements from the List<T>.
+      Removes all elements from the Linq<T>.
     */
     clear() {
       return this._elements.length = 0;
@@ -116,7 +116,7 @@ Linq = (function() {
     }
 
     /*
-      Determines whether an element is in the List<T>.
+      Determines whether an element is in the Linq<T>.
     */
     contains(element) {
       return this.any(function(x) {
@@ -246,7 +246,7 @@ Linq = (function() {
     }
 
     /*
-      Performs the specified action on each element of the List<T>.
+      Performs the specified action on each element of the Linq<T>.
     */
     forEach(action) {
       return this._elements.forEach(action);
@@ -330,14 +330,14 @@ Linq = (function() {
     }
 
     /*
-      Returns the index of the first occurence of an element in the List.
+      Returns the index of the first occurence of an element in the Linq.
     */
     indexOf(element) {
       return this._elements.indexOf(element);
     }
 
     /*
-      Inserts an element into the List<T> at the specified index.
+      Inserts an element into the Linq<T> at the specified index.
     */
     insert(index, element) {
       if (index < 0 || index > this._elements.length) {
@@ -489,7 +489,7 @@ Linq = (function() {
     }
 
     /*
-      Removes the first occurrence of a specific object from the List<T>.
+      Removes the first occurrence of a specific object from the Linq<T>.
     */
     remove(element) {
       if (this.indexOf(element) !== -1) {
@@ -508,14 +508,14 @@ Linq = (function() {
     }
 
     /*
-      Removes the element at the specified index of the List<T>.
+      Removes the element at the specified index of the Linq<T>.
     */
     removeAt(index) {
       return this._elements.splice(index, 1);
     }
 
     /*
-      Reverses the order of the elements in the entire List<T>.
+      Reverses the order of the elements in the entire Linq<T>.
     */
     reverse() {
       return new Linq(this._elements.reverse());
@@ -529,7 +529,7 @@ Linq = (function() {
     }
 
     /*
-      Projects each element of a sequence to a List<any> and flattens the resulting sequences into one sequence.
+      Projects each element of a sequence to a Linq<any> and flattens the resulting sequences into one sequence.
     */
     selectMany(selector) {
       return this.aggregate(((ac, _, i) => {
@@ -639,14 +639,14 @@ Linq = (function() {
     }
 
     /*
-      Copies the elements of the List<T> to a new array.
+      Copies the elements of the Linq<T> to a new array.
     */
     toArray() {
       return this._elements;
     }
 
     /*
-      Creates a Dictionary<TKey, TValue> from a List<T> according to a specified key selector function.
+      Creates a Dictionary<TKey, TValue> from a Linq<T> according to a specified key selector function.
     */
     toDictionary(key, value) {
       return this.aggregate((dicc, v, i) => {
@@ -660,7 +660,7 @@ Linq = (function() {
     }
 
     /*
-      Creates a List<T> from an Enumerable.List<T>.
+      Creates a Linq<T> from an Enumerable.Linq<T>.
     */
     toList() {
       return this;
@@ -721,7 +721,7 @@ Linq = (function() {
   */
   Object.defineProperty(Linq.prototype, Symbol.toStringTag, {
     get: function() {
-      return 'List';
+      return 'Linq';
     }
   });
 
@@ -1061,5 +1061,5 @@ Tools = {
 // ###
 // Object.defineProperty Linq::, Symbol.toStringTag,
 //   get: ->
-//     'List'
+//     'Linq'
 module.exports = Linq;

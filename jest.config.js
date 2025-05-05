@@ -1,3 +1,4 @@
+// // test coffeescript
 // module.exports = {
 //   transform: {
 //     // 定义 CoffeeScript 文件的转换器
