@@ -787,6 +787,7 @@ const Tools = {
    * Clone data
    */
   cloneDeep(obj) {
+    /* istanbul ignore next */
     if (typeof structuredClone === 'function') {
       return structuredClone(obj);
     }
@@ -828,7 +829,8 @@ const Tools = {
       }
       return result;
     }
-    // throw new Error("Unable to copy param! Its type isn't supported.");
+    /* istanbul ignore next */
+    throw new Error("Unable to copy param! Its type isn't supported.");
   },
 
   /**

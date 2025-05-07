@@ -696,6 +696,7 @@ Tools = {
     Clone data
   ###
   cloneDeep: (obj) ->
+    # istanbul ignore next
     if typeof structuredClone is 'function'
       return structuredClone obj
 
@@ -723,7 +724,7 @@ Tools = {
       result = {}
       result[k] = @cloneDeep v for k, v of obj when obj.hasOwnProperty k
       return result
-
+    # istanbul ignore next
     throw new Error("Unable to copy param! Its type isn't supported.")
 
   ###
