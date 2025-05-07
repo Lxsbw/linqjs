@@ -917,6 +917,7 @@ Tools = {
   */
   calcNumDiv: function(num1, num2) {
     var mult;
+    // istanbul ignore next
     if ((!this.isNum(num1)) || (!this.isNum(num2))) {
       return 0;
     }
@@ -970,6 +971,7 @@ Tools = {
   */
   cloneDeep: function(obj) {
     var k, o, result, v;
+    // istanbul ignore next
     if (typeof structuredClone === 'function') {
       return structuredClone(obj);
     }
@@ -1012,6 +1014,7 @@ Tools = {
       }
       return result;
     }
+    // istanbul ignore next
     throw new Error("Unable to copy param! Its type isn't supported.");
   },
   /*

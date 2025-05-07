@@ -150,6 +150,7 @@ describe('Group 1:', () => {
     expect(new Linq(numbers).average(x => x.Age)).toBeCloseTo(0.4);
     expect(new Linq(numbers10).average(x => x.Age)).toBeCloseTo(0.069);
     expect(new Linq(numbersQi).average(x => x.Age)).toBeCloseTo(0.333, 3);
+    expect(new Linq(['ab', 9]).average(x => x)).toBeCloseTo(4.5);
   });
 
   test('Cast', () => {
@@ -959,6 +960,7 @@ describe('Group 2:', () => {
     ]);
 
     expect(new Linq(parameters).orderBy(x => x.Name).count()).toBe(24);
+    expect(new Linq(parameters).orderByDescending(x => x.Name).count()).toBe(24);
   });
 
   test('Remove', () => {
