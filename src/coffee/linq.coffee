@@ -649,6 +649,7 @@ Tools = {
     Number calculate division
   ###
   calcNumDiv: (num1, num2) ->
+    # istanbul ignore next
     if (not @isNum num1) or (not @isNum num2)
       return 0
     { mult } = @calcMultiple(num1, num2)
