@@ -130,6 +130,7 @@ describe 'Group 1:', () ->
     # expect(new Linq(numbers).average((x) -> x.Age)).toBe(0.4)
     expect(new Linq(numbers).average((x) -> x.Age)).toBeCloseTo(0.4)
     expect(new Linq(numbers10).average((x) -> x.Age)).toBeCloseTo(0.069)
+    expect(new Linq(['ab', 9]).average((x) -> x)).toBeCloseTo(4.5)
 
   test 'Cast', () ->
     pets = new Linq([
@@ -905,6 +906,7 @@ describe 'Group 2:', () ->
     ])
 
     expect(new Linq(parameters).orderBy((x) -> x.Name).count()).toBe(24)
+    expect(new Linq(parameters).orderByDescending((x) -> x.Name).count()).toBe(24)
 
   test 'Remove', () ->
     numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
