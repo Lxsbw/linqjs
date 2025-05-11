@@ -678,7 +678,31 @@ const Tools = {
   /**
    * Key comparer
    */
-  keyComparer(_keySelector, descending, locales) {
+  keyComparer(_keySelector, descending = false, locales) {
+    const direction = descending ? -1 : 1;
+
+    const compare = (a, b) => {
+      const sortKeyA = _keySelector(a);
+      const sortKeyB = _keySelector(b);
+
+      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
+        const result = locales ? sortKeyA.localeCompare(sortKeyB, locales) : sortKeyA.localeCompare(sortKeyB);
+        return result * direction;
+      }
+
+      if (sortKeyA > sortKeyB) return direction;
+      if (sortKeyA < sortKeyB) return -direction;
+      return 0;
+    };
+
+    return compare;
+  },
+
+  /**
+   * Key comparer
+   */
+  /* istanbul ignore next */
+  keyComparerOld(_keySelector, descending, locales) {
     // common comparer
     const _comparer = (sortKeyA, sortKeyB) => {
       if (sortKeyA > sortKeyB) {
