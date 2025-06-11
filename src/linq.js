@@ -678,24 +678,33 @@ const Tools = {
   /**
    * Key comparer
    */
-  keyComparer(_keySelector, descending = false, locales) {
-    const direction = descending ? -1 : 1;
+  keyComparer(_keySelector, descending, locales) {
+    const isString = Tools.isString;
 
-    const compare = (a, b) => {
+    return (a, b) => {
       const sortKeyA = _keySelector(a);
       const sortKeyB = _keySelector(b);
 
-      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
+      // Handle null or undefined
+      const isNullishA = sortKeyA === null || sortKeyA === undefined;
+      const isNullishB = sortKeyB === null || sortKeyB === undefined;
+
+      if (isNullishA && isNullishB) return 0;
+      if (isNullishA) return descending ? -1 : 1;
+      if (isNullishB) return descending ? 1 : -1;
+
+      // String comparison
+      if (isString(sortKeyA) && isString(sortKeyB)) {
         const result = locales ? sortKeyA.localeCompare(sortKeyB, locales) : sortKeyA.localeCompare(sortKeyB);
-        return result * direction;
+        return descending ? -result : result;
       }
 
-      if (sortKeyA > sortKeyB) return direction;
-      if (sortKeyA < sortKeyB) return -direction;
+      // Fallback: number or other types comparison
+      if (sortKeyA > sortKeyB) return descending ? -1 : 1;
+      if (sortKeyA < sortKeyB) return descending ? 1 : -1;
+
       return 0;
     };
-
-    return compare;
   },
 
   /**
