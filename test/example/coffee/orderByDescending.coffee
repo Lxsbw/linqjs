@@ -10,3 +10,14 @@ parameters = [
 orderedParameters = new Linq(parameters).orderByDescending( (value) -> value.ID ).toArray()
 
 console.log 'orderedParameters:', orderedParameters
+
+
+parametersNull = [
+  { ID: null, Name: '正一郎' },
+  { ID: 3, Name: '清次郎' },
+  { ID: undefined, Name: '誠三郎' },
+  { ID: 5, Name: '征史郎' }
+]
+
+console.log 'Empty1:', new Linq(parametersNull).orderBy((x) -> x.ID).toArray()
+console.log 'Empty2:',  new Linq(parametersNull).orderByDescending((x) -> x.ID).toArray()
