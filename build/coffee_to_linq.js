@@ -736,9 +736,9 @@ Linq = (function() {
   calling its toDictionary, toLookup, toList or toArray methods
 */
 OrderedList = class OrderedList extends Linq {
-  constructor(elements, _comparer1, locales) {
+  constructor(elements, _comparer, locales) {
     super(elements, locales);
-    this._comparer = _comparer1;
+    this._comparer = _comparer;
     if (Tools.isArray(this._elements)) {
       this._elements.sort(this._comparer);
     }
@@ -836,69 +836,57 @@ Tools = {
     Key comparer
   */
   keyComparer: function(_keySelector, descending, locales) {
-    var _comparer, _stringComparer;
-    // common comparer
-    _comparer = function(sortKeyA, sortKeyB) {
-      if (sortKeyA > sortKeyB) {
-        if (!descending) {
-          return 1;
-        } else {
-          return -1;
-        }
-      } else if (sortKeyA < sortKeyB) {
-        if (!descending) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else {
-        return 0;
-      }
-    };
-    // string comparer
-    _stringComparer = function(sortKeyA, sortKeyB) {
-      if (locales) {
-        if (sortKeyA.localeCompare(sortKeyB, locales) > 0) {
-          if (!descending) {
-            return 1;
-          } else {
-            return -1;
-          }
-        } else if (sortKeyB.localeCompare(sortKeyA, locales) > 0) {
-          if (!descending) {
-            return -1;
-          } else {
-            return 1;
-          }
-        } else {
-          return 0;
-        }
-      } else {
-        if (sortKeyA.localeCompare(sortKeyB) > 0) {
-          if (!descending) {
-            return 1;
-          } else {
-            return -1;
-          }
-        } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-          if (!descending) {
-            return -1;
-          } else {
-            return 1;
-          }
-        } else {
-          return 0;
-        }
-      }
-    };
+    var isString;
+    isString = Tools.isString;
     return (a, b) => {
-      var sortKeyA, sortKeyB;
+      var isNullishA, isNullishB, result, sortKeyA, sortKeyB;
       sortKeyA = _keySelector(a);
       sortKeyB = _keySelector(b);
-      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
-        return _stringComparer(sortKeyA, sortKeyB);
+      // Handle null or undefined
+      isNullishA = sortKeyA === null || sortKeyA === void 0;
+      isNullishB = sortKeyB === null || sortKeyB === void 0;
+      if (isNullishA && isNullishB) {
+        return 0;
       }
-      return _comparer(sortKeyA, sortKeyB);
+      if (isNullishA) {
+        if (descending) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (isNullishB) {
+        if (descending) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+      // String comparison
+      if (isString(sortKeyA) && isString(sortKeyB)) {
+        result = locales ? sortKeyA.localeCompare(sortKeyB, locales) : sortKeyA.localeCompare(sortKeyB);
+        if (descending) {
+          return -result;
+        } else {
+          return result;
+        }
+      }
+      // Fallback: number or other types comparison
+      if (sortKeyA > sortKeyB) {
+        if (descending) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+      if (sortKeyA < sortKeyB) {
+        if (descending) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+      return 0;
     };
   },
   /*

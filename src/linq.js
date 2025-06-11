@@ -708,53 +708,6 @@ const Tools = {
   },
 
   /**
-   * Key comparer
-   */
-  /* istanbul ignore next */
-  keyComparerOld(_keySelector, descending, locales) {
-    // common comparer
-    const _comparer = (sortKeyA, sortKeyB) => {
-      if (sortKeyA > sortKeyB) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyA < sortKeyB) {
-        return !descending ? -1 : 1;
-      } else {
-        return 0;
-      }
-    };
-    // string comparer
-    const _stringComparer = (sortKeyA, sortKeyB) => {
-      if (locales) {
-        if (sortKeyA.localeCompare(sortKeyB, locales) > 0) {
-          return !descending ? 1 : -1;
-        } else if (sortKeyB.localeCompare(sortKeyA, locales) > 0) {
-          return !descending ? -1 : 1;
-        } else {
-          return 0;
-        }
-      } else {
-        if (sortKeyA.localeCompare(sortKeyB) > 0) {
-          return !descending ? 1 : -1;
-        } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-          return !descending ? -1 : 1;
-        } else {
-          return 0;
-        }
-      }
-    };
-
-    return (a, b) => {
-      const sortKeyA = _keySelector(a);
-      const sortKeyB = _keySelector(b);
-
-      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
-        return _stringComparer(sortKeyA, sortKeyB);
-      }
-      return _comparer(sortKeyA, sortKeyB);
-    };
-  },
-
-  /**
    * Number calculate addition
    */
   calcNum(num1, num2) {
