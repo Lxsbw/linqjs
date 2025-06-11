@@ -49,8 +49,8 @@ const personsMul = [
   { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' }
 ];
 
-console.log(new Linq(personsMul).orderByDescending(x=>x.ID).toArray())
-console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).toArray())
-console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).toArray())
-console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).toArray())
-console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).thenByDescending(x=>x.remark) .toArray())
+console.log(new Linq(personsMul).orderByDescending(x=>x.ID).toArray());
+console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).toArray());
+console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).toArray());
+console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).toArray());
+console.log(new Linq(personsMul).orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).thenByDescending(x=>x.remark).toArray());
