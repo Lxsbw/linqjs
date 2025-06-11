@@ -840,7 +840,7 @@ describe 'Group 2:', () ->
       { ID: 0, Age: 30, Name: 'A' },
     ])
 
-  test 'multi field order', () ->
+  test 'multiFieldSorting', () ->
     personsMul = [
       { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
       { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
@@ -925,6 +925,31 @@ describe 'Group 2:', () ->
       { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
       { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+
+  test 'emptyValueSorting', () ->
+    parametersNull = [
+      { ID: null, Name: '正一郎' },
+      { ID: 3, Name: '清次郎' },
+      { ID: undefined, Name: '誠三郎' },
+      { ID: 5, Name: '征史郎' }
+    ]
+
+    listA = new Linq(parametersNull).orderBy((x) -> x.ID).toArray()
+    listB = new Linq(parametersNull).orderByDescending((x) -> x.ID).toArray()
+
+    expect(listA).toEqual([
+      { ID: 3, Name: '清次郎' },
+      { ID: 5, Name: '征史郎' },
+      { ID: null, Name: '正一郎' },
+      { ID: undefined, Name: '誠三郎' }
+    ])
+
+    expect(listB).toEqual([
+      { ID: null, Name: '正一郎' },
+      { ID: undefined, Name: '誠三郎' },
+      { ID: 5, Name: '征史郎' },
+      { ID: 3, Name: '清次郎' }
     ])
 
   test 'OrderByLocalSort', () ->
