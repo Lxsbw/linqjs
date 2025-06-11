@@ -603,38 +603,33 @@ Tools = {
     Key comparer
   ###
   keyComparer: (_keySelector, descending, locales) ->
-    # common comparer
-    _comparer = (sortKeyA, sortKeyB) ->
-      if (sortKeyA > sortKeyB)
-        return if !descending then 1 else -1
-      else if (sortKeyA < sortKeyB)
-        return if !descending then -1 else 1
-      else
-        return 0
-
-    # string comparer
-    _stringComparer = (sortKeyA, sortKeyB) ->
-      if locales
-        if (sortKeyA.localeCompare(sortKeyB, locales) > 0)
-          return if !descending then 1 else -1
-        else if (sortKeyB.localeCompare(sortKeyA, locales) > 0)
-          return if !descending then -1 else 1
-        else
-          return 0
-      else
-        if (sortKeyA.localeCompare(sortKeyB) > 0)
-          return if !descending then 1 else -1
-        else if (sortKeyB.localeCompare(sortKeyA) > 0)
-          return if !descending then -1 else 1
-        else
-          return 0
+    isString = Tools.isString
 
     return (a, b) =>
       sortKeyA = _keySelector(a)
       sortKeyB = _keySelector(b)
-      if @isString(sortKeyA) and @isString(sortKeyB)
-        return _stringComparer(sortKeyA, sortKeyB)
-      return _comparer(sortKeyA, sortKeyB)
+
+      # Handle null or undefined
+      isNullishA = sortKeyA is null || sortKeyA is undefined
+      isNullishB = sortKeyB is null || sortKeyB is undefined
+      if isNullishA && isNullishB
+        return 0
+      if isNullishA
+        return if descending then -1 else 1
+      if isNullishB
+        return if descending then 1 else -1
+
+      # String comparison
+      if isString(sortKeyA) and isString(sortKeyB)
+        result = if locales then sortKeyA.localeCompare(sortKeyB, locales) else sortKeyA.localeCompare(sortKeyB)
+        return if descending then -result else result
+
+      # Fallback: number or other types comparison
+      if sortKeyA > sortKeyB
+        return if descending then -1 else 1
+      if sortKeyA < sortKeyB
+        return if descending then 1 else -1
+      return 0
 
   ###
     Number calculate addition

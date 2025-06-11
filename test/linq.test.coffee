@@ -807,16 +807,10 @@ describe 'Group 2:', () ->
       { ID: 2, Age: 15, Name: 'F' },
     ]
 
-    orderByID = new Linq(persons).orderByDescending((x) -> x.ID).toArray()
-    thenByAge = new Linq(persons)
-      .orderByDescending((x) -> x.ID)
-      .thenBy((x) -> x.Age)
-      .toArray()
-    thenByName = new Linq(persons)
-      .orderByDescending((x) -> x.ID)
-      .thenBy((x) -> x.Age)
-      .thenByDescending((x) -> x.Name)
-      .toArray()
+    list = new Linq(persons)
+    orderByID = list.orderByDescending((x) -> x.ID).toArray()
+    thenByAge = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).toArray()
+    thenByName = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).thenByDescending((x) -> x.Name).toArray()
 
     expect(orderByID).toEqual([
       { ID: 2, Age: 2, Name: 'G' },
@@ -844,6 +838,118 @@ describe 'Group 2:', () ->
       { ID: 1, Age: 25, Name: 'B' },
       { ID: 1, Age: 30, Name: 'D' },
       { ID: 0, Age: 30, Name: 'A' },
+    ])
+
+  test 'multiFieldSorting', () ->
+    personsMul = [
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+    ]
+    list = new Linq(personsMul)
+    listA = list.orderByDescending((x) -> x.ID).toArray()
+    listB = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).toArray()
+    listC = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).thenByDescending((x) -> x.Name).toArray()
+    listD = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).thenByDescending((x) -> x.Name).thenBy((x) -> x.hobby).toArray()
+    listE = list.orderByDescending((x) -> x.ID).thenBy((x) -> x.Age).thenByDescending((x) -> x.Name).thenBy((x) -> x.hobby).thenByDescending((x) -> x.remark).toArray()
+
+    expect(listA).toEqual([
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+    expect(listB).toEqual([
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+    expect(listC).toEqual([
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+    expect(listD).toEqual([
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+    expect(listE).toEqual([
+      { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
+      { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
+      { ID: 2, Age: 18, Name: 'C', hobby: 'Cabc', remark: 'Cmart' },
+      { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Babc', remark: 'Bmart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '8mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
+      { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
+      { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+    ])
+
+  test 'emptyValueSorting', () ->
+    parametersNull = [
+      { ID: null, Name: '正一郎' },
+      { ID: 3, Name: '清次郎' },
+      { ID: undefined, Name: '誠三郎' },
+      { ID: 5, Name: '征史郎' }
+    ]
+
+    listA = new Linq(parametersNull).orderBy((x) -> x.ID).toArray()
+    listB = new Linq(parametersNull).orderByDescending((x) -> x.ID).toArray()
+
+    expect(listA).toEqual([
+      { ID: 3, Name: '清次郎' },
+      { ID: 5, Name: '征史郎' },
+      { ID: null, Name: '正一郎' },
+      { ID: undefined, Name: '誠三郎' }
+    ])
+
+    expect(listB).toEqual([
+      { ID: null, Name: '正一郎' },
+      { ID: undefined, Name: '誠三郎' },
+      { ID: 5, Name: '征史郎' },
+      { ID: 3, Name: '清次郎' }
     ])
 
   test 'OrderByLocalSort', () ->
