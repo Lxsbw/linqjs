@@ -862,8 +862,15 @@ describe('Group 2:', () => {
 
     const list = new Linq(persons);
     const orderByID = list.orderByDescending(x => x.ID).toArray();
-    const thenByAge = list.orderByDescending(x => x.ID).thenBy(x => x.Age).toArray();
-    const thenByName = list.orderByDescending(x => x.ID).thenBy(x => x.Age).thenByDescending(x => x.Name).toArray();
+    const thenByAge = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .toArray();
+    const thenByName = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .thenByDescending(x => x.Name)
+      .toArray();
 
     expect(orderByID).toEqual([
       { ID: 2, Age: 2, Name: 'G' },
@@ -909,11 +916,29 @@ describe('Group 2:', () => {
       { ID: 2, Age: 15, Name: 'F', hobby: 'Fabc', remark: 'Fmart' },
     ];
     const list = new Linq(personsMul);
-    const listA = list.orderByDescending(x=>x.ID).toArray();
-    const listB = list.orderByDescending(x=>x.ID).thenBy(x=>x.Age).toArray();
-    const listC = list.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).toArray();
-    const listD = list.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).toArray();
-    const listE = list.orderByDescending(x=>x.ID).thenBy(x=>x.Age).thenByDescending(x=>x.Name).thenBy(x=>x.hobby).thenByDescending(x=>x.remark).toArray();
+    const listA = list.orderByDescending(x => x.ID).toArray();
+    const listB = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .toArray();
+    const listC = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .thenByDescending(x => x.Name)
+      .toArray();
+    const listD = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .thenByDescending(x => x.Name)
+      .thenBy(x => x.hobby)
+      .toArray();
+    const listE = list
+      .orderByDescending(x => x.ID)
+      .thenBy(x => x.Age)
+      .thenByDescending(x => x.Name)
+      .thenBy(x => x.hobby)
+      .thenByDescending(x => x.remark)
+      .toArray();
 
     expect(listA).toEqual([
       { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
@@ -926,7 +951,7 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
       { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
-      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
     ]);
     expect(listB).toEqual([
       { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
@@ -939,7 +964,7 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
       { ID: 1, Age: 25, Name: 'E', hobby: 'Eabc', remark: 'Emart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
-      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
     ]);
     expect(listC).toEqual([
       { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
@@ -952,7 +977,7 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
-      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
     ]);
     expect(listD).toEqual([
       { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
@@ -965,7 +990,7 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '6mart' },
       { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
-      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
     ]);
     expect(listE).toEqual([
       { ID: 2, Age: 2, Name: 'G', hobby: 'Gabc', remark: 'Gmart' },
@@ -978,7 +1003,7 @@ describe('Group 2:', () => {
       { ID: 1, Age: 25, Name: 'B', hobby: 'Habc', remark: '3mart' },
       { ID: 1, Age: 25, Name: 'B', hobby: 'Zabc', remark: 'Bmart' },
       { ID: 1, Age: 30, Name: 'D', hobby: 'Dabc', remark: 'Dmart' },
-      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' }
+      { ID: 0, Age: 30, Name: 'A', hobby: 'Aabc', remark: 'Amart' },
     ]);
   });
 
