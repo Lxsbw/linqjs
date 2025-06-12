@@ -45,8 +45,8 @@ var Linq = (function () {
    * Adds the elements of the specified collection to the end of the Linq<T>.
    */
   Linq.prototype.addRange = function (elements) {
-    var _a;
-    (_a = this._elements).push.apply(_a, elements);
+    var _list;
+    (_list = this._elements).push.apply(_list, elements);
   };
 
   /**
@@ -227,8 +227,8 @@ var Linq = (function () {
       };
     }
     var groupMap = new Map();
-    for (var _i = 0, _a = this._elements; _i < _a.length; _i++) {
-      var element = _a[_i];
+    for (var _i = 0, _list = this._elements; _i < _list.length; _i++) {
+      var element = _list[_i];
       var key = Tools.getHash(grouper(element));
       var mappedValue = mapper(element);
       if (!groupMap.has(key)) {
@@ -632,6 +632,13 @@ var Linq = (function () {
         });
   };
 
+  /**
+   * clone deep object.
+   */
+  Linq.prototype.cloneDeep = function (param) {
+    return Tools.cloneDeep(param);
+  };
+
   return Linq;
 })();
 
@@ -820,7 +827,7 @@ var Tools = (function () {
    * Build array new reference
    */
   Tools.arrayMap = function (array) {
-    if (!_a.isArray(array)) {
+    if (!Tools.isArray(array)) {
       return array;
     }
     return array.map(function (x) {
