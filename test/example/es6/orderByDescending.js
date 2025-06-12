@@ -1,5 +1,5 @@
 var Linq, orderedParameters, parameters;
-Linq = require('../../src/linq');
+Linq = require('../../../src/linq');
 
 parameters = [
   { ID: 0, Name: '正一郎' },

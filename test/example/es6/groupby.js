@@ -1,6 +1,6 @@
 var data, Linq, result, resultMini;
 
-Linq = require('../../src/linq');
+Linq = require('../../../src/linq');
 // Linq = require('../src/es5/linq');
 
 data = [
