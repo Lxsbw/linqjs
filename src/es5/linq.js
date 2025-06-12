@@ -740,43 +740,25 @@ var Tools = (function () {
    * Key comparer
    */
   Tools.keyComparer = function (_keySelector, descending, locales) {
-    // common comparer
-    var _comparer = function (sortKeyA, sortKeyB) {
-      if (sortKeyA > sortKeyB) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyA < sortKeyB) {
-        return !descending ? -1 : 1;
-      } else {
-        return 0;
-      }
-    };
-    // string comparer
-    var _stringComparer = function (sortKeyA, sortKeyB) {
-      if (locales) {
-        if (sortKeyA.localeCompare(sortKeyB, locales) > 0) {
-          return !descending ? 1 : -1;
-        } else if (sortKeyB.localeCompare(sortKeyA, locales) > 0) {
-          return !descending ? -1 : 1;
-        } else {
-          return 0;
-        }
-      } else {
-        if (sortKeyA.localeCompare(sortKeyB) > 0) {
-          return !descending ? 1 : -1;
-        } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-          return !descending ? -1 : 1;
-        } else {
-          return 0;
-        }
-      }
-    };
+    var isString = Tools.isString;
     return function (a, b) {
       var sortKeyA = _keySelector(a);
       var sortKeyB = _keySelector(b);
-      if (Tools.isString(sortKeyA) && Tools.isString(sortKeyB)) {
-        return _stringComparer(sortKeyA, sortKeyB);
+      // Handle null or undefined
+      var isNullishA = sortKeyA === null || sortKeyA === undefined;
+      var isNullishB = sortKeyB === null || sortKeyB === undefined;
+      if (isNullishA && isNullishB) return 0;
+      if (isNullishA) return descending ? -1 : 1;
+      if (isNullishB) return descending ? 1 : -1;
+      // String comparison
+      if (isString(sortKeyA) && isString(sortKeyB)) {
+        var result = locales ? sortKeyA.localeCompare(sortKeyB, locales) : sortKeyA.localeCompare(sortKeyB);
+        return descending ? -result : result;
       }
-      return _comparer(sortKeyA, sortKeyB);
+      // Fallback: number or other types comparison
+      if (sortKeyA > sortKeyB) return descending ? -1 : 1;
+      if (sortKeyA < sortKeyB) return descending ? 1 : -1;
+      return 0;
     };
   };
 
