@@ -1,6 +1,6 @@
 var intArray, intCount, intCount2, Linq, stringCount, stringCount2, stringList;
 
-Linq = require('../../src/linq');
+Linq = require('../../../src/linq');
 
 intArray = [1, 5, 8, 12, 15, 16];
 stringList = ['正一郎', '清次郎', '誠三郎', '征史郎'];

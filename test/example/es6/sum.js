@@ -1,6 +1,6 @@
 let ageSum, ageSumByNum, ageDivByNum, ageDivByNum10, Linq, parameters, numbers, numbers10;
 
-Linq = require('../../src/linq');
+Linq = require('../../../src/linq');
 
 parameters = [
   { Age: 52, Name: '正一郎' },

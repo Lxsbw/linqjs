@@ -1,4 +1,4 @@
-var Linq = require('../../src/linq');
+var Linq = require('../../../src/linq');
 
 const pets = new Linq([
   { Age: 10, Name: 'Barley' },
