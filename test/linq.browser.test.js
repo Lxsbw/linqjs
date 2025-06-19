@@ -5,6 +5,7 @@
 describe('Linq Browser Environment', () => {
   beforeAll(() => {
     require('../src/linq');
+    // require('../src/es5/linq');
   });
 
   test('Linq in window', () => {

@@ -3,6 +3,7 @@
  */
 
 const Linq = require('../src/linq');
+// const Linq = require('../src/es5/linq');
 
 describe('Group 1:', () => {
   test('Iterator', () => {
