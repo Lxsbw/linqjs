@@ -297,7 +297,7 @@ var Linq = (function () {
    * Returns the element at a specified index in a sequence or a default value if the index is out of range.
    */
   Linq.prototype.elementAtOrDefault = function (index) {
-    return index < this.count() && index >= 0 ? this._elements[index] : undefined;
+    return index < this.count() && index >= 0 ? this._elements[index] : null;
   };
 
   /**
@@ -769,7 +769,9 @@ var OrderedList = (function (_super) {
   function OrderedList(elements, _comparer, locales) {
     var _this = _super.call(this, elements, locales) || this;
     _this._comparer = _comparer;
-    _this._elements.sort(_this._comparer);
+    if (Tools.isArray(_this._elements)) {
+      _this._elements.sort(_this._comparer);
+    }
     return _this;
   }
 
