@@ -782,13 +782,13 @@ describe('Group 2:', () => {
         .toArray()
     ).toEqual([0, 2, 3, 5]);
 
-    // expect(
-    //   parameters
-    //     .orderBy(x => x.ID)
-    //     .thenByDescending(x => x.ID)
-    //     .select(x => x.ID)
-    //     .toArray()
-    // ).toEqual([5, 3, 2, 0]);
+    expect(
+      parameters
+        .orderByDescending(x => x.ID)
+        .thenByDescending(x => x.ID)
+        .select(x => x.ID)
+        .toArray()
+    ).toEqual([5, 3, 2, 0]);
 
     const listId = special
       .orderBy(x => x.date)
