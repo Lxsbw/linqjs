@@ -1,6 +1,6 @@
 let ageSum, Linq, parameters, numbers;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 parameters = [
   { Age: 52, Name: '正一郎' },

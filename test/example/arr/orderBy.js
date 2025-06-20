@@ -1,4 +1,4 @@
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 const parameters = [
   { Code: 'S', Name: '诗涵' },

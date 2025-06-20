@@ -1,4 +1,4 @@
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 const persons = [
   { CityID: 1, Name: 'ABC' },

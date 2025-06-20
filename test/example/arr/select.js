@@ -1,6 +1,6 @@
 var Linq, parameters, results;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 parameters = [
   { ID: 5, Rate: 0.0, Name: '正一郎' },

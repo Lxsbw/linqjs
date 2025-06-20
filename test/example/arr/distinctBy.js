@@ -1,6 +1,6 @@
 var data, Linq, result;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 data = [
   { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },

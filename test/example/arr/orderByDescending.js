@@ -1,4 +1,4 @@
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 let parameters = [
   { ID: 0, Name: '正一郎' },
