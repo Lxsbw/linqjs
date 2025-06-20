@@ -646,42 +646,42 @@ describe('Group 2:', () => {
     expect(id1.intersect(id2).sum(x => x)).toBe(56);
   });
 
-  // test('Join', () => {
-  //   const persons = [
-  //     { CityID: 1, Name: 'ABC' },
-  //     { CityID: 1, Name: 'EFG' },
-  //     { CityID: 2, Name: 'HIJ' },
-  //     { CityID: 3, Name: 'KLM' },
-  //     { CityID: 3, Name: 'NOP' },
-  //     { CityID: 4, Name: 'QRS' },
-  //     { CityID: 5, Name: 'TUV' },
-  //   ];
-  //   const cities = [
-  //     { ID: 1, Name: 'Guangzhou' },
-  //     { ID: 2, Name: 'Shenzhen' },
-  //     { ID: 3, Name: 'Beijing' },
-  //     { ID: 4, Name: 'Shanghai' },
-  //   ];
+  test('Join', () => {
+    const persons = [
+      { CityID: 1, Name: 'ABC' },
+      { CityID: 1, Name: 'EFG' },
+      { CityID: 2, Name: 'HIJ' },
+      { CityID: 3, Name: 'KLM' },
+      { CityID: 3, Name: 'NOP' },
+      { CityID: 4, Name: 'QRS' },
+      { CityID: 5, Name: 'TUV' },
+    ];
+    const cities = [
+      { ID: 1, Name: 'Guangzhou' },
+      { ID: 2, Name: 'Shenzhen' },
+      { ID: 3, Name: 'Beijing' },
+      { ID: 4, Name: 'Shanghai' },
+    ];
 
-  //   const result = persons
-  //     .join(
-  //       cities,
-  //       p => p.CityID,
-  //       c => c.ID,
-  //       (p, c) => {
-  //         return { CityID: c.ID, PersonName: p.Name, CityName: c.Name };
-  //       }
-  //     )
-  //     .toArray();
-  //   expect(result).toEqual([
-  //     { CityID: 1, PersonName: 'ABC', CityName: 'Guangzhou' },
-  //     { CityID: 1, PersonName: 'EFG', CityName: 'Guangzhou' },
-  //     { CityID: 2, PersonName: 'HIJ', CityName: 'Shenzhen' },
-  //     { CityID: 3, PersonName: 'KLM', CityName: 'Beijing' },
-  //     { CityID: 3, PersonName: 'NOP', CityName: 'Beijing' },
-  //     { CityID: 4, PersonName: 'QRS', CityName: 'Shanghai' },
-  //   ]);
-  // });
+    const result = persons
+      .joinLinq(
+        cities,
+        p => p.CityID,
+        c => c.ID,
+        (p, c) => {
+          return { CityID: c.ID, PersonName: p.Name, CityName: c.Name };
+        }
+      )
+      .toArray();
+    expect(result).toEqual([
+      { CityID: 1, PersonName: 'ABC', CityName: 'Guangzhou' },
+      { CityID: 1, PersonName: 'EFG', CityName: 'Guangzhou' },
+      { CityID: 2, PersonName: 'HIJ', CityName: 'Shenzhen' },
+      { CityID: 3, PersonName: 'KLM', CityName: 'Beijing' },
+      { CityID: 3, PersonName: 'NOP', CityName: 'Beijing' },
+      { CityID: 4, PersonName: 'QRS', CityName: 'Shanghai' },
+    ]);
+  });
 
   test('Last', () => {
     expect(['hey', 'hola', 'que', 'tal'].last()).toBe('tal');

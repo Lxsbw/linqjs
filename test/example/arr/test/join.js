@@ -17,7 +17,7 @@ const cities = [
 ];
 
 const result = persons
-  .join(
+  .joinLinq(
     cities,
     p => p.CityID,
     c => c.ID,
@@ -28,3 +28,4 @@ const result = persons
   ;
 
 console.log('result:', result);
+console.log('result:', result.toString());
