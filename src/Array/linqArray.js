@@ -321,7 +321,7 @@
   /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  Linq.orderBy = function (keySelector, comparer = Tools.keyComparer(keySelector, false)) {
+  Linq.orderBy = function (keySelector, comparer = Tools.keyComparer(keySelector, false, this.__proto__.__locales)) {
     this.__proto__.__comparer = comparer;
     return Tools.arrayMap(this).sort(comparer);
   };
@@ -329,7 +329,7 @@
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  Linq.orderByDescending = function (keySelector, comparer = Tools.keyComparer(keySelector, true)) {
+  Linq.orderByDescending = function (keySelector, comparer = Tools.keyComparer(keySelector, true, this.__proto__.__locales)) {
     this.__proto__.__comparer = comparer;
     return Tools.arrayMap(this).sort(comparer);
   };
@@ -339,7 +339,7 @@
    * @override
    */
   Linq.thenBy = function (keySelector) {
-    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false));
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false, this.__proto__.__locales));
     return Tools.arrayMap(this).sort(this.__proto__.__comparer);
   };
 
@@ -348,7 +348,7 @@
    * @override
    */
   Linq.thenByDescending = function (keySelector) {
-    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true));
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true, this.__proto__.__locales));
     return Tools.arrayMap(this).sort(this.__proto__.__comparer);
   };
 
@@ -467,7 +467,8 @@
    * Copies the elements of the List<T> to a new array.
    */
   Linq.toArray = function () {
-    delete this.__proto__.__comparer;
+    if (this.__proto__.__comparer) delete this.__proto__.__comparer;
+    if (this.__proto__.__locales) delete this.__proto__.__locales;
     // return this.filter(x => !('function' === typeof x));
     return this;
   };
@@ -490,7 +491,8 @@
    * Creates a Linq<T> from an Enumerable.Linq<T>.
    */
   Linq.toList = function () {
-    delete this.__proto__.__comparer;
+    if (this.__proto__.__comparer) delete this.__proto__.__comparer;
+    if (this.__proto__.__locales) delete this.__proto__.__locales;
     return this;
   };
 
