@@ -796,17 +796,19 @@ describe('Group 2:', () => {
       .toArray();
     expect(listId).toEqual([3, 2, 5, 0]);
 
-    // const listIdType = (specialType, 'zh-CN')
-    //   .orderBy(x => x.ID)
-    //   .select(x => x.ID)
-    //   .toArray();
-    // expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
+    specialType.__proto__.__locales = 'zh-CN';
+    const listIdType = specialType
+      .orderBy(x => x.ID)
+      .select(x => x.ID)
+      .toArray();
+    expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
 
-    // const listIdTypeDesc = (specialTypeDesc, 'zh-CN')
-    //   .orderByDescending(x => x.ID)
-    //   .select(x => x.ID)
-    //   .toArray();
-    // expect(listIdTypeDesc).toEqual([3, 0, '我音', '我音', '拼音', '拼音']);
+    specialTypeDesc.__proto__.locales = 'zh-CN';
+    const listIdTypeDesc = specialTypeDesc
+      .orderByDescending(x => x.ID)
+      .select(x => x.ID)
+      .toArray();
+    expect(listIdTypeDesc).toEqual([3, 0, '我音', '我音', '拼音', '拼音']);
   });
 
   test('OrderByDescending', () => {
@@ -1067,33 +1069,34 @@ describe('Group 2:', () => {
       { Code: 'P', Name: '佩珊' },
     ];
 
-    // const listName = (parameters, 'zh-CN').orderBy(x => x.Name).toArray();
-    // expect(listName).toEqual([
-    //   { Code: 'A', Name: '安雅' },
-    //   { Code: 'B', Name: '碧琳' },
-    //   { Code: 'C', Name: '采薇' },
-    //   { Code: 'C', Name: '采薇' },
-    //   { Code: 'D', Name: '丹妮' },
-    //   { Code: 'E', Name: '恩琪' },
-    //   { Code: 'F', Name: '芳菲' },
-    //   { Code: 'G', Name: '冠宇' },
-    //   { Code: 'H', Name: '慧琳' },
-    //   { Code: 'J', Name: '佳颖' },
-    //   { Code: 'K', Name: '可昕' },
-    //   { Code: 'L', Name: '乐瑶' },
-    //   { Code: 'M', Name: '梦琪' },
-    //   { Code: 'N', Name: '娜菲' },
-    //   { Code: 'O', Name: '欧雅' },
-    //   { Code: 'P', Name: '佩珊' },
-    //   { Code: 'Q', Name: '绮梦' },
-    //   { Code: 'R', Name: '睿萱' },
-    //   { Code: 'S', Name: '诗涵' },
-    //   { Code: 'T', Name: '天翊' },
-    //   { Code: 'W', Name: '婉婷' },
-    //   { Code: 'X', Name: '晓妍' },
-    //   { Code: 'Y', Name: '雅琴' },
-    //   { Code: 'Z', Name: '梓涵' },
-    // ]);
+    parameters.__proto__.__locales = 'zh-CN';
+    const listName = parameters.orderBy(x => x.Name).toArray();
+    expect(listName).toEqual([
+      { Code: 'A', Name: '安雅' },
+      { Code: 'B', Name: '碧琳' },
+      { Code: 'C', Name: '采薇' },
+      { Code: 'C', Name: '采薇' },
+      { Code: 'D', Name: '丹妮' },
+      { Code: 'E', Name: '恩琪' },
+      { Code: 'F', Name: '芳菲' },
+      { Code: 'G', Name: '冠宇' },
+      { Code: 'H', Name: '慧琳' },
+      { Code: 'J', Name: '佳颖' },
+      { Code: 'K', Name: '可昕' },
+      { Code: 'L', Name: '乐瑶' },
+      { Code: 'M', Name: '梦琪' },
+      { Code: 'N', Name: '娜菲' },
+      { Code: 'O', Name: '欧雅' },
+      { Code: 'P', Name: '佩珊' },
+      { Code: 'Q', Name: '绮梦' },
+      { Code: 'R', Name: '睿萱' },
+      { Code: 'S', Name: '诗涵' },
+      { Code: 'T', Name: '天翊' },
+      { Code: 'W', Name: '婉婷' },
+      { Code: 'X', Name: '晓妍' },
+      { Code: 'Y', Name: '雅琴' },
+      { Code: 'Z', Name: '梓涵' },
+    ]);
 
     expect(parameters.orderBy(x => x.Name).count()).toBe(24);
     expect(parameters.orderByDescending(x => x.Name).count()).toBe(24);
