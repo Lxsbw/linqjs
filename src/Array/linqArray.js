@@ -255,9 +255,9 @@
   /**
    * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
    */
-  // Linq.join = function (list, key1, key2, result) {
-  //   return this.selectMany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
-  // };
+  Linq.joinLinq = function (list, key1, key2, result) {
+    return this.selectMany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
+  };
 
   /**
    * Returns the last element of a sequence.
@@ -688,6 +688,7 @@ const Tools = {
    * Build array new reference
    */
   arrayMap(array) {
+    /* istanbul ignore next */
     if (!this.isArray(array)) {
       return array;
     }

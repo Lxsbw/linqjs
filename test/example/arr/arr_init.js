@@ -9,6 +9,20 @@
   };
 
   /**
+   * Appends an object to the end of the Linq<T>.
+   */
+  Linq.append = function (element) {
+    this.add(element);
+  };
+
+  /**
+   * Add an object to the start of the Linq<T>.
+   */
+  Linq.prepend = function (element) {
+    this.unshift(element);
+  };
+
+  /**
    * Adds the elements of the specified collection to the end of the List<T>.
    */
   Linq.addRange = function (elements) {
@@ -45,10 +59,46 @@
   };
 
   /**
+   * Casts the elements of a sequence to the specified type.
+   */
+  Linq.cast = function () {
+    return this;
+  };
+
+  /**
+   * Removes all elements from the Linq<T>.
+   */
+  Linq.clear = function () {
+    this.length = 0;
+  };
+
+  /**
+   * Concatenates two sequences.
+   */
+  // Linq.concat = function (list) {
+  //   return new Linq(this._elements.concat(list.toArray()));
+  // };
+
+  /**
+   * Determines whether an element is in the Linq<T>.
+   */
+  Linq.contains = function (element) {
+    return this.any(x => x === element);
+  };
+
+  /**
    * Returns the number of elements in a sequence.
    */
   Linq.count = function (predicate) {
     return predicate ? this.where(predicate).count() : this.length;
+  };
+
+  /**
+   * Returns the elements of the specified sequence or the type parameter's default value
+   * in a singleton collection if the sequence is empty.
+   */
+  Linq.defaultIfEmpty = function (defaultValue) {
+    return this.count() ? this : [defaultValue];
   };
 
   /**
@@ -89,6 +139,20 @@
     } else {
       throw new Error('ArgumentOutOfRangeException: index is less than 0 or greater than or equal to the number of elements in source.');
     }
+  };
+
+  /**
+   * Returns the element at a specified index in a sequence or a default value if the index is out of range.
+   */
+  Linq.elementAtOrDefault = function (index) {
+    return index < this.count() && index >= 0 ? this[index] : null;
+  };
+
+  /**
+   * Produces the set difference of two sequences by using the default equality comparer to compare values.
+   */
+  Linq.except = function (source) {
+    return this.where(x => !source.contains(x));
   };
 
   /**
@@ -152,10 +216,65 @@
   };
 
   /**
+   * Correlates the elements of two sequences based on equality of keys and groups the results.
+   * The default equality comparer is used to compare keys.
+   */
+  Linq.groupJoin = function (list, key1, key2, result) {
+    return this.select(x =>
+      result(
+        x,
+        list.where(z => key1(x) === key2(z))
+      )
+    );
+  };
+
+  /**
+   * Returns the index of the first occurence of an element in the Linq.
+   */
+  // Linq.indexOf = function (element) {
+  //   return this.indexOf(element);
+  // };
+
+  /**
+   * Inserts an element into the Linq<T> at the specified index.
+   */
+  Linq.insert = function (index, element) {
+    if (index < 0 || index > this.length) {
+      throw new Error('Index is out of range.');
+    }
+    this.splice(index, 0, element);
+  };
+
+  /**
+   * Produces the set intersection of two sequences by using the default equality comparer to compare values.
+   */
+  Linq.intersect = function (source) {
+    return this.where(x => source.contains(x));
+  };
+
+  /**
    * Correlates the elements of two sequences based on matching keys. The default equality comparer is used to compare keys.
    */
-  Linq.join = function (list, key1, key2, result) {
+  Linq.joinLinq = function (list, key1, key2, result) {
     return this.selectMany(x => list.where(y => key2(y) === key1(x)).select(z => result(x, z)));
+  };
+
+  /**
+   * Returns the last element of a sequence.
+   */
+  Linq.last = function (predicate) {
+    if (this.count()) {
+      return predicate ? this.where(predicate).last() : this[this.count() - 1];
+    } else {
+      throw Error('InvalidOperationException: The source sequence is empty.');
+    }
+  };
+
+  /**
+   * Returns the last element of a sequence, or a default value if the sequence contains no elements.
+   */
+  Linq.lastOrDefault = function (predicate) {
+    return this.count(predicate) ? this.last(predicate) : undefined;
   };
 
   /**
@@ -175,9 +294,34 @@
   };
 
   /**
+   * Filters the elements of a sequence based on a specified type.
+   */
+  Linq.ofType = function (type) {
+    let typeName;
+    switch (type) {
+      case Number:
+        typeName = typeof 0;
+        break;
+      case String:
+        typeName = typeof '';
+        break;
+      case Boolean:
+        typeName = typeof true;
+        break;
+      case Function:
+        typeName = typeof function () {}; // tslint:disable-line no-empty
+        break;
+      default:
+        typeName = null;
+        break;
+    }
+    return typeName === null ? this.where(x => x instanceof type).cast() : this.where(x => typeof x === typeName).cast();
+  };
+
+  /**
    * Sorts the elements of a sequence in ascending order according to a key.
    */
-  Linq.orderBy = function (keySelector, comparer = Tools.keyComparer(keySelector, false)) {
+  Linq.orderBy = function (keySelector, comparer = Tools.keyComparer(keySelector, false, this.__proto__.__locales)) {
     this.__proto__.__comparer = comparer;
     return Tools.arrayMap(this).sort(comparer);
   };
@@ -185,7 +329,7 @@
   /**
    * Sorts the elements of a sequence in descending order according to a key.
    */
-  Linq.orderByDescending = function (keySelector, comparer = Tools.keyComparer(keySelector, true)) {
+  Linq.orderByDescending = function (keySelector, comparer = Tools.keyComparer(keySelector, true, this.__proto__.__locales)) {
     this.__proto__.__comparer = comparer;
     return Tools.arrayMap(this).sort(comparer);
   };
@@ -195,7 +339,7 @@
    * @override
    */
   Linq.thenBy = function (keySelector) {
-    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false));
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, false, this.__proto__.__locales));
     return Tools.arrayMap(this).sort(this.__proto__.__comparer);
   };
 
@@ -204,7 +348,7 @@
    * @override
    */
   Linq.thenByDescending = function (keySelector) {
-    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true));
+    this.__proto__.__comparer = Tools.composeComparers(this.__proto__.__comparer, Tools.keyComparer(keySelector, true, this.__proto__.__locales));
     return Tools.arrayMap(this).sort(this.__proto__.__comparer);
   };
 
@@ -244,6 +388,32 @@
   };
 
   /**
+   * Determines whether two sequences are equal by comparing the elements by using the default equality comparer for their type.
+   */
+  Linq.sequenceEqual = function (list) {
+    return this.all(e => list.contains(e));
+  };
+
+  /**
+   * Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+   */
+  Linq.single = function (predicate) {
+    if (this.count(predicate) !== 1) {
+      throw new Error('The collection does not contain exactly one element.');
+    } else {
+      return this.first(predicate);
+    }
+  };
+
+  /**
+   * Returns the only element of a sequence, or a default value if the sequence is empty;
+   * this method throws an exception if there is more than one element in the sequence.
+   */
+  Linq.singleOrDefault = function (predicate) {
+    return this.count(predicate) ? this.single(predicate) : undefined;
+  };
+
+  /**
    * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
    */
   Linq.skip = function (amount) {
@@ -255,6 +425,13 @@
    */
   Linq.skipLast = function (amount) {
     return this.slice(0, -Math.max(0, amount));
+  };
+
+  /**
+   * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+   */
+  Linq.skipWhile = function (predicate) {
+    return this.skip(this.aggregate(ac => (predicate(this.elementAt(ac)) ? ++ac : ac), 0));
   };
 
   /**
@@ -280,10 +457,18 @@
   };
 
   /**
+   * Returns elements from a sequence as long as a specified condition is true.
+   */
+  Linq.takeWhile = function (predicate) {
+    return this.take(this.aggregate(ac => (predicate(this.elementAt(ac)) ? ++ac : ac), 0));
+  };
+
+  /**
    * Copies the elements of the List<T> to a new array.
    */
   Linq.toArray = function () {
-    delete this.__proto__.__comparer;
+    if (this.__proto__.__comparer) delete this.__proto__.__comparer;
+    if (this.__proto__.__locales) delete this.__proto__.__locales;
     // return this.filter(x => !('function' === typeof x));
     return this;
   };
@@ -303,10 +488,54 @@
   };
 
   /**
+   * Creates a Linq<T> from an Enumerable.Linq<T>.
+   */
+  Linq.toList = function () {
+    if (this.__proto__.__comparer) delete this.__proto__.__comparer;
+    if (this.__proto__.__locales) delete this.__proto__.__locales;
+    return this;
+  };
+
+  /**
+   * Creates a Lookup<TKey, TElement> from an IEnumerable<T> according to specified key selector and element selector functions.
+   */
+  Linq.toLookup = function (keySelector, elementSelector) {
+    return this.groupBy(keySelector, elementSelector);
+  };
+
+  /**
+   * Produces the set union of two sequences by using the default equality comparer.
+   */
+  Linq.union = function (list) {
+    return this.concat(list).distinct();
+  };
+
+  /**
    * Filters a sequence of values based on a predicate.
    */
   Linq.where = function (predicate) {
     return this.filter(predicate);
+  };
+
+  /**
+   * Applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+   */
+  Linq.zip = function (list, result) {
+    return list.count() < this.count() ? list.select((x, y) => result(this.elementAt(y), x)) : this.select((x, y) => result(x, list.elementAt(y)));
+  };
+
+  /**
+   * Determine if two objects are equal.
+   */
+  // equals(param1, param2) {
+  //   return Tools.equal(param1, param2);
+  // }
+
+  /**
+   * clone deep object.
+   */
+  Linq.cloneDeep = function (param) {
+    return Tools.cloneDeep(param);
   };
 
   Object.assign(Array.prototype, Linq);
@@ -373,36 +602,33 @@ const Tools = {
   /**
    * Key comparer
    */
-  keyComparer(_keySelector, descending) {
-    // common comparer
-    const _comparer = (sortKeyA, sortKeyB) => {
-      if (sortKeyA > sortKeyB) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyA < sortKeyB) {
-        return !descending ? -1 : 1;
-      } else {
-        return 0;
-      }
-    };
-    // string comparer
-    const _stringComparer = (sortKeyA, sortKeyB) => {
-      if (sortKeyA.localeCompare(sortKeyB) > 0) {
-        return !descending ? 1 : -1;
-      } else if (sortKeyB.localeCompare(sortKeyA) > 0) {
-        return !descending ? -1 : 1;
-      } else {
-        return 0;
-      }
-    };
+
+  keyComparer(_keySelector, descending, locales) {
+    const isString = Tools.isString;
 
     return (a, b) => {
       const sortKeyA = _keySelector(a);
       const sortKeyB = _keySelector(b);
 
-      if (this.isString(sortKeyA) && this.isString(sortKeyB)) {
-        return _stringComparer(sortKeyA, sortKeyB);
+      // Handle null or undefined
+      const isNullishA = sortKeyA === null || sortKeyA === undefined;
+      const isNullishB = sortKeyB === null || sortKeyB === undefined;
+
+      if (isNullishA && isNullishB) return 0;
+      if (isNullishA) return descending ? -1 : 1;
+      if (isNullishB) return descending ? 1 : -1;
+
+      // String comparison
+      if (isString(sortKeyA) && isString(sortKeyB)) {
+        const result = locales ? sortKeyA.localeCompare(sortKeyB, locales) : sortKeyA.localeCompare(sortKeyB);
+        return descending ? -result : result;
       }
-      return _comparer(sortKeyA, sortKeyB);
+
+      // Fallback: number or other types comparison
+      if (sortKeyA > sortKeyB) return descending ? -1 : 1;
+      if (sortKeyA < sortKeyB) return descending ? 1 : -1;
+
+      return 0;
     };
   },
 
@@ -472,6 +698,7 @@ const Tools = {
    * Clone data
    */
   cloneDeep(obj) {
+    /* istanbul ignore next */
     if (typeof structuredClone === 'function') {
       return structuredClone(obj);
     }
@@ -513,6 +740,7 @@ const Tools = {
       }
       return result;
     }
+    /* istanbul ignore next */
     throw new Error("Unable to copy param! Its type isn't supported.");
   },
 
