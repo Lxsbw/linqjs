@@ -1,6 +1,6 @@
 var Linq, numbers, parameters, result;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 numbers = [1, 2, 3, 5, 7, 11];
 

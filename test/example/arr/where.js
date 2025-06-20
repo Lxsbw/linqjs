@@ -1,6 +1,6 @@
 var dataA, dataA_F, dataB, dataB_F, dataC, dataC_F, Linq;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 dataA = [0, 1, 2, 3, 4];
 dataB = [1.5, 1.3, 3.2];

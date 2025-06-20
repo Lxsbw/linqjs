@@ -1,6 +1,6 @@
 var data, result;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 data = {
   ZWMS_WERKS: '1000',

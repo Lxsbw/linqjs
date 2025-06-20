@@ -1,6 +1,6 @@
 var orderByID, persons, thenByAge, thenByName;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 persons = [
   { ID: 0, Age: 30, Name: 'A' },

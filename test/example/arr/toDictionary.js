@@ -1,6 +1,6 @@
 var dictionary, dictionary2, Linq, parameters;
 
-require('../arr_init');
+require('../../../src/Array/linqArray');
 
 parameters = [
   { ID: 0, Age: 52, Name: '正一郎' },
