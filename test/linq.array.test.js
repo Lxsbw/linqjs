@@ -803,7 +803,7 @@ describe('Group 2:', () => {
       .toArray();
     expect(listIdType).toEqual([0, 3, '拼音', '拼音', '我音']);
 
-    specialTypeDesc.__proto__.locales = 'zh-CN';
+    specialTypeDesc.__proto__.__locales = 'zh-CN';
     const listIdTypeDesc = specialTypeDesc
       .orderByDescending(x => x.ID)
       .select(x => x.ID)
