@@ -25,21 +25,47 @@ let ent = JSON.parse(JSON.stringify(data));
 ent.id = '200000';
 list.push(ent);
 
-console.time('orderBy');
 
+console.time('orderBy');
 // resultOr = new Linq(list).orderBy(el => Number(el.id)).toArray();
 resultOr = new Linq(list).orderByDescending(el => Number(el.id)).toArray();
-
 console.log('result:', resultOr);
-
 console.timeEnd('orderBy');
 
+
 console.time('groupBy');
-
 result = new Linq(list).groupBy(el => el.id);
-
 console.log('result:', result);
 console.log('list:', list.length);
 console.log('result:', result.length);
-
 console.timeEnd('groupBy');
+
+
+// console.time('distinct');
+// result = new Linq(list).select(x => x.id).distinct().toArray();
+// console.log('result:', result);
+// console.log('list:', list.length);
+// console.log('result:', result.length);
+// console.timeEnd('distinct');
+
+// console.time('distinctBy');
+// result = new Linq(list)
+//   .distinctBy(el => {
+//     return { id: el.id };
+//   })
+//   .toArray();
+// console.log('result:', result);
+// console.log('list:', list.length);
+// console.log('result:', result.length);
+// console.timeEnd('distinctBy');
+
+// console.time('toDictionary');
+// result = new Linq(list)
+//   .toDictionary(el => {
+//     return { id: el.id };
+//   })
+//   .toArray();
+// console.log('result:', result);
+// console.log('list:', list.length);
+// console.log('result:', result.length);
+// console.timeEnd('toDictionary');
