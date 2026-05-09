@@ -260,8 +260,8 @@ class Linq {
     return this.select(x =>
       result(
         x,
-        list.where(z => key1(x) === key2(z))
-      )
+        list.where(z => key1(x) === key2(z)),
+      ),
     );
   }
 
@@ -828,13 +828,12 @@ const Tools = {
    * Generate Hash
    */
   getHash(obj) {
-    let hashValue = '';
-
     function typeOf(obj) {
       return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
     }
 
     function generateHash(value) {
+      let hashValue = '';
       const type = typeOf(value);
       switch (type) {
         case 'object':

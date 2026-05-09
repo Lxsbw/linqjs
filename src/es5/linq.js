@@ -977,11 +977,11 @@ var Tools = (function () {
    * Generate Hash
    */
   Tools.getHash = function (obj) {
-    var hashValue = '';
     var typeOf = function (obj) {
       return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
     };
     var generateHash = function (value) {
+      var hashValue = '';
       var type = typeOf(value);
       switch (type) {
         case 'object':

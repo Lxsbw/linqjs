@@ -727,12 +727,11 @@ Tools = {
     Generate Hash
   ###
   getHash: (obj) ->
-    hashValue = ''
-
     typeOf = (obj) ->
       return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
 
     generateHash = (value) ->
+      hashValue = ''
       type = typeOf(value)
       switch (type)
         when 'object'
