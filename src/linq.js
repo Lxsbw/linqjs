@@ -828,40 +828,53 @@ const Tools = {
    * Generate Hash
    */
   getHash(obj) {
-    function typeOf(obj) {
-      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
-    }
+    const typeOf = value => Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 
-    function generateHash(value) {
-      let hashValue = '';
+    const generateHash = value => {
       const type = typeOf(value);
+
       switch (type) {
         case 'object':
-          const keys = Object.keys(value).sort();
-          keys.forEach(key => {
-            hashValue += `${key}:${generateHash(value[key])};`;
-          });
-          break;
+          return `object:{${Object.keys(value)
+            .sort()
+            .map(key => `${generateHash(key)}:${generateHash(value[key])}`)
+            .join('|')}}`;
+
         case 'array':
-          value.forEach(item => {
-            hashValue += `${generateHash(item)},`;
-          });
-          break;
+          return `array:[${value.map(item => generateHash(item)).join('|')}]`;
+
+        case 'date':
+          return `date:${value.getTime()}`;
+
+        case 'regexp':
+          return `regexp:${value.toString()}`;
+
+        case 'number':
+          return `number:${Number.isNaN(value) ? 'NaN' : value}`;
+
+        case 'string':
+          return `string:${JSON.stringify(value)}`;
+
         case 'boolean':
-          hashValue += `boolean<>_<>_<>${value.toString()}`;
-          break;
+          return `boolean:${value}`;
+
         case 'null':
-          hashValue += 'null<>_<>_<>';
-          break;
+          return 'null';
+
         case 'undefined':
-          hashValue += 'undefined<>_<>_<>';
-          break;
+          return 'undefined';
+
+        case 'symbol':
+          return `symbol:${value.toString()}`;
+
+        case 'function':
+          return `function:${value.toString()}`;
+
         default:
-          hashValue += value ? value.toString() : '';
-          break;
+          return `${type}:${String(value)}`;
       }
-      return hashValue;
-    }
+    };
+
     return generateHash(obj);
   },
 };

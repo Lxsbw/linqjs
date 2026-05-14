@@ -727,29 +727,36 @@ Tools = {
     Generate Hash
   ###
   getHash: (obj) ->
-    typeOf = (obj) ->
-      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+    typeOf = (value) ->
+      Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
 
     generateHash = (value) ->
-      hashValue = ''
       type = typeOf(value)
       switch (type)
         when 'object'
-          keys = Object.keys(value).sort()
-          keys.forEach (key) ->
-            hashValue += "#{key}:#{generateHash(value[key])};"
+          "object:{#{Object.keys(value).sort().map((key) -> "#{generateHash(key)}:#{generateHash(value[key])}").join('|')}}"
         when 'array'
-          value.forEach (item) ->
-            hashValue += "#{generateHash(item)},"
+          "array:[#{value.map((item) -> generateHash(item)).join('|')}]"
+        when 'date'
+          "date:#{value.getTime()}"
+        when 'regexp'
+          "regexp:#{value.toString()}"
+        when 'number'
+          "number:#{if Number.isNaN(value) then 'NaN' else value}"
+        when 'string'
+          "string:#{JSON.stringify(value)}"
         when 'boolean'
-          hashValue += "boolean<>_<>_<>#{value.toString()}"
+          "boolean:#{value}"
         when 'null'
-          hashValue += 'null<>_<>_<>'
+          'null'
         when 'undefined'
-          hashValue += 'undefined<>_<>_<>'
+          'undefined'
+        when 'symbol'
+          "symbol:#{value.toString()}"
+        when 'function'
+          "function:#{value.toString()}"
         else
-          hashValue += if value then value.toString() else ''
-      return hashValue
+          "#{type}:#{String(value)}"
     return generateHash(obj)
 }
 

@@ -502,6 +502,12 @@ describe 'Group 2:', () ->
     expect(new Linq(list).count()).toBe(200001)
     expect(new Linq(list).groupBy((el) -> el.id).length).toBe(200000)
 
+    expect(new Linq([{ k: 1 }, { k: '1' }]).groupBy((x) -> x.k).length).toBe(2)
+    expect(new Linq([{ k: 0 }, { k: '' }]).groupBy((x) -> x.k).length).toBe(2)
+    expect(new Linq([{ k: true }, { k: 'true' }]).groupBy((x) -> x.k).length).toBe(2)
+    expect(new Linq([{ k: { a: 1, b: 2 } }, { k: { b: 2, a: 1 } }]).groupBy((x) -> x.k).length).toBe(1)
+    expect(new Linq([{ k: [1, 2] }, { k: [2, 1] }]).groupBy((x) -> x.k).length).toBe(2)
+
   test 'groupByMini', () ->
     data = [
       { id: 1, name: 'one', category: 'fruits', countries: ['lxsbw', 'xliecz'] },

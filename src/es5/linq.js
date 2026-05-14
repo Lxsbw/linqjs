@@ -977,38 +977,52 @@ var Tools = (function () {
    * Generate Hash
    */
   Tools.getHash = function (obj) {
-    var typeOf = function (obj) {
-      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    var typeOf = function (value) {
+      return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
     };
     var generateHash = function (value) {
-      var hashValue = '';
       var type = typeOf(value);
       switch (type) {
         case 'object':
-          var keys = Object.keys(value).sort();
-          keys.forEach(function (key) {
-            hashValue += ''.concat(key, ':').concat(generateHash(value[key]), ';');
-          });
-          break;
+          return 'object:{'.concat(
+            Object.keys(value)
+              .sort()
+              .map(function (key) {
+                return ''.concat(generateHash(key), ':').concat(generateHash(value[key]));
+              })
+              .join('|'),
+            '}'
+          );
         case 'array':
-          value.forEach(function (item) {
-            hashValue += ''.concat(generateHash(item), ',');
-          });
-          break;
+          return 'array:['.concat(
+            value
+              .map(function (item) {
+                return generateHash(item);
+              })
+              .join('|'),
+            ']'
+          );
+        case 'date':
+          return 'date:'.concat(value.getTime());
+        case 'regexp':
+          return 'regexp:'.concat(value.toString());
+        case 'number':
+          return 'number:'.concat(Number.isNaN(value) ? 'NaN' : value);
+        case 'string':
+          return 'string:'.concat(JSON.stringify(value));
         case 'boolean':
-          hashValue += 'boolean<>_<>_<>'.concat(value.toString());
-          break;
+          return 'boolean:'.concat(value);
         case 'null':
-          hashValue += 'null<>_<>_<>';
-          break;
+          return 'null';
         case 'undefined':
-          hashValue += 'undefined<>_<>_<>';
-          break;
+          return 'undefined';
+        case 'symbol':
+          return 'symbol:'.concat(value.toString());
+        case 'function':
+          return 'function:'.concat(value.toString());
         default:
-          hashValue += value ? value.toString() : '';
-          break;
+          return ''.concat(type, ':').concat(String(value));
       }
-      return hashValue;
     };
     return generateHash(obj);
   };
