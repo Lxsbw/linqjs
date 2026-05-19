@@ -539,6 +539,12 @@ describe('Group 2:', () => {
 
     expect(list.count()).toBe(200001);
     expect(list.groupBy(el => el.id).length).toBe(200000);
+
+    expect([{ k: 1 }, { k: '1' }].groupBy(x => x.k).length).toBe(2);
+    expect([{ k: 0 }, { k: '' }].groupBy(x => x.k).length).toBe(2);
+    expect([{ k: true }, { k: 'true' }].groupBy(x => x.k).length).toBe(2);
+    expect([{ k: { a: 1, b: 2 } }, { k: { b: 2, a: 1 } }].groupBy(x => x.k).length).toBe(1);
+    expect([{ k: [1, 2] }, { k: [2, 1] }].groupBy(x => x.k).length).toBe(2);
   });
 
   test('groupByMini', () => {
@@ -1440,4 +1446,59 @@ describe('Group 3:', () => {
 
     expect(toolObj.cloneDeep(special).map(x => x.ID)).toEqual([0, 3, 2, 5]);
   });
+
+  test('cloneDeep fallback preserves complex values', () => {
+      const nativeStructuredClone = globalThis.structuredClone;
+      globalThis.structuredClone = undefined;
+
+      try {
+        const toolObj = [];
+        const sym = Symbol('hidden');
+        const shared = { name: 'shared' };
+        const sparse = [];
+        sparse[2] = shared;
+        sparse.extra = { nested: true };
+
+        const source = {
+          sparse,
+          createdAt: new Date('2024-01-02T03:04:05.000Z'),
+          pattern: /abc/gi,
+          map: new Map([[shared, { count: 1 }]]),
+          set: new Set([shared]),
+        };
+        source.pattern.lastIndex = 1;
+        Object.defineProperty(source, sym, {
+          value: { secret: true },
+          enumerable: false,
+        });
+        source.self = source;
+
+        const clone = toolObj.cloneDeep(source);
+        const cloneMapKey = Array.from(clone.map.keys())[0];
+        const cloneSetValue = Array.from(clone.set.values())[0];
+
+        expect(clone).not.toBe(source);
+        expect(clone.self).toBe(clone);
+        expect(clone.sparse).toHaveLength(3);
+        expect(0 in clone.sparse).toBeFalsy();
+        expect(clone.sparse[2]).not.toBe(shared);
+        expect(clone.sparse.extra).toEqual({ nested: true });
+        expect(clone.sparse.extra).not.toBe(sparse.extra);
+        expect(clone.createdAt).toEqual(source.createdAt);
+        expect(clone.createdAt).not.toBe(source.createdAt);
+        expect(clone.pattern).toEqual(source.pattern);
+        expect(clone.pattern).not.toBe(source.pattern);
+        expect(clone.pattern.lastIndex).toBe(1);
+        expect(cloneMapKey).not.toBe(shared);
+        expect(cloneMapKey).toBe(clone.sparse[2]);
+        expect(clone.map.get(cloneMapKey)).toEqual({ count: 1 });
+        expect(cloneSetValue).not.toBe(shared);
+        expect(cloneSetValue).toBe(clone.sparse[2]);
+        expect(Object.getOwnPropertyDescriptor(clone, sym).enumerable).toBeFalsy();
+        expect(clone[sym]).toEqual({ secret: true });
+        expect(clone[sym]).not.toBe(source[sym]);
+      } finally {
+        globalThis.structuredClone = nativeStructuredClone;
+      }
+    });
 });
