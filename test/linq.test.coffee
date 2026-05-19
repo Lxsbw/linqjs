@@ -1331,3 +1331,54 @@ describe 'Group 3:', () ->
     ]
 
     expect(toolObj.cloneDeep(special).map((x) -> x.ID)).toEqual([0, 3, 2, 5])
+
+  test 'cloneDeep fallback preserves complex values', () ->
+    nativeStructuredClone = globalThis.structuredClone
+    globalThis.structuredClone = undefined
+
+    try
+      toolObj = new Linq()
+      sym = Symbol('hidden')
+      shared = { name: 'shared' }
+      sparse = []
+      sparse[2] = shared
+      sparse.extra = { nested: true }
+
+      source =
+        sparse: sparse
+        createdAt: new Date('2024-01-02T03:04:05.000Z')
+        pattern: /abc/gi
+        map: new Map([[shared, { count: 1 }]])
+        set: new Set([shared])
+      source.pattern.lastIndex = 1
+      Object.defineProperty source, sym,
+        value: { secret: true }
+        enumerable: false
+      source.self = source
+
+      clone = toolObj.cloneDeep(source)
+      cloneMapKey = Array.from(clone.map.keys())[0]
+      cloneSetValue = Array.from(clone.set.values())[0]
+
+      expect(clone).not.toBe(source)
+      expect(clone.self).toBe(clone)
+      expect(clone.sparse).toHaveLength(3)
+      expect(0 of clone.sparse).toBeFalsy()
+      expect(clone.sparse[2]).not.toBe(shared)
+      expect(clone.sparse.extra).toEqual({ nested: true })
+      expect(clone.sparse.extra).not.toBe(sparse.extra)
+      expect(clone.createdAt).toEqual(source.createdAt)
+      expect(clone.createdAt).not.toBe(source.createdAt)
+      expect(clone.pattern).toEqual(source.pattern)
+      expect(clone.pattern).not.toBe(source.pattern)
+      expect(clone.pattern.lastIndex).toBe(1)
+      expect(cloneMapKey).not.toBe(shared)
+      expect(cloneMapKey).toBe(clone.sparse[2])
+      expect(clone.map.get(cloneMapKey)).toEqual({ count: 1 })
+      expect(cloneSetValue).not.toBe(shared)
+      expect(cloneSetValue).toBe(clone.sparse[2])
+      expect(Object.getOwnPropertyDescriptor(clone, sym).enumerable).toBeFalsy()
+      expect(clone[sym]).toEqual({ secret: true })
+      expect(clone[sym]).not.toBe(source[sym])
+    finally
+      globalThis.structuredClone = nativeStructuredClone

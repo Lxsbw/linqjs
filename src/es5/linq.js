@@ -930,45 +930,109 @@ var Tools = (function () {
   /**
    * Clone data
    */
-  Tools.cloneDeep = function (obj) {
-    if (typeof structuredClone === 'function') {
+  Tools.cloneDeep = function (obj, seen) {
+    if (!seen && typeof structuredClone === 'function') {
       return structuredClone(obj);
     }
-    var result;
     // Handle the 3 simple types, and null or undefined
     if (null === obj || 'object' !== typeof obj) {
       return obj;
     }
+
+    var refs = seen || { sources: [], targets: [] };
+    var refIndex = refs.sources.indexOf(obj);
+    if (refIndex !== -1) {
+      return refs.targets[refIndex];
+    }
+
+    var setRef = function (source, target) {
+      refs.sources.push(source);
+      refs.targets.push(target);
+    };
+
+    var ownKeys = function (source) {
+      var keys = Object.getOwnPropertyNames(source);
+      if (typeof Object.getOwnPropertySymbols === 'function') {
+        keys = keys.concat(Object.getOwnPropertySymbols(source));
+      }
+      return keys;
+    };
+
+    var cloneProperties = function (source, target) {
+      ownKeys(source).forEach(function (key) {
+        if (Tools.isArray(source) && key === 'length') {
+          return;
+        }
+
+        var descriptor = Object.getOwnPropertyDescriptor(source, key);
+        if (descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
+          descriptor.value = Tools.cloneDeep(descriptor.value, refs);
+        }
+        Object.defineProperty(target, key, descriptor);
+      });
+      return target;
+    };
+
+    var result;
     // Handle Date
     if (obj instanceof Date) {
-      result = new Date();
-      result.setTime(obj.getTime());
-      return result;
+      result = new Date(obj.getTime());
+      setRef(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle RegExp
     if (obj instanceof RegExp) {
-      result = obj;
-      return result;
+      result = new RegExp(obj.source, (obj.global ? 'g' : '') + (obj.ignoreCase ? 'i' : '') + (obj.multiline ? 'm' : '') + (obj.unicode ? 'u' : '') + (obj.sticky ? 'y' : '') + (obj.dotAll ? 's' : ''));
+      result.lastIndex = obj.lastIndex;
+      setRef(obj, result);
+      return cloneProperties(obj, result);
+    }
+    // Handle Map
+    if (typeof Map === 'function' && obj instanceof Map) {
+      result = new Map();
+      setRef(obj, result);
+      obj.forEach(function (value, key) {
+        result.set(Tools.cloneDeep(key, refs), Tools.cloneDeep(value, refs));
+      });
+      return cloneProperties(obj, result);
+    }
+    // Handle Set
+    if (typeof Set === 'function' && obj instanceof Set) {
+      result = new Set();
+      setRef(obj, result);
+      obj.forEach(function (value) {
+        result.add(Tools.cloneDeep(value, refs));
+      });
+      return cloneProperties(obj, result);
+    }
+    // Handle ArrayBuffer
+    if (typeof ArrayBuffer === 'function' && obj instanceof ArrayBuffer) {
+      if (typeof obj.slice === 'function') {
+        result = obj.slice(0);
+      } else {
+        result = new ArrayBuffer(obj.byteLength);
+        new Uint8Array(result).set(new Uint8Array(obj));
+      }
+      setRef(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle Array
     if (obj instanceof Array) {
-      result = [];
-      for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-          result.push(Tools.cloneDeep(obj[i]));
-        }
-      }
-      return result;
+      result = new Array(obj.length);
+      setRef(obj, result);
+      return cloneProperties(obj, result);
+    }
+    // Handle typed arrays and DataView
+    if (typeof ArrayBuffer === 'function' && typeof ArrayBuffer.isView === 'function' && ArrayBuffer.isView(obj)) {
+      result = typeof DataView === 'function' && obj instanceof DataView ? new DataView(Tools.cloneDeep(obj.buffer, refs), obj.byteOffset, obj.byteLength) : new obj.constructor(Tools.cloneDeep(obj.buffer, refs), obj.byteOffset, obj.length);
+      setRef(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle Object
     if (obj instanceof Object) {
-      result = {};
-      for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-          result[i] = Tools.cloneDeep(obj[i]);
-        }
-      }
-      return result;
+      result = Object.create(Object.getPrototypeOf(obj));
+      setRef(obj, result);
+      return cloneProperties(obj, result);
     }
     throw new Error("Unable to copy param! Its type isn't supported.");
   };
