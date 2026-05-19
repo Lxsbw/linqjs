@@ -957,50 +957,88 @@ Tools = {
   /*
     Clone data
   */
-  cloneDeep: function(obj) {
-    var k, o, result, v;
+  cloneDeep: function(obj, seen) {
+    var cloneProperties, refs, result;
     // istanbul ignore next
-    if (typeof structuredClone === 'function') {
+    if (!seen && typeof structuredClone === 'function') {
       return structuredClone(obj);
     }
     if (null === obj || "object" !== typeof obj) {
       // Handle the 3 simple types, and null or undefined
       return obj;
     }
+    refs = seen || new WeakMap();
+    if (refs.has(obj)) {
+      return refs.get(obj);
+    }
+    cloneProperties = (source, target) => {
+      Reflect.ownKeys(source).forEach((key) => {
+        var descriptor;
+        if (Tools.isArray(source) && key === 'length') {
+          return;
+        }
+        descriptor = Object.getOwnPropertyDescriptor(source, key);
+        if (descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
+          descriptor.value = this.cloneDeep(descriptor.value, refs);
+        }
+        return Object.defineProperty(target, key, descriptor);
+      });
+      return target;
+    };
     // Handle Date
     if (obj instanceof Date) {
-      result = new Date();
-      result.setTime(obj.getTime());
-      return result;
+      result = new Date(obj.getTime());
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle RegExp
     if (obj instanceof RegExp) {
-      result = obj;
-      return result;
+      result = new RegExp(obj.source, obj.flags);
+      result.lastIndex = obj.lastIndex;
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
+    }
+    // Handle Map
+    if (obj instanceof Map) {
+      result = new Map();
+      refs.set(obj, result);
+      obj.forEach((value, key) => {
+        return result.set(this.cloneDeep(key, refs), this.cloneDeep(value, refs));
+      });
+      return cloneProperties(obj, result);
+    }
+    // Handle Set
+    if (obj instanceof Set) {
+      result = new Set();
+      refs.set(obj, result);
+      obj.forEach((value) => {
+        return result.add(this.cloneDeep(value, refs));
+      });
+      return cloneProperties(obj, result);
+    }
+    // Handle ArrayBuffer
+    if (obj instanceof ArrayBuffer) {
+      result = obj.slice(0);
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle Array
     if (obj instanceof Array) {
-      result = (function() {
-        var j, len, results;
-        results = [];
-        for (j = 0, len = obj.length; j < len; j++) {
-          o = obj[j];
-          results.push(this.cloneDeep(o));
-        }
-        return results;
-      }).call(this);
-      return result;
+      result = new Array(obj.length);
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
+    }
+    // Handle typed arrays and DataView
+    if (ArrayBuffer.isView(obj)) {
+      result = obj instanceof DataView ? new DataView(this.cloneDeep(obj.buffer, refs), obj.byteOffset, obj.byteLength) : new obj.constructor(this.cloneDeep(obj.buffer, refs), obj.byteOffset, obj.length);
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
     }
     // Handle Object
     if (obj instanceof Object) {
-      result = {};
-      for (k in obj) {
-        v = obj[k];
-        if (obj.hasOwnProperty(k)) {
-          result[k] = this.cloneDeep(v);
-        }
-      }
-      return result;
+      result = Object.create(Object.getPrototypeOf(obj));
+      refs.set(obj, result);
+      return cloneProperties(obj, result);
     }
     // istanbul ignore next
     throw new Error("Unable to copy param! Its type isn't supported.");
@@ -1009,39 +1047,43 @@ Tools = {
     Generate Hash
   */
   getHash: function(obj) {
-    var generateHash, hashValue, typeOf;
-    hashValue = '';
-    typeOf = function(obj) {
-      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();
+    var generateHash, typeOf;
+    typeOf = function(value) {
+      return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
     };
     generateHash = function(value) {
-      var keys, type;
+      var type;
       type = typeOf(value);
       switch (type) {
         case 'object':
-          keys = Object.keys(value).sort();
-          keys.forEach(function(key) {
-            return hashValue += `${key}:${generateHash(value[key])};`;
-          });
-          break;
+          return `object:{${Object.keys(value).sort().map(function(key) {
+            return `${generateHash(key)}:${generateHash(value[key])}`;
+          }).join('|')}}`;
         case 'array':
-          value.forEach(function(item) {
-            return hashValue += `${generateHash(item)},`;
-          });
-          break;
+          return `array:[${value.map(function(item) {
+            return generateHash(item);
+          }).join('|')}]`;
+        case 'date':
+          return `date:${value.getTime()}`;
+        case 'regexp':
+          return `regexp:${value.toString()}`;
+        case 'number':
+          return `number:${Number.isNaN(value) ? 'NaN' : value}`;
+        case 'string':
+          return `string:${JSON.stringify(value)}`;
         case 'boolean':
-          hashValue += `boolean<>_<>_<>${value.toString()}`;
-          break;
+          return `boolean:${value}`;
         case 'null':
-          hashValue += 'null<>_<>_<>';
-          break;
+          return 'null';
         case 'undefined':
-          hashValue += 'undefined<>_<>_<>';
-          break;
+          return 'undefined';
+        case 'symbol':
+          return `symbol:${value.toString()}`;
+        case 'function':
+          return `function:${value.toString()}`;
         default:
-          hashValue += value ? value.toString() : '';
+          return `${type}:${String(value)}`;
       }
-      return hashValue;
     };
     return generateHash(obj);
   }
