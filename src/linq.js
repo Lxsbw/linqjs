@@ -260,8 +260,8 @@ class Linq {
     return this.select(x =>
       result(
         x,
-        list.where(z => key1(x) === key2(z)),
-      ),
+        list.where(z => key1(x) === key2(z))
+      )
     );
   }
 
