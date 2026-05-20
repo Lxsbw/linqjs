@@ -284,7 +284,7 @@ declare class Linq<T> {
   /**
    * clone deep object.
    */
-  cloneDeep<T, Y>(param: any): T | Y;
+  cloneDeep<TClone = T>(param: TClone): TClone;
 }
 
 export default Linq;
