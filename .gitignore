@@ -9,3 +9,8 @@ node_modules
 heapdump-*
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
+pnpm-workspace.yaml
+deno.lock
+# deno.json
+bun.lock

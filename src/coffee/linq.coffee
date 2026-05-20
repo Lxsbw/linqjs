@@ -691,35 +691,79 @@ Tools = {
   ###
     Clone data
   ###
-  cloneDeep: (obj) ->
+  cloneDeep: (obj, seen) ->
     # istanbul ignore next
-    if typeof structuredClone is 'function'
+    if not seen and typeof structuredClone is 'function'
       return structuredClone obj
 
     # Handle the 3 simple types, and null or undefined
     return obj if null is obj || "object" isnt typeof obj
 
+    refs = seen || new WeakMap()
+    return refs.get obj if refs.has obj
+
+    cloneProperties = (source, target) =>
+      Reflect.ownKeys(source).forEach (key) =>
+        return if Tools.isArray(source) and key is 'length'
+
+        descriptor = Object.getOwnPropertyDescriptor source, key
+        if descriptor and Object.prototype.hasOwnProperty.call descriptor, 'value'
+          descriptor.value = @cloneDeep descriptor.value, refs
+        Object.defineProperty target, key, descriptor
+      target
+
     # Handle Date
     if obj instanceof Date
-      result = new Date()
-      result.setTime obj.getTime()
-      return result
+      result = new Date obj.getTime()
+      refs.set obj, result
+      return cloneProperties obj, result
 
     # Handle RegExp
     if obj instanceof RegExp
-      result = obj
-      return result
+      result = new RegExp obj.source, obj.flags
+      result.lastIndex = obj.lastIndex
+      refs.set obj, result
+      return cloneProperties obj, result
+
+    # Handle Map
+    if obj instanceof Map
+      result = new Map()
+      refs.set obj, result
+      obj.forEach (value, key) =>
+        result.set @cloneDeep(key, refs), @cloneDeep(value, refs)
+      return cloneProperties obj, result
+
+    # Handle Set
+    if obj instanceof Set
+      result = new Set()
+      refs.set obj, result
+      obj.forEach (value) =>
+        result.add @cloneDeep value, refs
+      return cloneProperties obj, result
+
+    # Handle ArrayBuffer
+    if obj instanceof ArrayBuffer
+      result = obj.slice 0
+      refs.set obj, result
+      return cloneProperties obj, result
 
     # Handle Array
     if obj instanceof Array
-      result = (@cloneDeep o for o in obj)
-      return result
+      result = new Array obj.length
+      refs.set obj, result
+      return cloneProperties obj, result
+
+    # Handle typed arrays and DataView
+    if ArrayBuffer.isView obj
+      result = if obj instanceof DataView then new DataView @cloneDeep(obj.buffer, refs), obj.byteOffset, obj.byteLength else new obj.constructor @cloneDeep(obj.buffer, refs), obj.byteOffset, obj.length
+      refs.set obj, result
+      return cloneProperties obj, result
 
     # Handle Object
     if obj instanceof Object
-      result = {}
-      result[k] = @cloneDeep v for k, v of obj when obj.hasOwnProperty k
-      return result
+      result = Object.create Object.getPrototypeOf obj
+      refs.set obj, result
+      return cloneProperties obj, result
     # istanbul ignore next
     throw new Error("Unable to copy param! Its type isn't supported.")
 
@@ -727,30 +771,36 @@ Tools = {
     Generate Hash
   ###
   getHash: (obj) ->
-    hashValue = ''
-
-    typeOf = (obj) ->
-      return Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
+    typeOf = (value) ->
+      Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
 
     generateHash = (value) ->
       type = typeOf(value)
       switch (type)
         when 'object'
-          keys = Object.keys(value).sort()
-          keys.forEach (key) ->
-            hashValue += "#{key}:#{generateHash(value[key])};"
+          "object:{#{Object.keys(value).sort().map((key) -> "#{generateHash(key)}:#{generateHash(value[key])}").join('|')}}"
         when 'array'
-          value.forEach (item) ->
-            hashValue += "#{generateHash(item)},"
+          "array:[#{value.map((item) -> generateHash(item)).join('|')}]"
+        when 'date'
+          "date:#{value.getTime()}"
+        when 'regexp'
+          "regexp:#{value.toString()}"
+        when 'number'
+          "number:#{if Number.isNaN(value) then 'NaN' else value}"
+        when 'string'
+          "string:#{JSON.stringify(value)}"
         when 'boolean'
-          hashValue += "boolean<>_<>_<>#{value.toString()}"
+          "boolean:#{value}"
         when 'null'
-          hashValue += 'null<>_<>_<>'
+          'null'
         when 'undefined'
-          hashValue += 'undefined<>_<>_<>'
+          'undefined'
+        when 'symbol'
+          "symbol:#{value.toString()}"
+        when 'function'
+          "function:#{value.toString()}"
         else
-          hashValue += if value then value.toString() else ''
-      return hashValue
+          "#{type}:#{String(value)}"
     return generateHash(obj)
 }
 
